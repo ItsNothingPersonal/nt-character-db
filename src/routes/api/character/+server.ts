@@ -3,6 +3,7 @@ import { playerAttribute } from '$lib/zod/playerAttribute';
 import { playerCharacter, type PlayerCharacter } from '$lib/zod/playerCharacter';
 import { playerDiscipline } from '$lib/zod/playerDiscipline';
 import { playerSkill } from '$lib/zod/playerSkill';
+import { playerTechnique } from '$lib/zod/playerTechnique';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
@@ -20,6 +21,7 @@ export const GET: RequestHandler = async ({ url, locals, fetch }) => {
 		.catch((e: { status: number; message: string }) => {
 			throw error(e.status, e.message);
 		});
+
 	const playerAttributeDB = await fetch(`/api/character/attributes?id=${id}`);
 	playerCharacterDB.attributes = playerAttribute.parse(await playerAttributeDB.json());
 
@@ -28,6 +30,12 @@ export const GET: RequestHandler = async ({ url, locals, fetch }) => {
 
 	const playerDisciplinesDB = await fetch(`/api/character/disciplines?id=${id}`);
 	playerCharacterDB.disciplines = playerDiscipline.array().parse(await playerDisciplinesDB.json());
+
+	const playerTechniquesDB = await fetch(`/api/character/techniques?id=${id}`);
+	playerCharacterDB.techniques = playerTechnique
+		.array()
+		.optional()
+		.parse(await playerTechniquesDB.json());
 
 	// Daten-Schema validieren
 	const playerCharacterParsed = playerCharacter.safeParse(playerCharacterDB);
