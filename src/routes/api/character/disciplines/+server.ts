@@ -1,14 +1,11 @@
 import HttpStatusCode from '$lib/server/httpStatusCode';
+import { validateIdParameter } from '$lib/server/util';
 import { playerDiscipline, type PlayerDiscipline } from '$lib/zod/playerDiscipline';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ url, locals }) => {
-	const id = url.searchParams.get('id');
-
-	if (!id || id?.length === null || (id?.length && id.length <= 0)) {
-		throw error(HttpStatusCode.BAD_REQUEST, 'Keine ID vorhanden');
-	}
+	const id = validateIdParameter(url);
 
 	// Daten aus DB laden
 	const playerDisciplinesDB = await locals.pb

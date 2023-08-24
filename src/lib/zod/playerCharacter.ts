@@ -3,6 +3,7 @@ import { archetypeName } from './archetypeName';
 import { clanName } from './clanName';
 import { playerAttribute } from './playerAttribute';
 import { playerDiscipline } from './playerDiscipline';
+import { playerMorality } from './playerMorality';
 import { playerSkill } from './playerSkill';
 import { playerTechnique } from './playerTechnique';
 
@@ -15,7 +16,8 @@ export const playerCharacter = z.object({
 	attributes: playerAttribute,
 	skills: playerSkill.array(),
 	disciplines: playerDiscipline.array(),
-	techniques: playerTechnique.array().optional()
+	techniques: playerTechnique.array().optional(),
+	morality: playerMorality
 });
 
 export type PlayerCharacter = z.infer<typeof playerCharacter>;

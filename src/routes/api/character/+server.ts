@@ -1,18 +1,16 @@
 import HttpStatusCode from '$lib/server/httpStatusCode';
+import { validateIdParameter } from '$lib/server/util';
 import { playerAttribute } from '$lib/zod/playerAttribute';
 import { playerCharacter, type PlayerCharacter } from '$lib/zod/playerCharacter';
 import { playerDiscipline } from '$lib/zod/playerDiscipline';
+import { playerMorality } from '$lib/zod/playerMorality';
 import { playerSkill } from '$lib/zod/playerSkill';
 import { playerTechnique } from '$lib/zod/playerTechnique';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ url, locals, fetch }) => {
-	const id = url.searchParams.get('id');
-
-	if (!id || id?.length === null || (id?.length && id.length <= 0)) {
-		throw error(HttpStatusCode.BAD_REQUEST, 'Keine ID vorhanden');
-	}
+	const id = validateIdParameter(url);
 
 	// Daten aus DB laden
 	const playerCharacterDB = await locals.pb
@@ -42,6 +40,9 @@ export const GET: RequestHandler = async ({ url, locals, fetch }) => {
 		.array()
 		.optional()
 		.parse(await playerTechniquesDB.json());
+
+	const playerMoralityDB = await fetch(`/api/character/morality?id=${id}`);
+	playerCharacterDB.morality = playerMorality.parse(await playerMoralityDB.json());
 
 	// Daten-Schema validieren
 	const playerCharacterParsed = playerCharacter.safeParse(playerCharacterDB);
