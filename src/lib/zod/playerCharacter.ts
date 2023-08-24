@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { archetypeName } from './archetypeName';
 import { clanName } from './clanName';
 import { playerAttribute } from './playerAttribute';
+import { playerDiscipline } from './playerDiscipline';
 import { playerSkill } from './playerSkill';
 
 export const playerCharacter = z.object({
@@ -11,7 +12,8 @@ export const playerCharacter = z.object({
 	generation: z.number().min(6).max(13),
 	archetype: archetypeName,
 	attributes: playerAttribute,
-	skills: playerSkill.array()
+	skills: playerSkill.array(),
+	disciplines: playerDiscipline.array()
 });
 
 export type PlayerCharacter = z.infer<typeof playerCharacter>;

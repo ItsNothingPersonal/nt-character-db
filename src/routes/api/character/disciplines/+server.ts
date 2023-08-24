@@ -1,5 +1,5 @@
 import HttpStatusCode from '$lib/server/httpStatusCode';
-import { playerSkill, type PlayerSkill } from '$lib/zod/playerSkill';
+import { playerDiscipline, type PlayerDiscipline } from '$lib/zod/playerDiscipline';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
@@ -11,18 +11,18 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 	}
 
 	// Daten aus DB laden
-	const playerSkillsDB = await locals.pb
-		.collection('player_character_skill')
-		.getFullList<PlayerSkill>({ filter: `character_id='${id}'` });
+	const playerDisciplinesDB = await locals.pb
+		.collection('player_character_discipline')
+		.getFullList<PlayerDiscipline>({ filter: `character_id='${id}'` });
 
 	// Daten-Schema validieren
-	const playerSkillsParsed = playerSkill.array().safeParse(playerSkillsDB);
-	if (playerSkillsParsed.success) {
-		return json(playerSkillsParsed.data);
+	const playerDisciplinesParsed = playerDiscipline.array().safeParse(playerDisciplinesDB);
+	if (playerDisciplinesParsed.success) {
+		return json(playerDisciplinesParsed.data);
 	} else {
 		throw error(
 			HttpStatusCode.INTERNAL_SERVER_ERROR,
-			'Charakter-Skills in Datenbank entsprechen nicht dem korrekten Schema'
+			'Charakter-Disziplinen in Datenbank entsprechen nicht dem korrekten Schema'
 		);
 	}
 };
