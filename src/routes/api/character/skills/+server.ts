@@ -16,7 +16,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 		.getFullList<PlayerSkill>({ filter: `character_id='${id}'` });
 
 	// Daten-Schema validieren
-	const playerSkillsParsed = playerSkill.array().safeParse(playerSkillsDB);
+	const playerSkillsParsed = playerSkill.array().nonempty().safeParse(playerSkillsDB);
+
 	if (playerSkillsParsed.success) {
 		return json(playerSkillsParsed.data);
 	} else {

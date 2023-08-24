@@ -26,10 +26,16 @@ export const GET: RequestHandler = async ({ url, locals, fetch }) => {
 	playerCharacterDB.attributes = playerAttribute.parse(await playerAttributeDB.json());
 
 	const playerSkillsDB = await fetch(`/api/character/skills?id=${id}`);
-	playerCharacterDB.skills = playerSkill.array().parse(await playerSkillsDB.json());
+	playerCharacterDB.skills = playerSkill
+		.array()
+		.nonempty()
+		.parse(await playerSkillsDB.json());
 
 	const playerDisciplinesDB = await fetch(`/api/character/disciplines?id=${id}`);
-	playerCharacterDB.disciplines = playerDiscipline.array().parse(await playerDisciplinesDB.json());
+	playerCharacterDB.disciplines = playerDiscipline
+		.array()
+		.nonempty()
+		.parse(await playerDisciplinesDB.json());
 
 	const playerTechniquesDB = await fetch(`/api/character/techniques?id=${id}`);
 	playerCharacterDB.techniques = playerTechnique

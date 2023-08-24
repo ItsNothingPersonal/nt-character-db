@@ -16,7 +16,11 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 		.getFullList<PlayerDiscipline>({ filter: `character_id='${id}'` });
 
 	// Daten-Schema validieren
-	const playerDisciplinesParsed = playerDiscipline.array().safeParse(playerDisciplinesDB);
+	const playerDisciplinesParsed = playerDiscipline
+		.array()
+		.nonempty()
+		.safeParse(playerDisciplinesDB);
+
 	if (playerDisciplinesParsed.success) {
 		return json(playerDisciplinesParsed.data);
 	} else {

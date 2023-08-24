@@ -17,6 +17,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
 	// Daten-Schema validieren
 	const playerAttributeParsed = playerAttribute.safeParse(playerAttributeDB);
+
 	if (playerAttributeParsed.success) {
 		return json(playerAttributeParsed.data);
 	} else {
