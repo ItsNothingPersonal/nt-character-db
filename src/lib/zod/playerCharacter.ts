@@ -4,6 +4,7 @@ import { clanName } from './clanName';
 import { playerAttribute } from './playerAttribute';
 import { playerBackground } from './playerBackground';
 import { playerDiscipline } from './playerDiscipline';
+import { playerExperience } from './playerExperience';
 import { playerFlaw } from './playerFlaw';
 import { playerItem } from './playerItem';
 import { playerMerit } from './playerMerit';
@@ -25,7 +26,8 @@ export const playerCharacter = z.object({
 	merits: playerMerit.array().optional(),
 	flaws: playerFlaw.array().optional(),
 	backgrounds: playerBackground.array().nonempty(),
-	items: playerItem.array().optional()
+	items: playerItem.array().optional(),
+	experience: playerExperience.array().optional()
 });
 
 export type PlayerCharacter = z.infer<typeof playerCharacter>;
