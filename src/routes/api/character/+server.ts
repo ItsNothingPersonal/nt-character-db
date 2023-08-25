@@ -1,6 +1,7 @@
 import HttpStatusCode from '$lib/server/httpStatusCode';
 import { validateIdParameter } from '$lib/server/util';
 import { playerAttribute } from '$lib/zod/playerAttribute';
+import { playerBackground } from '$lib/zod/playerBackground';
 import { playerCharacter, type PlayerCharacter } from '$lib/zod/playerCharacter';
 import { playerDiscipline } from '$lib/zod/playerDiscipline';
 import { playerFlaw } from '$lib/zod/playerFlaw';
@@ -57,6 +58,12 @@ export const GET: RequestHandler = async ({ url, locals, fetch }) => {
 		.array()
 		.optional()
 		.parse(await playerFlawsDB.json());
+
+	const playerBackgroundsDB = await fetch(`/api/character/backgrounds?id=${id}`);
+	playerCharacterDB.backgrounds = playerBackground
+		.array()
+		.nonempty()
+		.parse(await playerBackgroundsDB.json());
 
 	// Daten-Schema validieren
 	const playerCharacterParsed = playerCharacter.safeParse(playerCharacterDB);

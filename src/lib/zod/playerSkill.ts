@@ -3,7 +3,7 @@ import { skillName } from './skillName';
 
 export const playerSkill = z.object({
 	name: skillName,
-	value: z.number().min(0).max(7),
+	value: z.number().min(1).max(7),
 	specialization: z
 		.union([z.string().min(1), z.string().max(30)])
 		.optional()
