@@ -13,7 +13,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 		.getFullList<PlayerTechnique>({ filter: `character_id='${id}'` });
 
 	// Daten-Schema validieren
-	const playerTechniquesParsed = playerTechnique.array().safeParse(playerTechniquesDB);
+	const playerTechniquesParsed = playerTechnique.array().optional().safeParse(playerTechniquesDB);
 	if (playerTechniquesParsed.success) {
 		return json(playerTechniquesParsed.data);
 	} else {

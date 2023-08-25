@@ -3,6 +3,8 @@ import { validateIdParameter } from '$lib/server/util';
 import { playerAttribute } from '$lib/zod/playerAttribute';
 import { playerCharacter, type PlayerCharacter } from '$lib/zod/playerCharacter';
 import { playerDiscipline } from '$lib/zod/playerDiscipline';
+import { playerFlaw } from '$lib/zod/playerFlaw';
+import { playerMerit } from '$lib/zod/playerMerit';
 import { playerMorality } from '$lib/zod/playerMorality';
 import { playerSkill } from '$lib/zod/playerSkill';
 import { playerTechnique } from '$lib/zod/playerTechnique';
@@ -43,6 +45,18 @@ export const GET: RequestHandler = async ({ url, locals, fetch }) => {
 
 	const playerMoralityDB = await fetch(`/api/character/morality?id=${id}`);
 	playerCharacterDB.morality = playerMorality.parse(await playerMoralityDB.json());
+
+	const playerMeritsDB = await fetch(`/api/character/merits?id=${id}`);
+	playerCharacterDB.merits = playerMerit
+		.array()
+		.optional()
+		.parse(await playerMeritsDB.json());
+
+	const playerFlawsDB = await fetch(`/api/character/flaws?id=${id}`);
+	playerCharacterDB.flaws = playerFlaw
+		.array()
+		.optional()
+		.parse(await playerFlawsDB.json());
 
 	// Daten-Schema validieren
 	const playerCharacterParsed = playerCharacter.safeParse(playerCharacterDB);
