@@ -5,6 +5,7 @@ import { playerBackground } from '$lib/zod/playerBackground';
 import { playerCharacter, type PlayerCharacter } from '$lib/zod/playerCharacter';
 import { playerDiscipline } from '$lib/zod/playerDiscipline';
 import { playerFlaw } from '$lib/zod/playerFlaw';
+import { playerItem } from '$lib/zod/playerItem';
 import { playerMerit } from '$lib/zod/playerMerit';
 import { playerMorality } from '$lib/zod/playerMorality';
 import { playerSkill } from '$lib/zod/playerSkill';
@@ -64,6 +65,12 @@ export const GET: RequestHandler = async ({ url, locals, fetch }) => {
 		.array()
 		.nonempty()
 		.parse(await playerBackgroundsDB.json());
+
+	const playerItemsDB = await fetch(`/api/character/items?id=${id}`);
+	playerCharacterDB.items = playerItem
+		.array()
+		.optional()
+		.parse(await playerItemsDB.json());
 
 	// Daten-Schema validieren
 	const playerCharacterParsed = playerCharacter.safeParse(playerCharacterDB);

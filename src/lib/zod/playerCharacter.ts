@@ -5,6 +5,7 @@ import { playerAttribute } from './playerAttribute';
 import { playerBackground } from './playerBackground';
 import { playerDiscipline } from './playerDiscipline';
 import { playerFlaw } from './playerFlaw';
+import { playerItem } from './playerItem';
 import { playerMerit } from './playerMerit';
 import { playerMorality } from './playerMorality';
 import { playerSkill } from './playerSkill';
@@ -23,7 +24,8 @@ export const playerCharacter = z.object({
 	morality: playerMorality,
 	merits: playerMerit.array().optional(),
 	flaws: playerFlaw.array().optional(),
-	backgrounds: playerBackground.array().nonempty()
+	backgrounds: playerBackground.array().nonempty(),
+	items: playerItem.array().optional()
 });
 
 export type PlayerCharacter = z.infer<typeof playerCharacter>;
