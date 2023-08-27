@@ -4,6 +4,7 @@ import { playerAttribute } from '$lib/zod/playerAttribute';
 import { playerBackground } from '$lib/zod/playerBackground';
 import { playerBlood } from '$lib/zod/playerBlood';
 import { playerCharacter, type PlayerCharacter } from '$lib/zod/playerCharacter';
+import { playerDamageTaken } from '$lib/zod/playerDamageTaken';
 import { playerDiscipline } from '$lib/zod/playerDiscipline';
 import { playerExperience } from '$lib/zod/playerExperience';
 import { playerFlaw } from '$lib/zod/playerFlaw';
@@ -86,6 +87,9 @@ export const GET: RequestHandler = async ({ url, locals, fetch }) => {
 
 	const playerWillpowerDB = await fetch(`/api/character/willpower?id=${id}`);
 	playerCharacterDB.willpower = playerWillpower.parse(await playerWillpowerDB.json());
+
+	const playerDamageTakenDB = await fetch(`/api/character/damageTaken?id=${id}`);
+	playerCharacterDB.damageTaken = playerDamageTaken.parse(await playerDamageTakenDB.json());
 
 	// Daten-Schema validieren
 	const playerCharacterParsed = playerCharacter.safeParse(playerCharacterDB);

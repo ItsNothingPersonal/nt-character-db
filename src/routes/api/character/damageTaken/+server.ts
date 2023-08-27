@@ -1,0 +1,26 @@
+import HttpStatusCode from '$lib/server/httpStatusCode';
+import { validateIdParameter } from '$lib/server/util';
+import { playerDamageTaken, type PlayerDamageTaken } from '$lib/zod/playerDamageTaken';
+import { error, json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+
+export const GET: RequestHandler = async ({ url, locals }) => {
+	const id = validateIdParameter(url);
+
+	// Daten aus DB laden
+	const playerDamageTakenDB = await locals.pb
+		.collection('player_character_damage_taken')
+		.getFirstListItem<PlayerDamageTaken>(`character_id='${id}'`);
+
+	// Daten-Schema validieren
+	const playerDamageTakenParsed = playerDamageTaken.safeParse(playerDamageTakenDB);
+
+	if (playerDamageTakenParsed.success) {
+		return json(playerDamageTakenParsed.data);
+	} else {
+		throw error(
+			HttpStatusCode.INTERNAL_SERVER_ERROR,
+			'Charakter-Damage-Taken in Datenbank entsprechen nicht dem korrekten Schema'
+		);
+	}
+};
