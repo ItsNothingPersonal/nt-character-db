@@ -12,6 +12,7 @@ import { playerMerit } from '$lib/zod/playerMerit';
 import { playerMorality } from '$lib/zod/playerMorality';
 import { playerSkill } from '$lib/zod/playerSkill';
 import { playerTechnique } from '$lib/zod/playerTechnique';
+import { playerWillpower } from '$lib/zod/playerWillpower';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
@@ -82,6 +83,9 @@ export const GET: RequestHandler = async ({ url, locals, fetch }) => {
 
 	const playerBloodDB = await fetch(`/api/character/blood?id=${id}`);
 	playerCharacterDB.blood = playerBlood.parse(await playerBloodDB.json());
+
+	const playerWillpowerDB = await fetch(`/api/character/willpower?id=${id}`);
+	playerCharacterDB.willpower = playerWillpower.parse(await playerWillpowerDB.json());
 
 	// Daten-Schema validieren
 	const playerCharacterParsed = playerCharacter.safeParse(playerCharacterDB);

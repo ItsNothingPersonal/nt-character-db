@@ -27,12 +27,12 @@ export const POST: RequestHandler = async ({ url, locals, request }) => {
 			if (e instanceof ClientResponseError) {
 				throw error(
 					HttpStatusCode.INTERNAL_SERVER_ERROR,
-					`Datenbankupdate fehlgeschlagen: ${e.cause}`
+					`Datenbankupdate fehlgeschlagen: ${e.message}`
 				);
 			}
 			throw error(
 				HttpStatusCode.INTERNAL_SERVER_ERROR,
-				`Unbekannter Fehler aufgetregen: ${JSON.stringify(e)}`
+				`Unbekannter Fehler aufgetreten: ${JSON.stringify(e)}`
 			);
 		}
 

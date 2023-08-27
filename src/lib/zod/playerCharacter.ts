@@ -12,6 +12,7 @@ import { playerMerit } from './playerMerit';
 import { playerMorality } from './playerMorality';
 import { playerSkill } from './playerSkill';
 import { playerTechnique } from './playerTechnique';
+import { playerWillpower } from './playerWillpower';
 
 export const playerCharacter = z.object({
 	id: z.string(),
@@ -29,7 +30,8 @@ export const playerCharacter = z.object({
 	backgrounds: playerBackground.array().nonempty(),
 	items: playerItem.array().optional(),
 	experience: playerExperience.array().optional(),
-	blood: playerBlood
+	blood: playerBlood,
+	willpower: playerWillpower
 });
 
 export type PlayerCharacter = z.infer<typeof playerCharacter>;

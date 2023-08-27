@@ -1,6 +1,9 @@
 import HttpStatusCode from '$lib/server/httpStatusCode';
 import { validateIdParameter } from '$lib/server/util';
-import { playerBloodServer, type PlayerBloodServer } from '$lib/server/zod/playerBloodServer';
+import {
+	playerWillpowerServer,
+	type PlayerWillpowerServer
+} from '$lib/server/zod/playerWillpowerServer';
 import { numberUpdateBody } from '$lib/zod/numberUpdateBody';
 import { error } from '@sveltejs/kit';
 import { ClientResponseError } from 'pocketbase';
@@ -12,17 +15,19 @@ export const POST: RequestHandler = async ({ url, locals, request }) => {
 
 	const numberUpdateParsed = numberUpdateBody.safeParse(requestJson);
 
-	const playerBloodDB = await locals.pb
-		.collection('player_character_blood')
-		.getFirstListItem<PlayerBloodServer>(`character_id='${id}'`);
-	const playerBloodParsed = playerBloodServer.safeParse(playerBloodDB);
+	const playerWillpowerDB = await locals.pb
+		.collection('player_character_willpower')
+		.getFirstListItem<PlayerWillpowerServer>(`character_id='${id}'`);
+	const playerWillpowerParsed = playerWillpowerServer.safeParse(playerWillpowerDB);
 
-	if (numberUpdateParsed.success && playerBloodParsed.success) {
+	if (numberUpdateParsed.success && playerWillpowerParsed.success) {
 		// Parsen insgesamt erfolgreich
 		try {
-			await locals.pb.collection('player_character_blood').update(playerBloodParsed.data.id, {
-				value: playerBloodParsed.data.value - numberUpdateParsed.data.value
-			});
+			await locals.pb
+				.collection('player_character_willpower')
+				.update(playerWillpowerParsed.data.id, {
+					value: playerWillpowerParsed.data.value - numberUpdateParsed.data.value
+				});
 		} catch (e) {
 			if (e instanceof ClientResponseError) {
 				throw error(
