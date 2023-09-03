@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Attributes from '$lib/components/attributes.svelte';
 	import BaseInformation from '$lib/components/baseInformation.svelte';
+	import Skills from '$lib/components/skills.svelte';
 	import { Heading } from 'flowbite-svelte';
 	import type { PageData } from './$types';
 
@@ -16,3 +17,4 @@
 />
 
 <Attributes attributes={characterData.attributes} />
+<Skills skills={characterData.skills} />

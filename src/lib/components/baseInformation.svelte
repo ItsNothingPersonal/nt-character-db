@@ -8,9 +8,7 @@
 	export let archetype: ArchetypeName;
 </script>
 
-<div
-	class="grid grid-cols-2 sm:grid-cols-3 grid-rows-2 sm:grid-rows-1 justify-items-center grid-flow-dense mt-4"
->
+<div class="grid grid-cols-2 sm:grid-cols-3 grid-rows-2 sm:grid-rows-1 mt-4">
 	<Label color="red" class="flex items-center font-bold gap-2">
 		Clan <P>{clan}</P>
 	</Label>

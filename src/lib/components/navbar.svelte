@@ -37,7 +37,7 @@
 
 <NavHamburger
 	on:click={toggleSide}
-	class="rounded-lg text-lg p-2.5 fixed left-1 top-1 md:top-3 md:left-2 z-50 md:block focus:outline-none focus:ring-4 focus:ring-light-200 dark:focus:ring-light-500"
+	class="rounded-lg text-lg p-2.5 pl-1 md:p-2.5 fixed top-1 md:top-3 md:left-2 z-50 md:block focus:outline-none focus:ring-4 focus:ring-light-200 dark:focus:ring-light-500"
 />
 
 <Drawer
