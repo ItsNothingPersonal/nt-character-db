@@ -15,6 +15,10 @@ export default {
 			},
 			gridTemplateColumns: {
 				'min-content-3': 'min-content min-content min-content;'
+			},
+			screens: {
+				xss: '375px',
+				xs: '475px'
 			}
 		}
 	},

@@ -11,8 +11,8 @@
 
 <div class="mt-2">
 	{#if incCanDisciplines.length > 0}
-		<Heading tag="h2">Clansdisziplinen</Heading>
-		<div class="grid grid-cols-3 grid-rows-1">
+		<Heading tag="h2" class="break-words">Clansdisziplinen</Heading>
+		<div class="xss:grid-cols-2 grid auto-rows-auto grid-cols-1 sm:grid-cols-3">
 			{#each incCanDisciplines as discipline}
 				<Discipline name={discipline.name} disciplineValue={discipline.value} />
 			{/each}
@@ -20,8 +20,8 @@
 	{/if}
 
 	{#if outOfClanDisciplines.length > 0}
-		<Heading tag="h2">Fremddisziplinen</Heading>
-		<div class="grid grid-cols-3 grid-rows-1">
+		<Heading tag="h2" class="break-words">Fremddisziplinen</Heading>
+		<div class="xss:grid-cols-2 grid auto-rows-auto grid-cols-1 sm:grid-cols-3">
 			{#each outOfClanDisciplines as discipline}
 				<Discipline name={discipline.name} disciplineValue={discipline.value} />
 			{/each}

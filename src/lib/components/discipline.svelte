@@ -6,7 +6,7 @@
 	export let disciplineValue: number;
 </script>
 
-<div class="grid grid-cols-2 grid-rows-1">
+<div class="grid grid-cols-2 grid-rows-1 gap-10">
 	<A href="https://vamp.bynightstudios.com/vampire/disciplines/{name.toLowerCase()}">
 		<P color="text-red-700 dark:text-red-500" weight="bold" size="sm">{name}</P>
 	</A>

@@ -8,7 +8,7 @@
 
 <div class="mt-2">
 	<Heading tag="h2">Attributes</Heading>
-	<div class="grid grid-cols-3 grid-rows-1">
+	<div class="xss:grid-cols-2 grid auto-rows-auto grid-cols-1 sm:grid-cols-3">
 		<Attribute
 			name="Physical"
 			attributeValue={attributes.physical_value}

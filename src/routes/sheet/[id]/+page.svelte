@@ -11,7 +11,7 @@
 	$: ({ characterData } = data);
 </script>
 
-<Heading tag="h1">{characterData.name}</Heading>
+<Heading tag="h1" class="break-words">{characterData.name}</Heading>
 <BaseInformation
 	clan={characterData.clan}
 	generation={characterData.generation}

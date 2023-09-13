@@ -17,7 +17,7 @@
 </script>
 
 <div class="grid max-h-fit auto-rows-auto grid-cols-1">
-	<div class="grid grid-cols-2 grid-rows-1">
+	<div class="grid grid-cols-2 grid-rows-1 gap-10">
 		{#if isTouchscreen}
 			<div class="flex items-center gap-1">
 				<A href="https://vamp.bynightstudios.com/vampire/skills/{name.toLowerCase()}">

@@ -8,14 +8,14 @@
 	export let archetype: ArchetypeName;
 </script>
 
-<div class="mt-4 grid grid-cols-2 grid-rows-2 sm:grid-cols-3 sm:grid-rows-1">
+<div class="xss:grid-cols-2 mt-4 grid grid-cols-1 grid-rows-2 sm:grid-cols-3 sm:grid-rows-1">
 	<Label color="red" class="flex items-center gap-2 font-bold">
 		Clan <P>{clan}</P>
 	</Label>
 	<Label color="red" class="flex items-center gap-2 font-bold">
 		Generation <P>{generation}th</P>
 	</Label>
-	<Label color="red" class="col-span-2 flex items-center gap-2 font-bold sm:col-span-1">
+	<Label color="red" class="flex items-center gap-2 font-bold">
 		Archetype <P>{archetype}</P>
 	</Label>
 </div>
