@@ -15,7 +15,7 @@
 
 <svelte:window bind:innerWidth />
 
-<div class="grid grid-cols-1 auto-rows-auto">
+<div class="grid grid-cols-1 auto-rows-auto max-h-fit">
 	{#if small}
 		<div class="grid grid-rows-1 grid-cols-2 gap-9">
 			<div class="flex items-center gap-1">
@@ -26,9 +26,7 @@
 			</div>
 			<P size="2xl">{value}</P>
 		</div>
-		{#if specialization}
-			<Tooltip placement="bottom-start">{specialization}</Tooltip>
-		{/if}
+		<P>{specialization ?? ''}</P>
 	{:else}
 		<div class="grid grid-rows-1 grid-cols-2">
 			<A href="https://vamp.bynightstudios.com/vampire/skills/{name.toLowerCase()}">
