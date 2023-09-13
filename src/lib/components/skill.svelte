@@ -16,8 +16,8 @@
 	});
 </script>
 
-<div class="grid grid-cols-1 auto-rows-auto max-h-fit">
-	<div class="grid grid-rows-1 grid-cols-2">
+<div class="grid max-h-fit auto-rows-auto grid-cols-1">
+	<div class="grid grid-cols-2 grid-rows-1">
 		{#if isTouchscreen}
 			<div class="flex items-center gap-1">
 				<A href="https://vamp.bynightstudios.com/vampire/skills/{name.toLowerCase()}">

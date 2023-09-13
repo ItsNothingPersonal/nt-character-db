@@ -37,7 +37,7 @@
 
 <NavHamburger
 	on:click={toggleSide}
-	class="rounded-lg text-lg p-2.5 pl-1 md:p-2.5 fixed top-1 md:top-3 md:left-2 z-50 md:block focus:outline-none focus:ring-4 focus:ring-light-200 dark:focus:ring-light-500"
+	class="fixed top-1 z-50 rounded-lg p-2.5 pl-1 text-lg focus:outline-none focus:ring-4 focus:ring-light-200 dark:focus:ring-light-500 md:left-2 md:top-3 md:block md:p-2.5"
 />
 
 <Drawer
@@ -47,7 +47,7 @@
 	bind:hidden={drawerHidden}
 	bind:activateClickOutside
 	width="w-64"
-	class="overflow-auto pb-32 bg-light-50 dark:bg-dark "
+	class="overflow-auto bg-light-50 pb-32 dark:bg-dark "
 	id="sidebar"
 >
 	<div class="flex items-center">

@@ -9,7 +9,7 @@
 
 <div class={marginTop}>
 	<Heading tag="h2">Skills</Heading>
-	<div class="grid grid-cols-2 sm:grid-cols-3 auto-rows-auto">
+	<div class="grid auto-rows-auto grid-cols-2 sm:grid-cols-3">
 		{#each skills as skill}
 			<Skill name={skill.name} value={skill.value} specialization={skill.specialization} />
 		{/each}

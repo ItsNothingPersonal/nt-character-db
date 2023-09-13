@@ -13,7 +13,7 @@
 </script>
 
 <div class="flex flex-col">
-	<Label color="red" class="flex items-center font-bold gap-2">
+	<Label color="red" class="flex items-center gap-2 font-bold">
 		{name}
 		<P size="2xl">{attributeValue}</P>
 	</Label>
