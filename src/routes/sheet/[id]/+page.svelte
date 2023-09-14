@@ -3,6 +3,7 @@
 	import Backgrounds from '$lib/components/backgrounds.svelte';
 	import BaseInformation from '$lib/components/baseInformation.svelte';
 	import Disciplines from '$lib/components/disciplines.svelte';
+	import Experience from '$lib/components/experience.svelte';
 	import Flaws from '$lib/components/flaws.svelte';
 	import Items from '$lib/components/items.svelte';
 	import Merits from '$lib/components/merits.svelte';
@@ -32,3 +33,4 @@
 <Flaws flaws={characterData.flaws} />
 <Backgrounds backgrounds={characterData.backgrounds} />
 <Items items={characterData.items} />
+<Experience experience={characterData.experience} />
