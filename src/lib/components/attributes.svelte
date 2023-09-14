@@ -1,28 +1,28 @@
 <script lang="ts">
 	import type { PlayerAttribute } from '$lib/zod/playerAttribute';
 	import { Heading } from 'flowbite-svelte';
-	import Attribute from './attribute.svelte';
+	import TextWithValue from './textWithValue.svelte';
 
 	export let attributes: PlayerAttribute;
 </script>
 
 <div class="mt-2">
 	<Heading tag="h2">Attributes</Heading>
-	<div class="xss:grid-cols-2 grid auto-rows-auto grid-cols-1 sm:grid-cols-3">
-		<Attribute
+	<div class="grid auto-rows-auto grid-cols-1 xss:grid-cols-2 sm:grid-cols-3">
+		<TextWithValue
 			name="Physical"
-			attributeValue={attributes.physical_value}
-			attributeSpecialization={attributes.physical_specialization}
+			value={attributes.physical_value}
+			specialization={attributes.physical_specialization.join(', ')}
 		/>
-		<Attribute
+		<TextWithValue
 			name="Social"
-			attributeValue={attributes.social_value}
-			attributeSpecialization={attributes.social_specialization}
+			value={attributes.social_value}
+			specialization={attributes.social_specialization.join(', ')}
 		/>
-		<Attribute
+		<TextWithValue
 			name="Mental"
-			attributeValue={attributes.mental_value}
-			attributeSpecialization={attributes.mental_specialization}
+			value={attributes.mental_value}
+			specialization={attributes.mental_specialization.join(', ')}
 		/>
 	</div>
 </div>
