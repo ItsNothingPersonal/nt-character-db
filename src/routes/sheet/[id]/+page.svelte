@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Attributes from '$lib/components/attributes.svelte';
+	import Backgrounds from '$lib/components/backgrounds.svelte';
 	import BaseInformation from '$lib/components/baseInformation.svelte';
 	import Disciplines from '$lib/components/disciplines.svelte';
 	import Flaws from '$lib/components/flaws.svelte';
@@ -28,3 +29,4 @@
 <Morality morality={characterData.morality} />
 <Merits merits={characterData.merits} />
 <Flaws flaws={characterData.flaws} />
+<Backgrounds backgrounds={characterData.backgrounds} />
