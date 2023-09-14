@@ -5,7 +5,7 @@
 	import { onMount } from 'svelte';
 
 	export let name: string;
-	export let value: number;
+	export let value: number | undefined = undefined;
 	export let href: string | undefined = undefined;
 	export let specialization: string | undefined = undefined;
 
@@ -33,7 +33,9 @@
 	{:else}
 		<P color="text-red-700 dark:text-red-500" weight="bold" size="sm">{name}</P>
 	{/if}
-	<P size="2xl">{value}</P>
+	{#if value}
+		<P size="2xl">{value}</P>
+	{/if}
 </div>
 {#if specialization}
 	<Tooltip placement="bottom-start">{specialization}</Tooltip>
