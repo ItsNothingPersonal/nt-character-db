@@ -8,8 +8,8 @@
 
 {#if techniques && techniques.length > 0}
 	<div class="mt-2">
-		<Heading tag="h2">Techniken</Heading>
-		<div class="xs:grid-cols-2 grid auto-rows-auto grid-cols-1 sm:grid-cols-3">
+		<Heading tag="h2">Techniques</Heading>
+		<div class="grid auto-rows-auto grid-cols-1 xs:grid-cols-2 sm:grid-cols-3">
 			{#each techniques as technique}
 				<Technique name={technique.name} />
 			{/each}
