@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Tracker from '$lib/components/tracker.svelte';
+	import type { DamageUpdateBody } from '$lib/zod/damageUpdateBody';
 	import type { NumberUpdateBody } from '$lib/zod/numberUpdateBody';
 	import { Heading } from 'flowbite-svelte';
 	import type { PageData } from './$types';
@@ -59,24 +60,78 @@
 
 		updating = false;
 	}
+
+	async function changeDamage(
+		value: number,
+		mode: 'add' | 'substract',
+		damageType: 'normal' | 'aggrevated',
+		characterId: string | undefined
+	) {
+		updating = true;
+
+		const updateBody: DamageUpdateBody = {
+			value,
+			damageType
+		};
+
+		const response = await fetch(`/api/character/damageTaken/${mode}?id=${characterId}`, {
+			method: 'POST',
+			body: JSON.stringify(updateBody)
+		});
+
+		if (response.ok) {
+			if (mode === 'add') {
+				if (damageType === 'normal') {
+					data.damageTaken.normal++;
+				} else {
+					data.damageTaken.aggrevated++;
+				}
+			} else {
+				if (damageType === 'normal') {
+					data.damageTaken.normal--;
+				} else {
+					data.damageTaken.aggrevated--;
+				}
+			}
+		}
+
+		updating = false;
+	}
 </script>
 
-<div class="mt-2">
-	<Heading tag="h2">Trackers</Heading>
-	<div class="grid grid-cols-1 gap-2 sm:grid-cols-4">
-		<Tracker
-			title="Blood"
-			value={data.blood.value}
-			addFunction={() => changeBlood(1, 'add', data.characterId)}
-			substractFunction={() => changeBlood(1, 'substract', data.characterId)}
-			{updating}
-		/>
-		<Tracker
-			title="Willpower"
-			value={data.willpower.value}
-			addFunction={() => changeWillpower(1, 'add', data.characterId)}
-			substractFunction={() => changeWillpower(1, 'substract', data.characterId)}
-			{updating}
-		/>
-	</div>
+<Heading tag="h1">Trackers</Heading>
+<Heading tag="h2">Blood & Willpower</Heading>
+<div class="mb-6 grid auto-rows-auto grid-cols-1 gap-1 sm:grid-cols-2 sm:gap-2">
+	<Tracker
+		title="Blood"
+		value={data.blood.value}
+		addFunction={() => changeBlood(1, 'add', data.characterId)}
+		substractFunction={() => changeBlood(1, 'substract', data.characterId)}
+		{updating}
+	/>
+	<Tracker
+		title="Willpower"
+		value={data.willpower.value}
+		addFunction={() => changeWillpower(1, 'add', data.characterId)}
+		substractFunction={() => changeWillpower(1, 'substract', data.characterId)}
+		{updating}
+	/>
+</div>
+
+<Heading tag="h2">Damage</Heading>
+<div class="grid auto-rows-auto grid-cols-1 gap-1 sm:grid-cols-2 sm:gap-2">
+	<Tracker
+		title="Normal"
+		value={data.damageTaken.normal}
+		addFunction={() => changeDamage(1, 'add', 'normal', data.characterId)}
+		substractFunction={() => changeDamage(1, 'substract', 'normal', data.characterId)}
+		{updating}
+	/>
+	<Tracker
+		title="Aggrevated"
+		value={data.damageTaken.aggrevated}
+		addFunction={() => changeDamage(1, 'add', 'aggrevated', data.characterId)}
+		substractFunction={() => changeDamage(1, 'substract', 'aggrevated', data.characterId)}
+		{updating}
+	/>
 </div>
