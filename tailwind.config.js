@@ -16,6 +16,9 @@ export default {
 			gridTemplateColumns: {
 				'min-content-3': 'min-content min-content min-content;'
 			},
+			gridTemplateRows: {
+				'double-center': 'auto 2fr 1fr'
+			},
 			screens: {
 				xss: '375px',
 				xs: '475px'

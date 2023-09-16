@@ -6,12 +6,13 @@ export const menuData: {
 }[] = [
 	{
 		id: 0,
-		label: 'Basis-Daten',
-		href: 'base'
+		label: 'Sheet',
+		href: ''
 	},
 	{
 		id: 1,
-		label: 'Attribute'
+		label: 'Trackers',
+		href: 'trackers'
 	},
 	{
 		id: 2,

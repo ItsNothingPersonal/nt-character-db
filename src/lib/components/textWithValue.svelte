@@ -24,14 +24,14 @@
 					<LinkSolid size="sm" role="link" />
 				</A>
 			{/if}
-			<P color="text-red-700 dark:text-red-500" weight="bold" size="sm">{name}</P>
+			<P color="text-red-700 dark:text-red-500" weight="bold">{name}</P>
 		</div>
 	{:else if href}
 		<A {href}>
-			<P color="text-red-700 dark:text-red-500" weight="bold" size="sm">{name}</P>
+			<P color="text-red-700 dark:text-red-500" weight="bold">{name}</P>
 		</A>
 	{:else}
-		<P color="text-red-700 dark:text-red-500" weight="bold" size="sm">{name}</P>
+		<P color="text-red-700 dark:text-red-500" weight="bold">{name}</P>
 	{/if}
 	{#if value}
 		<P size="2xl">{value}</P>
