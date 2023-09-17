@@ -16,7 +16,8 @@ export const menuData: {
 	},
 	{
 		id: 2,
-		label: 'Skills'
+		label: 'Battle-Sheet',
+		href: 'battle-sheet'
 	},
 	{
 		id: 3,

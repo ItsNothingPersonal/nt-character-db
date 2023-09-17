@@ -101,37 +101,45 @@
 
 <Heading tag="h1">Trackers</Heading>
 <Heading tag="h2">Blood & Willpower</Heading>
-<div class="mb-6 grid auto-rows-auto grid-cols-1 gap-1 sm:grid-cols-2 sm:gap-2">
+<div class="mb-6 mt-2 grid auto-rows-auto grid-cols-1 gap-1 sm:grid-cols-2 sm:gap-2">
 	<Tracker
 		title="Blood"
 		value={data.blood.value}
-		addFunction={() => changeBlood(1, 'add', data.characterId)}
-		substractFunction={() => changeBlood(1, 'substract', data.characterId)}
-		{updating}
+		buttonsConfig={{
+			addFunction: () => changeBlood(1, 'add', data.characterId),
+			substractFunction: () => changeBlood(1, 'substract', data.characterId),
+			updating
+		}}
 	/>
 	<Tracker
 		title="Willpower"
 		value={data.willpower.value}
-		addFunction={() => changeWillpower(1, 'add', data.characterId)}
-		substractFunction={() => changeWillpower(1, 'substract', data.characterId)}
-		{updating}
+		buttonsConfig={{
+			addFunction: () => changeWillpower(1, 'add', data.characterId),
+			substractFunction: () => changeWillpower(1, 'substract', data.characterId),
+			updating
+		}}
 	/>
 </div>
 
 <Heading tag="h2">Damage</Heading>
-<div class="grid auto-rows-auto grid-cols-1 gap-1 sm:grid-cols-2 sm:gap-2">
+<div class="mt-2 grid auto-rows-auto grid-cols-1 gap-1 sm:grid-cols-2 sm:gap-2">
 	<Tracker
 		title="Normal"
 		value={data.damageTaken.normal}
-		addFunction={() => changeDamage(1, 'add', 'normal', data.characterId)}
-		substractFunction={() => changeDamage(1, 'substract', 'normal', data.characterId)}
-		{updating}
+		buttonsConfig={{
+			addFunction: () => changeDamage(1, 'add', 'normal', data.characterId),
+			substractFunction: () => changeDamage(1, 'substract', 'normal', data.characterId),
+			updating
+		}}
 	/>
 	<Tracker
 		title="Aggrevated"
 		value={data.damageTaken.aggrevated}
-		addFunction={() => changeDamage(1, 'add', 'aggrevated', data.characterId)}
-		substractFunction={() => changeDamage(1, 'substract', 'aggrevated', data.characterId)}
-		{updating}
+		buttonsConfig={{
+			addFunction: () => changeDamage(1, 'add', 'aggrevated', data.characterId),
+			substractFunction: () => changeDamage(1, 'substract', 'aggrevated', data.characterId),
+			updating
+		}}
 	/>
 </div>

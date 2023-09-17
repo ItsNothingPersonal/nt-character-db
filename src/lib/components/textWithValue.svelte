@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { detectTouchscreen } from '$lib/util';
+	import { detectTouchscreen, isNullOrUndefined } from '$lib/util';
 	import { A, P, Tooltip } from 'flowbite-svelte';
 	import { LinkSolid } from 'flowbite-svelte-icons';
 	import { onMount } from 'svelte';
@@ -16,7 +16,7 @@
 	});
 </script>
 
-<div class="grid grid-cols-2 grid-rows-1 items-center gap-10 sm:gap-0">
+<div class="grid grid-cols-2 grid-rows-1 items-center gap-16 sm:gap-0">
 	{#if isTouchscreen && specialization}
 		<div class="flex gap-1">
 			{#if href}
@@ -33,7 +33,7 @@
 	{:else}
 		<P color="text-red-700 dark:text-red-500" weight="bold">{name}</P>
 	{/if}
-	{#if value}
+	{#if !isNullOrUndefined(value)}
 		<P size="2xl">{value}</P>
 	{/if}
 </div>
