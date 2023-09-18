@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { PlayerSkill } from '$lib/zod/playerSkill';
-	import { Heading } from 'flowbite-svelte';
-	import TextWithValue from './textWithValue.svelte';
+	import ValueRating from './valueRating/valueRating.svelte';
 
 	export let skills: PlayerSkill[];
 	export let marginTop: string = 'mt-2';
@@ -10,11 +9,11 @@
 </script>
 
 <div class={marginTop}>
-	<Heading tag="h2">Skills</Heading>
-	<div class="grid auto-rows-auto grid-cols-1 xss:grid-cols-2 sm:grid-cols-3">
+	<h2 class="h2">Skills</h2>
+	<div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-8">
 		{#each skills as skill}
-			<TextWithValue
-				name={skill.name}
+			<ValueRating
+				label={skill.name}
 				value={skill.value}
 				specialization={skill.specialization}
 				href="{baseUrl}/{skill.name.toLowerCase()}"

@@ -1,7 +1,4 @@
 <script lang="ts">
-	import { Button, P } from 'flowbite-svelte';
-	import { MinusSolid, PlusSolid } from 'flowbite-svelte-icons';
-
 	export let title: string;
 	export let value: number;
 	export let buttonsConfig:
@@ -12,30 +9,34 @@
 <div
 	class="grid grid-flow-row-dense grid-cols-1 {buttonsConfig
 		? 'grid-rows-double-center'
-		: 'grid-rows-title-content'} items-center border-2 border-gray-500 bg-light-100 dark:border-gray-50 dark:bg-slate-900"
+		: 'grid-rows-title-content'} bg-light-100 items-center border-2 border-gray-500 dark:border-gray-50 dark:bg-slate-900"
 >
-	<P weight="bold" size="2xl" align="center">
+	<p class="text-center font-bold">
 		{title}
-	</P>
+	</p>
 
-	<P
-		weight="bold"
-		size="8xl"
-		align="center"
-		class="my-auto pb-2"
-		color="text-red-700 dark:text-red-500"
-	>
+	<p class="my-auto pb-2 text-center text-8xl font-bold">
 		{value}
-	</P>
+	</p>
 
 	{#if buttonsConfig}
 		<div class="grid h-full w-full grid-cols-2 grid-rows-1 gap-x-1 pb-1 pl-1 pr-1">
-			<Button on:click={buttonsConfig.addFunction} disabled={buttonsConfig.updating}>
-				<PlusSolid />
-			</Button>
-			<Button on:click={buttonsConfig.substractFunction} disabled={buttonsConfig.updating}>
-				<MinusSolid />
-			</Button>
+			<button
+				type="button"
+				class="variant-filled btn"
+				on:click={buttonsConfig.addFunction}
+				disabled={buttonsConfig.updating}
+			>
+				<iconify-icon icon="ic:baseline-plus"></iconify-icon>
+			</button>
+			<button
+				type="button"
+				class="variant-filled btn"
+				on:click={buttonsConfig.substractFunction}
+				disabled={buttonsConfig.updating}
+			>
+				<iconify-icon icon="ic:baseline-minus"></iconify-icon>
+			</button>
 		</div>
 	{/if}
 </div>

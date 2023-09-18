@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { PlayerExperience } from '$lib/zod/playerExperience';
-	import { Heading } from 'flowbite-svelte';
-	import TextWithValue from './textWithValue.svelte';
+	import ValueNumber from './valueNumber/valueNumber.svelte';
 
 	export let experience: PlayerExperience[] | undefined;
 
@@ -17,11 +16,12 @@
 </script>
 
 <div class="mt-2">
-	<Heading tag="h2">Experience</Heading>
+	<h2 class="h2">Experience</h2>
+
 	<div class="grid auto-rows-auto grid-cols-1 xss:grid-cols-2 sm:grid-cols-4">
-		<TextWithValue name="Start" value={40} />
-		<TextWithValue name="Gained" value={gained} />
-		<TextWithValue name="Spent" value={spent} />
-		<TextWithValue name="Remaining" value={left} />
+		<ValueNumber label="Start" value={40} />
+		<ValueNumber label="Gained" value={gained} />
+		<ValueNumber label="Spent" value={spent} />
+		<ValueNumber label="Remaining" value={left} />
 	</div>
 </div>

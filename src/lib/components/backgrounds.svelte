@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { PlayerBackground } from '$lib/zod/playerBackground';
-	import { Heading } from 'flowbite-svelte';
-	import TextWithValue from './textWithValue.svelte';
+	import ValueRating from './valueRating/valueRating.svelte';
 
 	export let backgrounds: PlayerBackground[];
 
@@ -9,12 +8,13 @@
 </script>
 
 <div class="mt-2">
-	<Heading tag="h2" class="break-words">Backgrounds</Heading>
-	<div class="grid auto-rows-auto grid-cols-1 xss:grid-cols-2 sm:grid-cols-3">
+	<h2 class="h2">Backgrounds</h2>
+	<div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-8">
 		{#each backgrounds as background}
-			<TextWithValue
-				name={background.name}
+			<ValueRating
+				label={background.name}
 				value={background.value}
+				specialization={background.specialization}
 				href="{baseUrl}/{background.name.toLowerCase()}"
 			/>
 		{/each}

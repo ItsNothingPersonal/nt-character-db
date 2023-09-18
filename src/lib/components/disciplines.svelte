@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { PlayerDiscipline } from '$lib/zod/playerDiscipline';
-	import { Heading } from 'flowbite-svelte';
-	import TextWithValue from './textWithValue.svelte';
+	import ValueRating from './valueRating/valueRating.svelte';
 
 	export let disciplines: PlayerDiscipline[];
 
@@ -13,11 +12,11 @@
 
 <div class="mt-2">
 	{#if incCanDisciplines.length > 0}
-		<Heading tag="h2" class="break-words">In-Clan Disciplines</Heading>
-		<div class="grid auto-rows-auto grid-cols-1 xss:grid-cols-2 sm:grid-cols-3">
+		<h2 class="h2">In-Clan Disciplines</h2>
+		<div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-8">
 			{#each incCanDisciplines as discipline}
-				<TextWithValue
-					name={discipline.name}
+				<ValueRating
+					label={discipline.name}
 					value={discipline.value}
 					href="{baseUrl}/{discipline.name.toLowerCase()}"
 				/>
@@ -26,11 +25,11 @@
 	{/if}
 
 	{#if outOfClanDisciplines.length > 0}
-		<Heading tag="h2" class="break-words">Out-Of-Clan Disciplines</Heading>
-		<div class="grid auto-rows-auto grid-cols-1 xss:grid-cols-2 sm:grid-cols-3">
+		<h2 class="h2">Out-Of-Clan Disciplines</h2>
+		<div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-8">
 			{#each outOfClanDisciplines as discipline}
-				<TextWithValue
-					name={discipline.name}
+				<ValueRating
+					label={discipline.name}
 					value={discipline.value}
 					href="{baseUrl}/{discipline.name.toLowerCase()}"
 				/>

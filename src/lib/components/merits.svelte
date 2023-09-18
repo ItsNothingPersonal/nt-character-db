@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { PlayerMerit } from '$lib/zod/playerMerit';
-	import { A, Heading, P } from 'flowbite-svelte';
 
 	export let merits: PlayerMerit[] | undefined;
 
@@ -9,12 +8,12 @@
 
 {#if merits && merits.length > 0}
 	<div class="mt-2">
-		<Heading tag="h2">Merits</Heading>
-		<div class="grid auto-rows-auto grid-cols-1 xss:grid-cols-2 sm:grid-cols-3">
+		<h2 class="h2">Merits</h2>
+		<div class="grid auto-rows-auto grid-cols-5 gap-2">
 			{#each merits as merit}
-				<A href="{baseUrl}/{merit.name.toLowerCase()}">
-					<P color="text-red-700 dark:text-red-500" weight="bold" size="sm">{merit.name}</P>
-				</A>
+				<a href="{baseUrl}/{merit.name.toLowerCase()}">
+					<p>{merit.name}</p>
+				</a>
 			{/each}
 		</div>
 	</div>

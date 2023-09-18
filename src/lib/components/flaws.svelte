@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { PlayerFlaw } from '$lib/zod/playerFlaw';
-	import { A, Heading, P } from 'flowbite-svelte';
 
 	export let flaws: PlayerFlaw[] | undefined;
 
@@ -9,12 +8,12 @@
 
 {#if flaws && flaws.length > 0}
 	<div class="mt-2">
-		<Heading tag="h2">Flaws</Heading>
-		<div class="grid auto-rows-auto grid-cols-1 xss:grid-cols-2 sm:grid-cols-3">
+		<h2 class="h2">Flaws</h2>
+		<div class="grid auto-rows-auto grid-cols-5 gap-2">
 			{#each flaws as flaw}
-				<A href="{baseUrl}/{flaw.name.toLowerCase()}">
-					<P color="text-red-700 dark:text-red-500" weight="bold" size="sm">{flaw.name}</P>
-				</A>
+				<a href="{baseUrl}/{flaw.name.toLowerCase()}">
+					<p>{flaw.name}</p>
+				</a>
 			{/each}
 		</div>
 	</div>

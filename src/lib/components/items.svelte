@@ -1,17 +1,18 @@
 <script lang="ts">
 	import type { PlayerItem } from '$lib/zod/playerItem';
-	import { Heading } from 'flowbite-svelte';
-	import TextWithValue from './textWithValue.svelte';
+	import ValueNumber from './valueNumber/valueNumber.svelte';
 
 	export let items: PlayerItem[] | undefined;
 </script>
 
 {#if items && items.length > 0}
 	<div class="mt-2">
-		<Heading tag="h2" class="break-words">Items</Heading>
+		<h2 class="h2">Items</h2>
 
-		{#each items as item}
-			<TextWithValue name={item.name} specialization={item.qualities.join(', ')} />
-		{/each}
+		<div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-8">
+			{#each items as item}
+				<ValueNumber label={item.name} specialization={item.qualities} />
+			{/each}
+		</div>
 	</div>
 {/if}

@@ -2,7 +2,6 @@
 	import Tracker from '$lib/components/tracker.svelte';
 	import type { DamageUpdateBody } from '$lib/zod/damageUpdateBody';
 	import type { NumberUpdateBody } from '$lib/zod/numberUpdateBody';
-	import { Heading } from 'flowbite-svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -99,9 +98,9 @@
 	}
 </script>
 
-<Heading tag="h1">Trackers</Heading>
-<Heading tag="h2">Blood & Willpower</Heading>
-<div class="mb-6 mt-2 grid auto-rows-auto grid-cols-1 gap-1 sm:grid-cols-2 sm:gap-2">
+<h1 class="h1">Trackers</h1>
+<h2 class="h2">Blood & Willpower</h2>
+<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-2 gap-2">
 	<Tracker
 		title="Blood"
 		value={data.blood.value}
@@ -122,8 +121,8 @@
 	/>
 </div>
 
-<Heading tag="h2">Damage</Heading>
-<div class="mt-2 grid auto-rows-auto grid-cols-1 gap-1 sm:grid-cols-2 sm:gap-2">
+<h2 class="h2">Damage</h2>
+<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-2 gap-2">
 	<Tracker
 		title="Normal"
 		value={data.damageTaken.normal}

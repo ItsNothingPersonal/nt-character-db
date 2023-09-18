@@ -1,28 +1,34 @@
 <script lang="ts">
+	import { getAttributesMaximum } from '$lib/validation/attributes';
 	import type { PlayerAttribute } from '$lib/zod/playerAttribute';
-	import { Heading } from 'flowbite-svelte';
-	import TextWithValue from './textWithValue.svelte';
+	import ValueRating from './valueRating/valueRating.svelte';
 
 	export let attributes: PlayerAttribute;
+	export let generation: number;
+
+	const max = getAttributesMaximum(generation);
 </script>
 
 <div class="mt-2">
-	<Heading tag="h2">Attributes</Heading>
-	<div class="grid auto-rows-auto grid-cols-1 xss:grid-cols-2 sm:grid-cols-3">
-		<TextWithValue
-			name="Physical"
+	<h2 class="h2">Attributes</h2>
+	<div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-3">
+		<ValueRating
+			label="Physical"
 			value={attributes.physical_value}
-			specialization={attributes.physical_specialization.join(', ')}
+			specialization={attributes.physical_specialization}
+			{max}
 		/>
-		<TextWithValue
-			name="Social"
+		<ValueRating
+			label="Social"
 			value={attributes.social_value}
-			specialization={attributes.social_specialization.join(', ')}
+			specialization={attributes.social_specialization}
+			{max}
 		/>
-		<TextWithValue
-			name="Mental"
+		<ValueRating
+			label="Mental"
 			value={attributes.mental_value}
-			specialization={attributes.mental_specialization.join(', ')}
+			specialization={attributes.mental_specialization}
+			{max}
 		/>
 	</div>
 </div>

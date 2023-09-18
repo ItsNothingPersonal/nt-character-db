@@ -10,21 +10,19 @@
 	import Morality from '$lib/components/morality.svelte';
 	import Skills from '$lib/components/skills.svelte';
 	import Techniques from '$lib/components/techniques.svelte';
-	import { Heading } from 'flowbite-svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
 	$: ({ characterData } = data);
 </script>
 
-<Heading tag="h1" class="break-words">{characterData.name}</Heading>
+<h1 class="h1">{characterData.name}</h1>
 <BaseInformation
 	clan={characterData.clan}
 	generation={characterData.generation}
 	archetype={characterData.archetype}
 />
-
-<Attributes attributes={characterData.attributes} />
+<Attributes attributes={characterData.attributes} generation={characterData.generation} />
 <Skills skills={characterData.skills} />
 <Disciplines disciplines={characterData.disciplines} />
 <Techniques techniques={characterData.techniques} />
