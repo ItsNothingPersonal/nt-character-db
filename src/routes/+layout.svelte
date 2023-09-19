@@ -27,7 +27,9 @@
 		drawerStore.open({});
 	}
 
-	characterIdStore.set(data.characterId);
+	if (data.characterId) {
+		characterIdStore.set(data.characterId);
+	}
 </script>
 
 <Drawer>

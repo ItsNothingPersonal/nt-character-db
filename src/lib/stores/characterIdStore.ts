@@ -1,3 +1,7 @@
-import { writable } from 'svelte/store';
+import { localStorageStore } from '@skeletonlabs/skeleton';
+import type { Writable } from 'svelte/store';
 
-export const characterIdStore = writable<string | undefined>();
+export const characterIdStore: Writable<string | undefined> = localStorageStore(
+	'character-id',
+	undefined
+);
