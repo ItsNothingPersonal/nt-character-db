@@ -1,9 +1,8 @@
-import { z } from 'zod';
-import { archetypeName } from './archetypeName';
-import { clanName } from './clanName';
+import type { z } from 'zod';
 import { playerAttribute } from './playerAttribute';
 import { playerBackground } from './playerBackground';
 import { playerBlood } from './playerBlood';
+import { playerCharacterBase } from './playerCharacterBase';
 import { playerDamageTaken } from './playerDamageTaken';
 import { playerDiscipline } from './playerDiscipline';
 import { playerExperience } from './playerExperience';
@@ -15,12 +14,7 @@ import { playerSkill } from './playerSkill';
 import { playerTechnique } from './playerTechnique';
 import { playerWillpower } from './playerWillpower';
 
-export const playerCharacter = z.object({
-	id: z.string(),
-	name: z.string(),
-	clan: clanName,
-	generation: z.number().min(6).max(13),
-	archetype: archetypeName,
+export const playerCharacter = playerCharacterBase.extend({
 	attributes: playerAttribute,
 	skills: playerSkill.array().nonempty(),
 	disciplines: playerDiscipline.array().nonempty(),

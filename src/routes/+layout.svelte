@@ -1,6 +1,7 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import Navigation from '$lib/components/navigation/navigation.svelte';
-	import { characterIdStore } from '$lib/stores/characterIdStore';
+	import { selectedCharacterIdStore } from '$lib/stores/selectedCharacterIdStore';
 	import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 	import {
 		AppBar,
@@ -23,12 +24,14 @@
 
 	const drawerStore = getDrawerStore();
 
+	$: classesSidebar = $page.url.pathname === '/' ? 'w-0' : 'w-0 lg:w-64';
+
 	function drawerOpen(): void {
 		drawerStore.open({});
 	}
 
 	if (data.characterId) {
-		characterIdStore.set(data.characterId);
+		selectedCharacterIdStore.set(data.characterId);
 	}
 </script>
 
@@ -40,7 +43,7 @@
 
 <!-- App Shell -->
 <AppShell
-	slotSidebarLeft="bg-surface-500/5 w-0 lg:w-64"
+	slotSidebarLeft="bg-surface-500/5 {classesSidebar}"
 	slotPageContent="container px-2 sm:mx-auto"
 >
 	<svelte:fragment slot="header">
@@ -48,15 +51,17 @@
 		<AppBar>
 			<svelte:fragment slot="lead">
 				<div class="flex items-center">
-					<button class="btn btn-sm mr-4 lg:hidden" on:click={drawerOpen}>
-						<span>
-							<svg viewBox="0 0 100 80" class="fill-token h-4 w-4">
-								<rect width="100" height="20" />
-								<rect y="30" width="100" height="20" />
-								<rect y="60" width="100" height="20" />
-							</svg>
-						</span>
-					</button>
+					{#if $page.url.pathname !== '/'}
+						<button class="btn btn-sm mr-4 lg:hidden" on:click={drawerOpen}>
+							<span>
+								<svg viewBox="0 0 100 80" class="fill-token h-4 w-4">
+									<rect width="100" height="20" />
+									<rect y="30" width="100" height="20" />
+									<rect y="60" width="100" height="20" />
+								</svg>
+							</span>
+						</button>
+					{/if}
 					<strong class="text-xl uppercase">Character-Sheet</strong>
 				</div>
 			</svelte:fragment>

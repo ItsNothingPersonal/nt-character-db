@@ -4,6 +4,7 @@ import { playerAttribute } from '$lib/zod/playerAttribute';
 import { playerBackground } from '$lib/zod/playerBackground';
 import { playerBlood } from '$lib/zod/playerBlood';
 import { playerCharacter, type PlayerCharacter } from '$lib/zod/playerCharacter';
+import { playerCharacterBase } from '$lib/zod/playerCharacterBase';
 import { playerDamageTaken } from '$lib/zod/playerDamageTaken';
 import { playerDiscipline } from '$lib/zod/playerDiscipline';
 import { playerExperience } from '$lib/zod/playerExperience';
@@ -17,16 +18,14 @@ import { playerWillpower } from '$lib/zod/playerWillpower';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-export const GET: RequestHandler = async ({ url, locals, fetch }) => {
+export const GET: RequestHandler = async ({ url, fetch }) => {
 	const id = validateIdParameter(url);
 
 	// Daten aus DB laden
-	const playerCharacterDB = await locals.pb
-		.collection('player_character')
-		.getOne<PlayerCharacter>(id)
-		.catch((e: { status: number; message: string }) => {
-			throw error(e.status, e.message);
-		});
+	const playerCharacterBaseDB = await fetch(`/api/character/base?id=${id}`);
+	const playerCharacterDB: Partial<PlayerCharacter> = playerCharacterBase.parse(
+		await playerCharacterBaseDB.json()
+	);
 
 	const playerAttributeDB = await fetch(`/api/character/attributes?id=${id}`);
 	playerCharacterDB.attributes = playerAttribute.parse(await playerAttributeDB.json());

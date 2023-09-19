@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { menuData } from '$lib/menuData';
-	import { characterIdStore } from '$lib/stores/characterIdStore';
+	import { selectedCharacterIdStore } from '$lib/stores/selectedCharacterIdStore';
 	import { getDrawerStore } from '@skeletonlabs/skeleton';
 
 	const drawerStore = getDrawerStore();
@@ -13,7 +13,7 @@
 	<ul>
 		{#each menuData as menuEntry}
 			<li>
-				<a href={`/sheet/${$characterIdStore}/${menuEntry.href}`} on:click={drawerClose}>
+				<a href={`/sheet/${$selectedCharacterIdStore}/${menuEntry.href}`} on:click={drawerClose}>
 					{menuEntry.label}
 				</a>
 			</li>
