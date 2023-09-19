@@ -13,16 +13,11 @@ const config = {
 	theme: {
 		extend: {
 			gridTemplateColumns: {
-				'min-content-3': 'min-content min-content min-content;',
 				'min-content-2': 'auto 1fr'
 			},
 			gridTemplateRows: {
 				'double-center': 'auto 2fr 1fr',
 				'title-content': 'auto 1fr'
-			},
-			screens: {
-				xss: '375px',
-				xs: '475px'
 			}
 		}
 	},

@@ -9,7 +9,7 @@
 </script>
 
 <div class="flex flex-col">
-	<label class="label flex flex-col" for="clan">
+	<label class="label grid grid-cols-1 grid-rows-2" for="clan">
 		{#if href}
 			<a {href}>
 				<span class="font-bold">{label}</span>
@@ -28,10 +28,10 @@
 				</svelte:fragment>
 			</Ratings>
 		</p>
-		{#if specialization}
-			<p class="text-sm">
-				{Array.isArray(specialization) ? specialization.join(', ') : specialization}
-			</p>
-		{/if}
 	</label>
+	{#if specialization}
+		<p class="text-sm">
+			{Array.isArray(specialization) ? specialization.join(', ') : specialization}
+		</p>
+	{/if}
 </div>

@@ -7,8 +7,8 @@
 	const baseUrl = 'https://vamp.bynightstudios.com/vampire/merits';
 </script>
 
-<div class="mt-2">
-	<h2 class="h2">Morality</h2>
+<div class="mt-6">
+	<h2 class="h2 mb-1">Morality</h2>
 	<ValueNumber
 		label={morality.name}
 		value={morality.value}

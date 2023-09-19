@@ -9,9 +9,11 @@
 	const max = getAttributesMaximum(generation);
 </script>
 
-<div class="mt-2">
+<div class="mt-6">
 	<h2 class="h2">Attributes</h2>
-	<div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-3">
+	<div
+		class="mt-1 grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3"
+	>
 		<ValueRating
 			label="Physical"
 			value={attributes.physical_value}

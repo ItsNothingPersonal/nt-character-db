@@ -39,7 +39,10 @@
 </Drawer>
 
 <!-- App Shell -->
-<AppShell slotSidebarLeft="bg-surface-500/5 w-0 lg:w-64" slotPageContent="container mx-auto">
+<AppShell
+	slotSidebarLeft="bg-surface-500/5 w-0 lg:w-64"
+	slotPageContent="container px-2 sm:mx-auto"
+>
 	<svelte:fragment slot="header">
 		<!-- App Bar -->
 		<AppBar>

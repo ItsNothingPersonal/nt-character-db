@@ -10,10 +10,12 @@
 	const baseUrl = 'https://vamp.bynightstudios.com/vampire/disciplines';
 </script>
 
-<div class="mt-2">
+<div class="mt-6">
 	{#if incCanDisciplines.length > 0}
 		<h2 class="h2">In-Clan Disciplines</h2>
-		<div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-8">
+		<div
+			class="mt-1 grid auto-rows-auto grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-6"
+		>
 			{#each incCanDisciplines as discipline}
 				<ValueRating
 					label={discipline.name}
@@ -25,8 +27,10 @@
 	{/if}
 
 	{#if outOfClanDisciplines.length > 0}
-		<h2 class="h2">Out-Of-Clan Disciplines</h2>
-		<div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-8">
+		<h2 class="h2 mt-4">Out-Of-Clan Disciplines</h2>
+		<div
+			class="mt-1 grid auto-rows-auto grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-6"
+		>
 			{#each outOfClanDisciplines as discipline}
 				<ValueRating
 					label={discipline.name}
