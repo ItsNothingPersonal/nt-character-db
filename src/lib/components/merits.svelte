@@ -13,7 +13,7 @@
 			class="mt-1 grid auto-rows-auto grid-cols-1 gap-2 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-6 2xl:grid-cols-6"
 		>
 			{#each merits as merit}
-				<a href="{baseUrl}/{merit.name.toLowerCase()}">
+				<a href="{baseUrl}/{merit.name.toLowerCase()}" class="underline decoration-dotted">
 					<p>{merit.name}</p>
 				</a>
 			{/each}

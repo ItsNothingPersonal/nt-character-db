@@ -11,7 +11,7 @@
 <div class="flex flex-col">
 	<label class="label grid grid-cols-1 grid-rows-2" for="clan">
 		{#if href}
-			<a {href}>
+			<a {href} class="underline decoration-dotted">
 				<span class="font-bold">{label}</span>
 			</a>
 		{:else}

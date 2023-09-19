@@ -19,14 +19,14 @@
 		{#if isTouchscreen && specialization}
 			<div class="flex gap-1">
 				{#if href}
-					<a {href}>
+					<a {href} class="underline decoration-dotted">
 						<iconify-icon icon="material-symbols:link"></iconify-icon>
 					</a>
 				{/if}
 				<p class="font-bold">{label}</p>
 			</div>
 		{:else if href}
-			<a {href}>
+			<a {href} class="underline decoration-dotted">
 				<p class="font-bold">{label}</p>
 			</a>
 		{:else}
