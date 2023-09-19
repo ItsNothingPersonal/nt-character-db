@@ -15,12 +15,10 @@
 	$: left = 40 + (gained ?? 0) - (spent ?? 0);
 </script>
 
-<div class="mt-6">
+<div class="mb-4 mt-6">
 	<h2 class="h2">Experience</h2>
 
-	<div
-		class="mt-1 grid auto-rows-auto grid-cols-1 xss:grid-cols-2 sm:grid-cols-4 md:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-6"
-	>
+	<div class="grid w-full grid-cols-2 gap-2 sm:grid-cols-4">
 		<ValueNumber label="Start" value={40} />
 		<ValueNumber label="Gained" value={gained} />
 		<ValueNumber label="Spent" value={spent} />

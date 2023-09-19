@@ -9,9 +9,11 @@
 
 <div class="mt-6">
 	<h2 class="h2 mb-1">Morality</h2>
-	<ValueNumber
-		label={morality.name}
-		value={morality.value}
-		href="{baseUrl}/{morality.name.toLowerCase()}"
-	/>
+	<div class="grid w-full grid-cols-2 gap-2 sm:grid-cols-4">
+		{#if morality.name === 'Humanity'}
+			<ValueNumber label={morality.name} value={morality.value} />
+		{:else}
+			<ValueNumber label={morality.name} value={morality.value} href="{baseUrl}/{morality.name}" />
+		{/if}
+	</div>
 </div>

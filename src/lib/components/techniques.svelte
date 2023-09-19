@@ -7,7 +7,7 @@
 </script>
 
 {#if techniques && techniques.length > 0}
-	<div class="mt-2">
+	<div class="mt-6">
 		<h2 class="h2">Techniques</h2>
 
 		<div
