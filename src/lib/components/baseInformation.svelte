@@ -8,7 +8,7 @@
 	export let archetype: ArchetypeName;
 </script>
 
-<div class="mt-4 grid grid-cols-3 grid-rows-1 gap-2">
+<div class="grid grid-cols-3 grid-rows-1 gap-2">
 	<label class="label flex flex-col" for="clan">
 		<span>Clan</span>
 		<p id="clan" class="variant-form-material chip m-0 mt-1 justify-start px-3 py-2 text-base">

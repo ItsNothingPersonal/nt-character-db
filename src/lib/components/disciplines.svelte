@@ -10,11 +10,11 @@
 	const baseUrl = 'https://vamp.bynightstudios.com/vampire/disciplines';
 </script>
 
-<div class="mt-6">
-	{#if incCanDisciplines.length > 0}
-		<h2 class="h2">In-Clan Disciplines</h2>
+<div class="flex flex-col gap-2">
+	<div class="flex flex-col">
+		<h3 class="h3">In-Clan Disciplines</h3>
 		<div
-			class="mt-1 grid auto-rows-auto grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-6"
+			class="grid auto-rows-auto grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-6"
 		>
 			{#each incCanDisciplines as discipline}
 				<ValueRating
@@ -24,20 +24,22 @@
 				/>
 			{/each}
 		</div>
-	{/if}
+	</div>
 
 	{#if outOfClanDisciplines.length > 0}
-		<h2 class="h2 mt-4">Out-Of-Clan Disciplines</h2>
-		<div
-			class="mt-1 grid auto-rows-auto grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-6"
-		>
-			{#each outOfClanDisciplines as discipline}
-				<ValueRating
-					label={discipline.name}
-					value={discipline.value}
-					href="{baseUrl}/{discipline.name.toLowerCase()}"
-				/>
-			{/each}
+		<div class="flex flex-col">
+			<h3 class="h3">Out-Of-Clan Disciplines</h3>
+			<div
+				class="grid auto-rows-auto grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-6"
+			>
+				{#each outOfClanDisciplines as discipline}
+					<ValueRating
+						label={discipline.name}
+						value={discipline.value}
+						href="{baseUrl}/{discipline.name.toLowerCase()}"
+					/>
+				{/each}
+			</div>
 		</div>
 	{/if}
 </div>
