@@ -16,23 +16,11 @@ export const menuData: {
 	},
 	{
 		id: 2,
-		label: 'Battle-Sheet',
-		href: 'battle-sheet'
+		label: 'Battle',
+		href: 'battle'
 	},
 	{
 		id: 3,
-		label: 'Disziplinen'
-	},
-	{
-		id: 4,
-		label: 'Vor- und Nachteile'
-	},
-	{
-		id: 4,
-		label: 'Hintergründe'
-	},
-	{
-		id: 5,
 		label: 'Impressum'
 	}
 ];
