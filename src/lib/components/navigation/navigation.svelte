@@ -13,9 +13,15 @@
 	<ul>
 		{#each menuData as menuEntry}
 			<li class="[&>a]:rounded-none">
-				<a href={`/sheet/${$selectedCharacterIdStore}/${menuEntry.href}`} on:click={drawerClose}>
-					{menuEntry.label}
-				</a>
+				{#if menuEntry.href !== 'impressum'}
+					<a href={`/sheet/${$selectedCharacterIdStore}/${menuEntry.href}`} on:click={drawerClose}>
+						{menuEntry.label}
+					</a>
+				{:else}
+					<a href={`/${menuEntry.href}`} on:click={drawerClose}>
+						{menuEntry.label}
+					</a>
+				{/if}
 			</li>
 		{/each}
 	</ul>

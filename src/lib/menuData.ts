@@ -21,6 +21,7 @@ export const menuData: {
 	},
 	{
 		id: 3,
-		label: 'Impressum'
+		label: 'Impressum',
+		href: 'impressum'
 	}
 ];

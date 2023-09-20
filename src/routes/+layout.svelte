@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import Navigation from '$lib/components/navigation/navigation.svelte';
+	import Footer from '$lib/components/typography/footer.svelte';
 	import { selectedCharacterIdStore } from '$lib/stores/selectedCharacterIdStore';
 	import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 	import {
@@ -24,7 +25,8 @@
 
 	const drawerStore = getDrawerStore();
 
-	$: classesSidebar = $page.url.pathname === '/' ? 'w-0' : 'w-0 lg:w-64';
+	$: classesSidebar =
+		$page.url.pathname === '/' || $page.url.pathname === '/impressum' ? 'w-0' : 'w-0 lg:w-64';
 
 	function drawerOpen(): void {
 		drawerStore.open({});
@@ -45,6 +47,7 @@
 <AppShell
 	slotSidebarLeft="bg-surface-500/5 {classesSidebar}"
 	slotPageContent="container px-2 sm:mx-auto"
+	slotFooter={$page.url.pathname === '/' ? '' : 'h-0'}
 >
 	<svelte:fragment slot="header">
 		<!-- App Bar -->
@@ -62,7 +65,7 @@
 							</span>
 						</button>
 					{/if}
-					<strong class="text-xl uppercase">Character-Sheet</strong>
+					<a href="/"><strong class="text-xl uppercase">Character-Sheet</strong></a>
 				</div>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
@@ -74,6 +77,11 @@
 	<!-- Left Sidebar Slot -->
 	<svelte:fragment slot="sidebarLeft">
 		<Navigation />
+	</svelte:fragment>
+
+	<!-- Footer -->
+	<svelte:fragment slot="footer">
+		<Footer />
 	</svelte:fragment>
 
 	<!-- Page Route Content -->

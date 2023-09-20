@@ -60,16 +60,20 @@
 
 	<div class="mt-6 grid grid-cols-1 grid-rows-2 gap-2">
 		<input class="input variant-form-material" bind:value={$apiKeyStore} />
-		<button type="button" class="variant-filled btn" on:click={() => loadCharacters($apiKeyStore)}>
+		<button
+			type="button"
+			class="variant-filled btn rounded-none"
+			on:click={() => loadCharacters($apiKeyStore)}
+		>
 			Verfügbare Charaktere laden
 		</button>
 	</div>
 
 	{#if selectionValues.length > 0}
-		<hr class="mb-2 mt-4" />
-		<div class="flex flex-col gap-2">
+		<hr class="mb-4 mt-4" />
+		<div class="grid grid-cols-1 grid-rows-2 gap-2">
 			<select
-				class="select mt-4"
+				class="select"
 				bind:value={selectedCharacter}
 				on:change={() => setSelectedCharacterStore(selectedCharacter)}
 			>
@@ -78,9 +82,9 @@
 				{/each}
 			</select>
 
-			<a href={`/sheet/${selectedCharacter}`}>
-				<button type="button" class="variant-filled btn"> Charakter-Sheet öffnen </button>
-			</a>
+			<button type="button" class="variant-filled btn rounded-none">
+				<a href={`/sheet/${selectedCharacter}`} class="w-full"> Charakter-Sheet öffnen </a>
+			</button>
 		</div>
 	{/if}
 </div>
