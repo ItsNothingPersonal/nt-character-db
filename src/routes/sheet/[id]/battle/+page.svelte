@@ -44,12 +44,13 @@
 
 <h2 class="h2">Testpools</h2>
 <div
-	class="dark:divide-gray-60 mb-2 mt-2 grid {prone
-		? 'grid-cols-3'
-		: 'grid-cols-2'} mb-6 mt-2 grid-rows-1 gap-2 divide-x divide-gray-200 rounded-lg border border-gray-500 dark:border-gray-50 dark:bg-slate-900"
+	class="mb-6 mt-2 grid {prone
+		? 'grid-cols-3 [&>label]:text-base sm:[&>label]:text-4xl'
+		: 'grid-cols-2 [&>label]:text-4xl'} grid-rows-1 divide-x-2 border-2 border-gray-500 dark:border-gray-50 dark:bg-slate-900 [&>label>input]:h-10 [&>label>input]:w-10 [&>label]:p-2"
 >
 	<Checkbox bind:checked={frenzy}>Frenzy</Checkbox>
 	<Checkbox bind:checked={prone}>Prone</Checkbox>
+
 	{#if prone}
 		<Checkbox bind:checked={threeMetersOrMoreDistance}>&ge; 3m</Checkbox>
 	{/if}

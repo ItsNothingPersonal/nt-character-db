@@ -2,7 +2,7 @@
 	export let checked = false;
 </script>
 
-<label class="flex items-center space-x-2">
+<label class="flex items-center gap-2">
 	<input class="checkbox" type="checkbox" bind:checked />
 	<p>
 		<slot />
