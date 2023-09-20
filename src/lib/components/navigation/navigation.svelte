@@ -12,7 +12,7 @@
 <nav class="list-nav p-4">
 	<ul>
 		{#each menuData as menuEntry}
-			<li>
+			<li class="[&>a]:rounded-none">
 				<a href={`/sheet/${$selectedCharacterIdStore}/${menuEntry.href}`} on:click={drawerClose}>
 					{menuEntry.label}
 				</a>

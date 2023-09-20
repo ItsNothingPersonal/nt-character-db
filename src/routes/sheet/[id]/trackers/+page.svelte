@@ -100,7 +100,7 @@
 
 <h1 class="h1">Trackers</h1>
 <h2 class="h2">Blood & Willpower</h2>
-<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-2 gap-2">
+<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-2">
 	<Tracker
 		title="Blood"
 		value={data.blood.value}
@@ -122,7 +122,7 @@
 </div>
 
 <h2 class="h2">Damage</h2>
-<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-2 gap-2">
+<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-2">
 	<Tracker
 		title="Normal"
 		value={data.damageTaken.normal}

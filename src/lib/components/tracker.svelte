@@ -23,7 +23,7 @@
 		<div class="grid h-full w-full grid-cols-2 grid-rows-1 gap-x-1 pb-1 pl-1 pr-1">
 			<button
 				type="button"
-				class="variant-filled btn"
+				class="variant-filled-primary btn rounded-none"
 				on:click={buttonsConfig.addFunction}
 				disabled={buttonsConfig.updating}
 			>
@@ -31,9 +31,9 @@
 			</button>
 			<button
 				type="button"
-				class="variant-filled btn"
+				class="variant-filled-secondary btn rounded-none"
 				on:click={buttonsConfig.substractFunction}
-				disabled={buttonsConfig.updating}
+				disabled={buttonsConfig.updating || value === 0}
 			>
 				<iconify-icon icon="ic:baseline-minus"></iconify-icon>
 			</button>
