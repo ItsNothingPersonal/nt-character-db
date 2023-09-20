@@ -1,7 +1,7 @@
-import { playerBlood } from '$lib/zod/playerBlood';
+import { playerWillpower } from '$lib/zod/playerWillpower';
 import { z } from 'zod';
 
-export const playerWillpowerServer = playerBlood.extend({
+export const playerWillpowerServer = playerWillpower.extend({
 	id: z.string()
 });
 

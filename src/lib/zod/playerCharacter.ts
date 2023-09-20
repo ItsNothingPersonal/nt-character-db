@@ -1,6 +1,7 @@
 import type { z } from 'zod';
 import { playerAttribute } from './playerAttribute';
 import { playerBackground } from './playerBackground';
+import { playerBeastTraits } from './playerBeastTraits';
 import { playerBlood } from './playerBlood';
 import { playerCharacterBase } from './playerCharacterBase';
 import { playerDamageTaken } from './playerDamageTaken';
@@ -27,7 +28,8 @@ export const playerCharacter = playerCharacterBase.extend({
 	experience: playerExperience.array().optional(),
 	blood: playerBlood,
 	willpower: playerWillpower,
-	damageTaken: playerDamageTaken
+	damageTaken: playerDamageTaken,
+	beastTraits: playerBeastTraits
 });
 
 export type PlayerCharacter = z.infer<typeof playerCharacter>;

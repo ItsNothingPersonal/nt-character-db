@@ -1,3 +1,4 @@
+import { playerBeastTraits } from '$lib/zod/playerBeastTraits';
 import { playerBlood } from '$lib/zod/playerBlood';
 import { playerDamageTaken } from '$lib/zod/playerDamageTaken';
 import { playerWillpower } from '$lib/zod/playerWillpower';
@@ -13,5 +14,8 @@ export const load = (async ({ params, fetch }) => {
 	const responseDamageTaken = await fetch(`/api/character/damageTaken?id=${params.id}`);
 	const damageTaken = playerDamageTaken.parse(await responseDamageTaken.json());
 
-	return { blood, willpower, damageTaken };
+	const responseBeastTraits = await fetch(`/api/character/beastTraits?id=${params.id}`);
+	const beastTraits = playerBeastTraits.parse(await responseBeastTraits.json());
+
+	return { blood, willpower, damageTaken, beastTraits };
 }) satisfies PageLoad;

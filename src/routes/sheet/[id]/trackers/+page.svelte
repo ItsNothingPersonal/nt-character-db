@@ -96,11 +96,37 @@
 
 		updating = false;
 	}
+
+	async function changeBeastTraits(
+		value: number,
+		mode: 'add' | 'substract',
+		characterId: string | undefined
+	) {
+		updating = true;
+
+		const updateBody: NumberUpdateBody = {
+			value
+		};
+		const response = await fetch(`/api/character/beastTraits/${mode}?id=${characterId}`, {
+			method: 'POST',
+			body: JSON.stringify(updateBody)
+		});
+
+		if (response.ok) {
+			if (mode === 'add') {
+				data.beastTraits.value++;
+			} else {
+				data.beastTraits.value--;
+			}
+		}
+
+		updating = false;
+	}
 </script>
 
 <h1 class="h1">Trackers</h1>
-<h2 class="h2">Blood & Willpower</h2>
-<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-2">
+<h2 class="h2">Blood / Willpower / Beast Traits</h2>
+<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-3">
 	<Tracker
 		title="Blood"
 		value={data.blood.value}
@@ -116,6 +142,15 @@
 		buttonsConfig={{
 			addFunction: () => changeWillpower(1, 'add', data.characterId),
 			substractFunction: () => changeWillpower(1, 'substract', data.characterId),
+			updating
+		}}
+	/>
+	<Tracker
+		title="Beast Traits"
+		value={data.beastTraits.value}
+		buttonsConfig={{
+			addFunction: () => changeBeastTraits(1, 'add', data.characterId),
+			substractFunction: () => changeBeastTraits(1, 'substract', data.characterId),
 			updating
 		}}
 	/>
