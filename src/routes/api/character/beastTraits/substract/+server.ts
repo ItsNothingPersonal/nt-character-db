@@ -4,7 +4,7 @@ import {
 	playerBeastTraitsServer,
 	type PlayerBeastTraitsServer
 } from '$lib/server/zod/playerBeastTraitsServer';
-import { numberUpdateBody } from '$lib/zod/numberUpdateBody';
+import { numberUpdateBody } from '$lib/zod/updateBody/numberUpdateBody';
 import { error } from '@sveltejs/kit';
 import { ClientResponseError } from 'pocketbase';
 import type { RequestHandler } from './$types';

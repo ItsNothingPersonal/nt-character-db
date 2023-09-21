@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { moralityName } from './moralityName';
+import { moralityName } from '../enums/moralityName';
 
 export const playerMorality = z.object({
 	name: moralityName,

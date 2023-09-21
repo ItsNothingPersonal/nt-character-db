@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PlayerExperience } from '$lib/zod/playerExperience';
+	import type { PlayerExperience } from '$lib/zod/playerCharacter/playerExperience';
 	import ValueNumber from './valueNumber/valueNumber.svelte';
 
 	export let experience: PlayerExperience[];

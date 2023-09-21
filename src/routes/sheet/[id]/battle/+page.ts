@@ -1,8 +1,8 @@
-import { playerAttribute } from '$lib/zod/playerAttribute';
-import { playerDiscipline } from '$lib/zod/playerDiscipline';
-import { playerItem } from '$lib/zod/playerItem';
-import { playerSkill } from '$lib/zod/playerSkill';
-import { playerWillpower } from '$lib/zod/playerWillpower';
+import { playerAttribute } from '$lib/zod/playerCharacter/playerAttribute';
+import { playerDiscipline } from '$lib/zod/playerCharacter/playerDiscipline';
+import { playerItem } from '$lib/zod/playerCharacter/playerItem';
+import { playerSkill } from '$lib/zod/playerCharacter/playerSkill';
+import { playerWillpower } from '$lib/zod/playerCharacter/playerWillpower';
 import type { PageLoad } from './$types';
 
 export const load = (async ({ params, fetch }) => {

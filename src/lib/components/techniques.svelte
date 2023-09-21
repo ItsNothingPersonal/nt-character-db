@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PlayerTechnique } from '$lib/zod/playerTechnique';
+	import type { PlayerTechnique } from '$lib/zod/playerCharacter/playerTechnique';
 
 	export let techniques: PlayerTechnique[];
 

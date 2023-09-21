@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { changeTypeName } from './changeTypeName';
+import { changeTypeName } from '../enums/changeTypeName';
 
 export const playerExperience = z.object({
 	date: z.coerce.date(),

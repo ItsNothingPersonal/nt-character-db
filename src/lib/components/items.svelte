@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PlayerItem } from '$lib/zod/playerItem';
+	import type { PlayerItem } from '$lib/zod/playerCharacter/playerItem';
 	import ValueNumber from './valueNumber/valueNumber.svelte';
 
 	export let items: PlayerItem[];

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PlayerMerit } from '$lib/zod/playerMerit';
+	import type { PlayerMerit } from '$lib/zod/playerCharacter/playerMerit';
 
 	export let merits: PlayerMerit[];
 

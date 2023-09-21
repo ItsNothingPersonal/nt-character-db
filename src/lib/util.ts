@@ -1,10 +1,10 @@
 import { getDisciplineTestpool } from './validation/testpools';
-import type { AttributeName } from './zod/attributeName';
-import type { DisciplineName } from './zod/disciplineName';
-import type { PlayerAttribute } from './zod/playerAttribute';
-import type { PlayerSkill } from './zod/playerSkill';
-import type { SkillName } from './zod/skillName';
-import type { Testpool } from './zod/testpool';
+import type { AttributeName } from './zod/enums/attributeName';
+import type { DisciplineName } from './zod/enums/disciplineName';
+import type { SkillName } from './zod/enums/skillName';
+import type { PlayerAttribute } from './zod/playerCharacter/playerAttribute';
+import type { PlayerSkill } from './zod/playerCharacter/playerSkill';
+import type { Testpool } from './zod/validation/testpool';
 
 export function isNullOrUndefined<T>(obj: T | null | undefined): obj is null | undefined {
 	return typeof obj === 'undefined' || obj === null;

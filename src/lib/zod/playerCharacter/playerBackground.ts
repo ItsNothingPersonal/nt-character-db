@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { backgroundName } from './backgroundName';
+import { backgroundName } from '../enums/backgroundName';
 
 export const playerBackground = z.object({
 	name: backgroundName,

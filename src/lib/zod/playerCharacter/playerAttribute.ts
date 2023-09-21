@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { mentalSpecialization } from './mentalSpecialization';
-import { physicalSpecialization } from './physicalSpecialization';
-import { socialSpecialization } from './socialSpecialization';
+import { mentalSpecialization } from '../enums/mentalSpecialization';
+import { physicalSpecialization } from '../enums/physicalSpecialization';
+import { socialSpecialization } from '../enums/socialSpecialization';
 
 export const playerAttribute = z.object({
 	physical_value: z.number().min(0).max(15),

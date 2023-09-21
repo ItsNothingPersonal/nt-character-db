@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PlayerMorality } from '$lib/zod/playerMorality';
+	import type { PlayerMorality } from '$lib/zod/playerCharacter/playerMorality';
 	import ValueNumber from './valueNumber/valueNumber.svelte';
 
 	export let morality: PlayerMorality;

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { ArchetypeName } from '$lib/zod/archetypeName';
-	import type { ClanName } from '$lib/zod/clanName';
+	import type { ArchetypeName } from '$lib/zod/enums/archetypeName';
+	import type { ClanName } from '$lib/zod/enums/clanName';
 	import P from './typography/p.svelte';
 
 	export let clan: ClanName;

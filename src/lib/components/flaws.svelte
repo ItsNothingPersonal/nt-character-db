@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PlayerFlaw } from '$lib/zod/playerFlaw';
+	import type { PlayerFlaw } from '$lib/zod/playerCharacter/playerFlaw';
 
 	export let flaws: PlayerFlaw[];
 

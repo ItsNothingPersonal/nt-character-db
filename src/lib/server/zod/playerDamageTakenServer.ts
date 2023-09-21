@@ -1,4 +1,4 @@
-import { playerDamageTaken } from '$lib/zod/playerDamageTaken';
+import { playerDamageTaken } from '$lib/zod/playerCharacter/playerDamageTaken';
 import { z } from 'zod';
 
 export const playerDamageTakenServer = playerDamageTaken.extend({

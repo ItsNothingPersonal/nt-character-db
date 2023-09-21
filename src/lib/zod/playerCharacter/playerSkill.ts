@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { skillName } from './skillName';
+import { skillName } from '../enums/skillName';
 
 export const playerSkill = z.object({
 	name: skillName,

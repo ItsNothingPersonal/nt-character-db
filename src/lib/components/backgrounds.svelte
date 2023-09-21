@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PlayerBackground } from '$lib/zod/playerBackground';
+	import type { PlayerBackground } from '$lib/zod/playerCharacter/playerBackground';
 	import ValueRating from './valueRating/valueRating.svelte';
 
 	export let backgrounds: PlayerBackground[];

@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { itemQualityName } from './itemQualityName';
-import { itemType } from './itemType';
+import { itemQualityName } from '../enums/itemQualityName';
+import { itemType } from '../enums/itemType';
 
 export const playerItem = z.object({
 	name: z.string().nonempty().min(1).max(30),

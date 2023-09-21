@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PlayerItem } from '$lib/zod/playerItem';
+	import type { PlayerItem } from '$lib/zod/playerCharacter/playerItem';
 
 	export let label: string;
 	export let items: { name: string }[];

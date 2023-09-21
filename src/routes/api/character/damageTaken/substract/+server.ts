@@ -4,7 +4,7 @@ import {
 	playerDamageTakenServer,
 	type PlayerDamageTakenServer
 } from '$lib/server/zod/playerDamageTakenServer';
-import { damageUpdateBody } from '$lib/zod/damageUpdateBody';
+import { damageUpdateBody } from '$lib/zod/updateBody/damageUpdateBody';
 import { error } from '@sveltejs/kit';
 import { ClientResponseError } from 'pocketbase';
 import type { RequestHandler } from './$types';

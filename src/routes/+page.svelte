@@ -2,9 +2,12 @@
 	import { apiKeyStore } from '$lib/stores/apiKeyStore';
 	import { selectedCharacterIdStore } from '$lib/stores/selectedCharacterIdStore';
 	import { isNullOrUndefined } from '$lib/util';
-	import { apiKeyMapping } from '$lib/zod/apiKeyMapping';
-	import type { ApiKeyRequestBody } from '$lib/zod/apiKeyRequestBody';
-	import { playerCharacterBase, type PlayerCharacterBase } from '$lib/zod/playerCharacterBase';
+	import { apiKeyMapping } from '$lib/zod/apiKey/apiKeyMapping';
+	import type { ApiKeyRequestBody } from '$lib/zod/apiKey/apiKeyRequestBody';
+	import {
+		playerCharacterBase,
+		type PlayerCharacterBase
+	} from '$lib/zod/playerCharacter/playerCharacterBase';
 
 	let selectedCharacter: string;
 	let selectionValues: { id: string; value: string; name: string }[] = [];

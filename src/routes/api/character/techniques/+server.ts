@@ -1,6 +1,6 @@
 import HttpStatusCode from '$lib/server/httpStatusCode';
 import { validateIdParameter } from '$lib/server/util';
-import { playerTechnique, type PlayerTechnique } from '$lib/zod/playerTechnique';
+import { playerTechnique, type PlayerTechnique } from '$lib/zod/playerCharacter/playerTechnique';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 

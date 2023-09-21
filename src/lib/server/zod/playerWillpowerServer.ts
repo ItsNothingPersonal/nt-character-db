@@ -1,4 +1,4 @@
-import { playerWillpower } from '$lib/zod/playerWillpower';
+import { playerWillpower } from '$lib/zod/playerCharacter/playerWillpower';
 import { z } from 'zod';
 
 export const playerWillpowerServer = playerWillpower.extend({

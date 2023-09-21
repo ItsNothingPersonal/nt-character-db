@@ -1,4 +1,4 @@
-import type { DamageTypeName } from '$lib/zod/damageTypeName';
+import type { DamageTypeName } from '$lib/zod/enums/damageTypeName';
 import { error } from '@sveltejs/kit';
 import HttpStatusCode from './httpStatusCode';
 

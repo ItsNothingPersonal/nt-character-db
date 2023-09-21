@@ -1,7 +1,7 @@
-import { playerBeastTraits } from '$lib/zod/playerBeastTraits';
-import { playerBlood } from '$lib/zod/playerBlood';
-import { playerDamageTaken } from '$lib/zod/playerDamageTaken';
-import { playerWillpower } from '$lib/zod/playerWillpower';
+import { playerBeastTraits } from '$lib/zod/playerCharacter/playerBeastTraits';
+import { playerBlood } from '$lib/zod/playerCharacter/playerBlood';
+import { playerDamageTaken } from '$lib/zod/playerCharacter/playerDamageTaken';
+import { playerWillpower } from '$lib/zod/playerCharacter/playerWillpower';
 import type { PageLoad } from './$types';
 
 export const load = (async ({ params, fetch }) => {

@@ -1,5 +1,5 @@
 import { isNullOrUndefined } from '$lib/util';
-import type { PlayerItem } from '$lib/zod/playerItem';
+import type { PlayerItem } from '$lib/zod/playerCharacter/playerItem';
 
 export function checkForApplicableItemAttackBonus(
 	item: PlayerItem | undefined,

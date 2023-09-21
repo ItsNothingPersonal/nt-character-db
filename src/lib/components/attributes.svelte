@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getAttributesMaximum } from '$lib/validation/attributes';
-	import type { PlayerAttribute } from '$lib/zod/playerAttribute';
+	import type { PlayerAttribute } from '$lib/zod/playerCharacter/playerAttribute';
 	import ValueRating from './valueRating/valueRating.svelte';
 
 	export let attributes: PlayerAttribute;

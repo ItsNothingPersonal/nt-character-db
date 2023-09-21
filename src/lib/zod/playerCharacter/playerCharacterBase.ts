@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { archetypeName } from './archetypeName';
-import { clanName } from './clanName';
+import { archetypeName } from '../enums/archetypeName';
+import { clanName } from '../enums/clanName';
 
 export const playerCharacterBase = z.object({
 	id: z.string(),

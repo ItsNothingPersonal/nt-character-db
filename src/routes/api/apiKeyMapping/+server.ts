@@ -1,6 +1,6 @@
 import HttpStatusCode from '$lib/server/httpStatusCode';
-import { apiKeyMapping, type ApiKeyMapping } from '$lib/zod/apiKeyMapping';
-import { apiKeyRequestBody } from '$lib/zod/apiKeyRequestBody';
+import { apiKeyMapping, type ApiKeyMapping } from '$lib/zod/apiKey/apiKeyMapping';
+import { apiKeyRequestBody } from '$lib/zod/apiKey/apiKeyRequestBody';
 import { error, json } from '@sveltejs/kit';
 import { ClientResponseError } from 'pocketbase';
 import type { RequestHandler } from './$types';

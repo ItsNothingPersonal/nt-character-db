@@ -1,7 +1,7 @@
 import HttpStatusCode from '$lib/server/httpStatusCode';
 import { validateIdParameter } from '$lib/server/util';
 import { playerBloodServer, type PlayerBloodServer } from '$lib/server/zod/playerBloodServer';
-import { numberUpdateBody } from '$lib/zod/numberUpdateBody';
+import { numberUpdateBody } from '$lib/zod/updateBody/numberUpdateBody';
 import { error } from '@sveltejs/kit';
 import { ClientResponseError } from 'pocketbase';
 import type { RequestHandler } from './$types';

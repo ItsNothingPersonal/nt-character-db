@@ -1,4 +1,4 @@
-import { playerCharacter } from '$lib/zod/playerCharacter';
+import { playerCharacter } from '$lib/zod/playerCharacter/playerCharacter';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ params, fetch }) => {

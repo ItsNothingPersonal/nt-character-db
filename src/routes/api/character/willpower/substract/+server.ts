@@ -4,7 +4,7 @@ import {
 	playerWillpowerServer,
 	type PlayerWillpowerServer
 } from '$lib/server/zod/playerWillpowerServer';
-import { numberUpdateBody } from '$lib/zod/numberUpdateBody';
+import { numberUpdateBody } from '$lib/zod/updateBody/numberUpdateBody';
 import { error } from '@sveltejs/kit';
 import { ClientResponseError } from 'pocketbase';
 import type { RequestHandler } from './$types';

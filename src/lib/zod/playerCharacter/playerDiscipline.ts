@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { disciplineName } from './disciplineName';
+import { disciplineName } from '../enums/disciplineName';
 
 export const playerDiscipline = z.object({
 	name: disciplineName,

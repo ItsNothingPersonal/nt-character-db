@@ -11,7 +11,7 @@
 		getSocialDefenseTestpool,
 		getTestpool
 	} from '$lib/validation/testpools';
-	import type { PlayerItem } from '$lib/zod/playerItem';
+	import type { PlayerItem } from '$lib/zod/playerCharacter/playerItem';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
