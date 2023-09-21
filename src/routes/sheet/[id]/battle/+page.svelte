@@ -1,16 +1,16 @@
 <script lang="ts">
 	import Tracker from '$lib/components/tracker.svelte';
 	import Checkbox from '$lib/components/typography/checkbox.svelte';
+	import Select from '$lib/components/typography/select.svelte';
+	import { getAllDisciplineTestpools } from '$lib/util';
 	import {
-		getAllDisciplineTestpools,
-		getBrawlTestpool,
+		getAttackTestpool,
 		getDodgeTestpool,
-		getFirearmsTestpool,
-		getMeleeTestpool,
 		getMentalDefenseTestpool,
 		getSocialDefenseTestpool,
 		getTestpool
-	} from '$lib/util';
+	} from '$lib/validation/testpools';
+	import type { PlayerItem } from '$lib/zod/playerItem';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -33,6 +33,15 @@
 		data.attributes.mental_value < data.attributes.physical_value
 			? data.attributes.mental_value
 			: data.attributes.physical_value;
+
+	const meleeWeapons = data.items.filter((e) => e.type === 'melee');
+	const rangeWeapons = data.items.filter((e) => e.type === 'ranged');
+	const defenseItems = data.items.filter((e) => e.type === 'protective');
+
+	let selectedMeleeWeapon: PlayerItem | undefined;
+	let selectedRangeWeapon: PlayerItem | undefined;
+	let selectedDefenseItem: PlayerItem | undefined;
+	let selectedAttackMode: { name: 'melee' | 'ranged' } | undefined = undefined;
 </script>
 
 <h1 class="h1">Battle-Sheet</h1>
@@ -43,6 +52,7 @@
 </div>
 
 <h2 class="h2">Testpools</h2>
+<h3 class="h3">State</h3>
 <div
 	class="mb-6 mt-2 grid {prone
 		? 'grid-cols-3 [&>label]:text-base sm:[&>label]:text-4xl'
@@ -56,18 +66,64 @@
 	{/if}
 </div>
 
+<h3 class="h3">Items</h3>
+<div class="mb-6 grid grid-cols-1 grid-rows-1 gap-2 sm:grid-cols-3">
+	<div class="flex flex-col">
+		<Select label="Melee Weapons" items={meleeWeapons} bind:value={selectedMeleeWeapon} />
+		{#if selectedMeleeWeapon}
+			<p>{selectedMeleeWeapon.qualities.join(', ')}</p>
+		{/if}
+	</div>
+	<div class="flex flex-col">
+		<Select label="Range Weapons" items={rangeWeapons} bind:value={selectedRangeWeapon} />
+		{#if selectedRangeWeapon}
+			<p>{selectedRangeWeapon.qualities.join(', ')}</p>
+		{/if}
+	</div>
+	<div class="flex flex-col">
+		<Select label="Defense Items" items={defenseItems} bind:value={selectedDefenseItem} />
+		{#if selectedDefenseItem}
+			<p>{selectedDefenseItem.qualities.join(', ')}</p>
+			{#if selectedDefenseItem.qualities.includes('Ballistic') || selectedDefenseItem.qualities.includes('Hardened')}
+				<Select
+					label="Attack Type"
+					items={[{ name: 'melee' }, { name: 'ranged' }]}
+					bind:value={selectedAttackMode}
+				/>
+			{/if}
+		{/if}
+	</div>
+</div>
+
 <h3 class="h3">Attack</h3>
 <div class="mb-6 mt-2 grid auto-rows-auto grid-cols-2 gap-2 sm:grid-cols-3">
-	<Tracker title="Brawl" value={getBrawlTestpool(data.attributes, data.skills, frenzy)} />
-	<Tracker title="Melee" value={getMeleeTestpool(data.attributes, data.skills, frenzy)} />
-	<Tracker title="Firearms" value={getFirearmsTestpool(data.attributes, data.skills, frenzy)} />
+	<Tracker
+		title="Brawl"
+		value={getAttackTestpool(data.attributes, data.skills, frenzy, undefined, 'Brawl')}
+	/>
+	<Tracker
+		title="Melee"
+		value={getAttackTestpool(data.attributes, data.skills, frenzy, selectedMeleeWeapon, 'Melee')}
+	/>
+	<Tracker
+		title="Firearms"
+		value={getAttackTestpool(data.attributes, data.skills, frenzy, selectedRangeWeapon, 'Firearms')}
+	/>
 </div>
 
 <h3 class="h3">Defense</h3>
 <div class="mb-6 mt-2 grid auto-rows-auto grid-cols-2 gap-2 sm:grid-cols-3">
 	<Tracker
 		title="Physical"
-		value={getDodgeTestpool(data.attributes, data.skills, frenzy, prone, threeMetersOrMoreDistance)}
+		value={getDodgeTestpool(
+			data.attributes,
+			data.skills,
+			frenzy,
+			prone,
+			threeMetersOrMoreDistance,
+			selectedDefenseItem,
+			selectedAttackMode?.name
+		)}
 	/>
 	<Tracker title="Social" value={getSocialDefenseTestpool(data.attributes, data.willpower)} />
 	<Tracker title="Mental" value={getMentalDefenseTestpool(data.attributes, data.willpower)} />

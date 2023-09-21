@@ -1,5 +1,6 @@
 import { playerAttribute } from '$lib/zod/playerAttribute';
 import { playerDiscipline } from '$lib/zod/playerDiscipline';
+import { playerItem } from '$lib/zod/playerItem';
 import { playerSkill } from '$lib/zod/playerSkill';
 import { playerWillpower } from '$lib/zod/playerWillpower';
 import type { PageLoad } from './$types';
@@ -17,5 +18,8 @@ export const load = (async ({ params, fetch }) => {
 	const responseWillpower = await fetch(`/api/character/willpower?id=${params.id}`);
 	const willpower = playerWillpower.parse(await responseWillpower.json());
 
-	return { attributes, disciplines, skills, willpower };
+	const responseItems = await fetch(`/api/character/items?id=${params.id}`);
+	const items = playerItem.array().parse(await responseItems.json());
+
+	return { attributes, disciplines, skills, willpower, items };
 }) satisfies PageLoad;
