@@ -2,8 +2,7 @@ import {
 	getAttributeForDisciplineName,
 	getAttributeValueByName,
 	getSkillForDisciplineName,
-	getSkillValueByName,
-	isNullOrUndefined
+	getSkillValueByName
 } from '$lib/util';
 import type { DisciplineName } from '$lib/zod/disciplineName';
 import type { PlayerAttribute } from '$lib/zod/playerAttribute';
@@ -32,25 +31,6 @@ export function getTestpool(
 	);
 }
 
-export function getBrawlTestpool(
-	attributes: PlayerAttribute,
-	skills: PlayerSkill[],
-	frenzy: boolean,
-	item: PlayerItem | undefined = undefined
-) {
-	let modifier = 0;
-	if (frenzy) {
-		modifier++;
-	}
-
-	return (
-		(skills.find((e) => e.name === 'Brawl')?.value ?? 0) +
-		attributes.physical_value +
-		modifier +
-		checkForApplicableItemAttackBonus(item)
-	);
-}
-
 export function getAttackTestpool(
 	attributes: PlayerAttribute,
 	skills: PlayerSkill[],
@@ -68,7 +48,7 @@ export function getAttackTestpool(
 	if (
 		attributes.mental_value > attributes.physical_value &&
 		attributes.mental_specialization.includes('Wits') &&
-		(isNullOrUndefined(item) ? true : item.type === 'ranged')
+		type === 'Firearms'
 	) {
 		relevantAttributeValue = attributes.mental_value;
 	} else {
@@ -79,7 +59,7 @@ export function getAttackTestpool(
 		(skills.find((e) => e.name === type)?.value ?? 0) +
 		relevantAttributeValue +
 		modifier +
-		checkForApplicableItemAttackBonus(item)
+		checkForApplicableItemAttackBonus(item, type)
 	);
 }
 
@@ -119,4 +99,30 @@ export function getSocialDefenseTestpool(attributes: PlayerAttribute, willpower:
 
 export function getMentalDefenseTestpool(attributes: PlayerAttribute, willpower: PlayerWillpower) {
 	return attributes.mental_value + willpower.value;
+}
+
+export function getInitiativePool(
+	attributes: PlayerAttribute,
+	item: PlayerItem | undefined
+): [{ name: string; value: number }, { name: string; value: number }] {
+	const primaryName: 'Physical' | 'Mental' =
+		attributes.mental_value >= attributes.physical_value ? 'Mental' : 'Physical';
+	const primaryValue =
+		attributes.mental_value >= attributes.physical_value
+			? attributes.mental_value
+			: attributes.physical_value;
+
+	const secondaryName: 'Physical' | 'Mental' =
+		attributes.mental_value < attributes.physical_value ? 'Mental' : 'Physical';
+	const secondaryValue =
+		attributes.mental_value < attributes.physical_value
+			? attributes.mental_value
+			: attributes.physical_value;
+
+	const bonus = item?.qualities.includes('Fast') ? 3 : 0;
+
+	return [
+		{ name: primaryName, value: primaryValue + bonus },
+		{ name: secondaryName, value: secondaryValue }
+	];
 }

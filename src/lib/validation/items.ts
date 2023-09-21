@@ -1,10 +1,27 @@
+import { isNullOrUndefined } from '$lib/util';
 import type { PlayerItem } from '$lib/zod/playerItem';
 
-export function checkForApplicableItemAttackBonus(item: PlayerItem | undefined): number {
+export function checkForApplicableItemAttackBonus(
+	item: PlayerItem | undefined,
+	type: 'Brawl' | 'Melee' | 'Firearms'
+): number {
 	let result = 0;
+	if (isNullOrUndefined(item)) {
+		return result;
+	}
 
-	if (item?.qualities.includes('Accurate')) {
-		result += 2;
+	let itemAttackType: 'Brawl' | 'Melee' | 'Firearms' | undefined;
+
+	if (item.type === 'ranged') {
+		itemAttackType = 'Firearms';
+	} else if (item.type === 'melee') {
+		itemAttackType = 'Melee';
+	}
+
+	if (type === itemAttackType) {
+		if (item.qualities.includes('Accurate')) {
+			result += 2;
+		}
 	}
 
 	return result;
