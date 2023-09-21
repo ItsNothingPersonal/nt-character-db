@@ -76,7 +76,7 @@
 </div>
 
 <h3 class="h3">Attack</h3>
-<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-2 sm:grid-cols-3 sm:gap-2">
+<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-2 gap-2 sm:grid-cols-3">
 	<Tracker
 		title="Brawl"
 		value={getAttackTestpool(data.attributes, data.skills, frenzy, undefined, 'Brawl')}
