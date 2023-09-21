@@ -15,7 +15,9 @@
 			label={background.name}
 			value={background.value}
 			specialization={background.specialization}
-			href="{baseUrl}/{background.name.toLowerCase()}"
+			href="{baseUrl}/{background.name.toLowerCase()}{background.name === 'Rituals'
+				? ' (sabbat only)'
+				: ''}"
 		/>
 	{/each}
 </div>
