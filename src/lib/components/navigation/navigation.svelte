@@ -12,17 +12,17 @@
 <nav class="list-nav p-4">
 	<ul>
 		{#each menuData as menuEntry}
-			<li class="[&>a]:rounded-none">
-				{#if menuEntry.href !== 'impressum'}
-					<a href={`/sheet/${$selectedCharacterIdStore}/${menuEntry.href}`} on:click={drawerClose}>
-						{menuEntry.label}
-					</a>
-				{:else}
-					<a href={`/${menuEntry.href}`} on:click={drawerClose}>
-						{menuEntry.label}
-					</a>
-				{/if}
+			<li>
+				<a
+					class="!rounded-none"
+					href={`/sheet/${$selectedCharacterIdStore}/${menuEntry.href}`}
+					on:click={drawerClose}
+				>
+					{menuEntry.label}
+				</a>
 			</li>
 		{/each}
 	</ul>
+	<hr />
+	<a class="!rounded-none" href="/impressum" on:click={drawerClose}> Impressum </a>
 </nav>

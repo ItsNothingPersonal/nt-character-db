@@ -73,7 +73,7 @@
 		<hr class="mb-4 mt-4" />
 		<div class="grid grid-cols-1 grid-rows-2 gap-2">
 			<select
-				class="select"
+				class="select rounded-none"
 				bind:value={selectedCharacter}
 				on:change={() => setSelectedCharacterStore(selectedCharacter)}
 			>

@@ -18,10 +18,5 @@ export const menuData: {
 		id: 2,
 		label: 'Battle',
 		href: 'battle'
-	},
-	{
-		id: 3,
-		label: 'Impressum',
-		href: 'impressum'
 	}
 ];
