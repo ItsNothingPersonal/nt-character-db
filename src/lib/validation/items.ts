@@ -1,57 +1,45 @@
 import { isNullOrUndefined } from '$lib/util';
-import type { PlayerItem } from '$lib/zod/playerCharacter/playerItem';
+import type { AttackMode } from '$lib/zod/enums/attackMode';
+import type { ItemQualityName } from '$lib/zod/enums/itemQualityName';
+import { itemQualityBonusConfig } from './config/itemQualityBonusConfig';
 
 export function checkForApplicableItemAttackBonus(
-	item: PlayerItem | undefined,
-	type: 'Brawl' | 'Melee' | 'Firearms'
+	itemQualities: ItemQualityName[] | undefined,
+	attackType: 'Brawl' | 'Melee' | 'Firearms'
 ): number {
-	let result = 0;
-	if (isNullOrUndefined(item)) {
-		return result;
+	let bonus = 0;
+	if (isNullOrUndefined(itemQualities) || attackType === 'Brawl') {
+		return bonus;
 	}
 
-	let itemAttackType: 'Brawl' | 'Melee' | 'Firearms' | undefined;
+	for (const itemQuality of itemQualities) {
+		const entry = itemQualityBonusConfig.get(itemQuality)?.find((c) => c.skillName === attackType);
 
-	if (item.type === 'ranged') {
-		itemAttackType = 'Firearms';
-	} else if (item.type === 'melee') {
-		itemAttackType = 'Melee';
+		bonus += entry?.bonus ?? 0;
 	}
 
-	if (type === itemAttackType) {
-		if (item.qualities.includes('Accurate')) {
-			result += 2;
-		}
-	}
-
-	return result;
+	return bonus;
 }
 
 export function checkForApplicableItemDefenseBonus(
-	item: PlayerItem | undefined,
-	attackType: 'melee' | 'ranged' | undefined
+	itemQualities: ItemQualityName[] | undefined,
+	attackType: AttackMode | undefined
 ): number {
-	let result = 0;
+	if (isNullOrUndefined(itemQualities)) {
+		return 0;
+	}
+	let bonus = 0;
 
-	if (item?.qualities.includes('Ballistic')) {
-		if (attackType === 'melee') {
-			result += 1;
-		} else if (attackType === 'ranged') {
-			result += 3;
-		}
+	for (const itemQuality of itemQualities) {
+		const entry = itemQualityBonusConfig
+			.get(itemQuality)
+			?.find(
+				(c) =>
+					c.skillName === 'Dodge' && (c.condition === undefined || c.condition(attackType) === true)
+			);
+
+		bonus += entry?.bonus ?? 0;
 	}
 
-	if (item?.qualities.includes('Full Body')) {
-		result += 3;
-	}
-
-	if (item?.qualities.includes('Hardened')) {
-		if (attackType === 'melee') {
-			result += 3;
-		} else if (attackType === 'ranged') {
-			result += 1;
-		}
-	}
-
-	return result;
+	return bonus;
 }

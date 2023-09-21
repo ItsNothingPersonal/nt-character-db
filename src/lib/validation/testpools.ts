@@ -4,6 +4,7 @@ import {
 	getSkillForDisciplineName,
 	getSkillValueByName
 } from '$lib/util';
+import type { AttackMode } from '$lib/zod/enums/attackMode';
 import type { DisciplineName } from '$lib/zod/enums/disciplineName';
 import type { PlayerAttribute } from '$lib/zod/playerCharacter/playerAttribute';
 import type { PlayerItem } from '$lib/zod/playerCharacter/playerItem';
@@ -59,7 +60,7 @@ export function getAttackTestpool(
 		(skills.find((e) => e.name === type)?.value ?? 0) +
 		relevantAttributeValue +
 		modifier +
-		checkForApplicableItemAttackBonus(item, type)
+		checkForApplicableItemAttackBonus(item?.qualities, type)
 	);
 }
 
@@ -70,7 +71,7 @@ export function getDodgeTestpool(
 	prone: boolean,
 	threeMetersOrMoreDistance: boolean,
 	item: PlayerItem | undefined = undefined,
-	attackType: 'melee' | 'ranged' | undefined
+	attackType: AttackMode | undefined
 ) {
 	let modifier = 0;
 	if (frenzy) {
@@ -89,7 +90,7 @@ export function getDodgeTestpool(
 		(skills.find((e) => e.name === 'Dodge')?.value ?? 0) +
 		attributes.physical_value +
 		modifier +
-		checkForApplicableItemDefenseBonus(item, attackType)
+		checkForApplicableItemDefenseBonus(item?.qualities, attackType)
 	);
 }
 

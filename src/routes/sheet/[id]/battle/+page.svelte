@@ -11,6 +11,7 @@
 		getSocialDefenseTestpool,
 		getTestpool
 	} from '$lib/validation/testpools';
+	import type { AttackMode } from '$lib/zod/enums/attackMode';
 	import type { PlayerItem } from '$lib/zod/playerCharacter/playerItem';
 	import type { PageData } from './$types';
 
@@ -21,7 +22,7 @@
 	let threeMetersOrMoreDistance = false;
 	let selectedWeapon: PlayerItem | undefined;
 	let selectedDefenseItem: PlayerItem | undefined;
-	let selectedAttackMode: { name: 'melee' | 'ranged' } | undefined = undefined;
+	let selectedAttackMode: { name: AttackMode } | undefined = undefined;
 
 	const relevantTestpools = getAllDisciplineTestpools(data.disciplines.map((e) => e.name));
 	const weapons = data.items.filter((e) => e.type === 'melee' || e.type === 'ranged');
@@ -43,10 +44,10 @@
 		<Select label="Defense Items" items={defenseItems} bind:value={selectedDefenseItem} />
 		{#if selectedDefenseItem}
 			<p>{selectedDefenseItem.qualities.join(', ')}</p>
-			{#if selectedDefenseItem.qualities.includes('Ballistic') || selectedDefenseItem.qualities.includes('Hardened')}
+			{#if (selectedDefenseItem.qualities.includes('Ballistic') || selectedDefenseItem.qualities.includes('Hardened')) && !(selectedDefenseItem.qualities.includes('Ballistic') && selectedDefenseItem.qualities.includes('Hardened'))}
 				<Select
 					label="Attack Type"
-					items={[{ name: 'melee' }, { name: 'ranged' }]}
+					items={[{ name: 'Melee' }, { name: 'Ranged' }]}
 					bind:value={selectedAttackMode}
 				/>
 			{/if}
