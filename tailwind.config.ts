@@ -3,7 +3,6 @@ import forms from '@tailwindcss/forms';
 import typography from '@tailwindcss/typography';
 import { join } from 'path';
 import type { Config } from 'tailwindcss';
-import { ntTheme } from './nt-theme';
 
 const config = {
 	darkMode: 'class',
@@ -27,7 +26,7 @@ const config = {
 		typography,
 		skeleton({
 			themes: {
-				custom: [ntTheme]
+				preset: [{ name: 'crimson', enhancements: true }]
 			}
 		})
 	]

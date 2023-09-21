@@ -52,7 +52,7 @@
 <div class="mx-auto max-w-lg">
 	<h1 class="h1 text-center">
 		<span
-			class="bg-gradient-to-br from-red-500 to-black box-decoration-clone bg-clip-text text-center text-transparent"
+			class="bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center text-transparent dark:from-white dark:to-red-800"
 		>
 			Character-Sheet
 		</span>
