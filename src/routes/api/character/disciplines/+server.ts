@@ -2,9 +2,8 @@ import HttpStatusCode from '$lib/server/httpStatusCode';
 import { validateIdParameter } from '$lib/server/util';
 import { playerDiscipline, type PlayerDiscipline } from '$lib/zod/playerCharacter/playerDiscipline';
 import { error, json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
 
-export const GET: RequestHandler = async ({ url, locals }) => {
+export async function GET({ url, locals }) {
 	const id = validateIdParameter(url);
 
 	// Daten aus DB laden
@@ -26,4 +25,4 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 			'Charakter-Disziplinen in Datenbank entsprechen nicht dem korrekten Schema'
 		);
 	}
-};
+}

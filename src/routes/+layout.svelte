@@ -15,9 +15,8 @@
 	} from '@skeletonlabs/skeleton';
 	import 'iconify-icon';
 	import '../app.postcss';
-	import type { PageData } from './$types';
 
-	export let data: PageData;
+	export let data;
 
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 

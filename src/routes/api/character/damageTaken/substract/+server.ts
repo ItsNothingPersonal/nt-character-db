@@ -7,9 +7,8 @@ import {
 import { damageUpdateBody } from '$lib/zod/updateBody/damageUpdateBody';
 import { error } from '@sveltejs/kit';
 import { ClientResponseError } from 'pocketbase';
-import type { RequestHandler } from './$types';
 
-export const POST: RequestHandler = async ({ url, locals, request }) => {
+export async function POST({ url, locals, request }) {
 	const id = validateIdParameter(url);
 	const requestJson = await request.json();
 
@@ -49,4 +48,4 @@ export const POST: RequestHandler = async ({ url, locals, request }) => {
 	} else {
 		throw error(HttpStatusCode.BAD_REQUEST, 'Der Requestbody ist nicht korrekt formatiert');
 	}
-};
+}

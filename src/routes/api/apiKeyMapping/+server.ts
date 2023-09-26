@@ -3,9 +3,8 @@ import { apiKeyMapping, type ApiKeyMapping } from '$lib/zod/apiKey/apiKeyMapping
 import { apiKeyRequestBody } from '$lib/zod/apiKey/apiKeyRequestBody';
 import { error, json } from '@sveltejs/kit';
 import { ClientResponseError } from 'pocketbase';
-import type { RequestHandler } from './$types';
 
-export const POST: RequestHandler = async ({ locals, request }) => {
+export async function POST({ locals, request }) {
 	const requestJson = await request.json();
 
 	const apiKeyRequestParsed = apiKeyRequestBody.safeParse(requestJson);
@@ -42,4 +41,4 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 	} else {
 		throw error(HttpStatusCode.BAD_REQUEST, 'Der Requestbody ist nicht korrekt formatiert');
 	}
-};
+}

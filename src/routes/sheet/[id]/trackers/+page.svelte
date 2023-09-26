@@ -2,9 +2,8 @@
 	import Tracker from '$lib/components/tracker.svelte';
 	import type { DamageUpdateBody } from '$lib/zod/updateBody/damageUpdateBody';
 	import type { NumberUpdateBody } from '$lib/zod/updateBody/numberUpdateBody';
-	import type { PageData } from './$types';
 
-	export let data: PageData;
+	export let data;
 
 	export let updating = false;
 

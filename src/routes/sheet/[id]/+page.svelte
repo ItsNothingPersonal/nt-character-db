@@ -11,9 +11,8 @@
 	import Skills from '$lib/components/skills.svelte';
 	import Techniques from '$lib/components/techniques.svelte';
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
-	import type { PageData } from './$types';
 
-	export let data: PageData;
+	export let data;
 	$: ({ characterData } = data);
 
 	let innerWidth = 0;

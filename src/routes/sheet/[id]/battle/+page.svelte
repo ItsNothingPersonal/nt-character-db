@@ -13,9 +13,8 @@
 	} from '$lib/validation/testpools';
 	import type { AttackMode } from '$lib/zod/enums/attackMode';
 	import type { PlayerItem } from '$lib/zod/playerCharacter/playerItem';
-	import type { PageData } from './$types';
 
-	export let data: PageData;
+	export let data;
 
 	let frenzy = false;
 	let prone = false;

@@ -5,9 +5,8 @@ import {
 	type PlayerCharacterBase
 } from '$lib/zod/playerCharacter/playerCharacterBase';
 import { error, json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
 
-export const GET: RequestHandler = async ({ url, locals }) => {
+export async function GET({ url, locals }) {
 	const id = validateIdParameter(url);
 
 	// Daten aus DB laden
@@ -26,4 +25,4 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 			'Charakter-Basisdaten in Datenbank entsprichen nicht dem korrekten Schema'
 		);
 	}
-};
+}

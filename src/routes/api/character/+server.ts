@@ -17,9 +17,8 @@ import { playerSkill } from '$lib/zod/playerCharacter/playerSkill';
 import { playerTechnique } from '$lib/zod/playerCharacter/playerTechnique';
 import { playerWillpower } from '$lib/zod/playerCharacter/playerWillpower';
 import { error, json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
 
-export const GET: RequestHandler = async ({ url, fetch }) => {
+export async function GET({ url, fetch }) {
 	const id = validateIdParameter(url);
 
 	// Daten aus DB laden
@@ -105,4 +104,4 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
 			'Charakter in Datenbank entspricht nicht dem korrekten Schema'
 		);
 	}
-};
+}

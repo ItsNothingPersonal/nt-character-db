@@ -3,9 +3,8 @@ import { playerDiscipline } from '$lib/zod/playerCharacter/playerDiscipline';
 import { playerItem } from '$lib/zod/playerCharacter/playerItem';
 import { playerSkill } from '$lib/zod/playerCharacter/playerSkill';
 import { playerWillpower } from '$lib/zod/playerCharacter/playerWillpower';
-import type { PageLoad } from './$types';
 
-export const load = (async ({ params, fetch }) => {
+export async function load({ params, fetch }) {
 	const responseAttributes = await fetch(`/api/character/attributes?id=${params.id}`);
 	const attributes = playerAttribute.parse(await responseAttributes.json());
 
@@ -22,4 +21,4 @@ export const load = (async ({ params, fetch }) => {
 	const items = playerItem.array().parse(await responseItems.json());
 
 	return { attributes, disciplines, skills, willpower, items };
-}) satisfies PageLoad;
+}
