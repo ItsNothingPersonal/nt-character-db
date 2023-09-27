@@ -61,3 +61,7 @@ export function getSkillForDisciplineName(
 ) {
 	return relevantTestpools.get(disciplineName)?.skillName;
 }
+
+export function typedObjectKeys<T extends object>(object: T) {
+	return Object.keys(object) as (keyof typeof object)[];
+}

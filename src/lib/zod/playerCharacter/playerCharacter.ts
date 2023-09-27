@@ -18,7 +18,7 @@ import { playerWillpower } from './playerWillpower';
 export const playerCharacter = playerCharacterBase.extend({
 	attributes: playerAttribute,
 	skills: playerSkill.array().nonempty(),
-	disciplines: playerDiscipline.array().nonempty(),
+	disciplines: playerDiscipline.array(),
 	techniques: playerTechnique.array().optional(),
 	morality: playerMorality,
 	merits: playerMerit.array().optional(),
