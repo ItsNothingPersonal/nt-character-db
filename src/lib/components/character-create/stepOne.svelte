@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { isNullOrUndefined, typedObjectKeys } from '$lib/util';
 	import { archetypeName } from '$lib/zod/enums/archetypeName';
-	import type { PlayerCharacter } from '$lib/zod/playerCharacter/playerCharacter';
+	import type { PlayerCharacterCreate } from '$lib/zod/playerCharacter/playerCharacter';
 	import { Step } from '@skeletonlabs/skeleton';
 
-	export let playerCharacter: Partial<PlayerCharacter>;
+	export let playerCharacter: PlayerCharacterCreate;
 	const validArchetypes = typedObjectKeys(archetypeName.Values);
 
 	$: locked =

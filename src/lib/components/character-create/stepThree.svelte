@@ -3,10 +3,10 @@
 	import { inClanDisciplineConfig } from '$lib/validation/config/inClanDisciplineConfig';
 	import { clanName, type ClanName } from '$lib/zod/enums/clanName';
 	import type { DisciplineName } from '$lib/zod/enums/disciplineName';
-	import type { PlayerCharacter } from '$lib/zod/playerCharacter/playerCharacter';
+	import type { PlayerCharacterCreate } from '$lib/zod/playerCharacter/playerCharacter';
 	import { Step } from '@skeletonlabs/skeleton';
 
-	export let playerCharacter: Partial<PlayerCharacter>;
+	export let playerCharacter: PlayerCharacterCreate;
 
 	const validClanNames = typedObjectKeys(clanName.Values);
 	const baseUrl = 'https://vamp.bynightstudios.com/vampire/disciplines';

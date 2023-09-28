@@ -6,6 +6,7 @@
 	export let specialization: string[] | string | undefined = undefined;
 	export let href: string | undefined = undefined;
 	export let max = 5;
+	export let showInput: boolean = false;
 </script>
 
 <div class="flex flex-col">
@@ -29,9 +30,11 @@
 			</Ratings>
 		</p>
 	</label>
-	{#if specialization}
+	{#if specialization && showInput === false}
 		<p class="text-sm">
 			{Array.isArray(specialization) ? specialization.join(', ') : specialization}
 		</p>
+	{:else if showInput}
+		<input class="input variant-form-material" bind:value={specialization} />
 	{/if}
 </div>

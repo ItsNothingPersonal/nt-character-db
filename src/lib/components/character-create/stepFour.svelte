@@ -13,11 +13,17 @@
 		socialSpecialization,
 		type SocialSpecialization
 	} from '$lib/zod/enums/socialSpecialization';
-	import type { PlayerCharacter } from '$lib/zod/playerCharacter/playerCharacter';
+	import type { PlayerCharacterCreate } from '$lib/zod/playerCharacter/playerCharacter';
 	import { RadioGroup, RadioItem, Step } from '@skeletonlabs/skeleton';
 	import ValueRating from '../valueRating/valueRating.svelte';
 
-	export let playerCharacter: Partial<PlayerCharacter>;
+	export let playerCharacter: PlayerCharacterCreate;
+
+	playerCharacter.attributes = {
+		physical_value: 0,
+		social_value: 0,
+		mental_value: 0
+	};
 
 	const cfg: Record<Priorities, number> = {
 		Primary: 7,

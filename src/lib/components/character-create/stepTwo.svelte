@@ -1,8 +1,12 @@
 <script lang="ts">
-	import type { PlayerCharacter } from '$lib/zod/playerCharacter/playerCharacter';
+	import type { PlayerCharacterCreate } from '$lib/zod/playerCharacter/playerCharacter';
 	import { Step } from '@skeletonlabs/skeleton';
 
-	export let playerCharacter: Partial<PlayerCharacter>;
+	export let playerCharacter: PlayerCharacterCreate;
+
+	playerCharacter.experience = [
+		{ type: 'add', date: new Date(), reason: 'Initial Experience Bonus', value: 0 }
+	];
 
 	let value = 0;
 </script>
