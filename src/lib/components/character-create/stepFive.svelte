@@ -18,6 +18,8 @@
 		'Performance',
 		'Science'
 	];
+	const baseUrl = 'https://vamp.bynightstudios.com/vampire/skills';
+
 	let selectedSkill: SkillName;
 	let selectedValue: number;
 
@@ -31,6 +33,9 @@
 
 		const indexRating = validRating.findIndex((e) => e === skillValue);
 		validRating = validRating.filter((_, i) => i !== indexRating);
+		if (validRating.length > 0) {
+			selectedValue = validRating[0];
+		}
 	}
 
 	function removeButton(skillName: SkillName) {
@@ -93,16 +98,13 @@
 	</button>
 	<div class="grid auto-rows-auto grid-cols-3 gap-2">
 		{#each playerCharacter.skills?.toSorted((a, b) => a.name.localeCompare(b.name)) ?? [] as skill}
-			{#if hasSpecialization.includes(skill.name)}
-				<ValueRating
-					label={skill.name}
-					value={skill.value}
-					bind:specialization={skill.specialization}
-					showInput={true}
-				/>
-			{:else}
-				<ValueRating label={skill.name} value={skill.value} />
-			{/if}
+			<ValueRating
+				label={skill.name}
+				value={skill.value}
+				bind:specialization={skill.specialization}
+				showInput={hasSpecialization.includes(skill.name)}
+				href="{baseUrl}/{skill.name.toLowerCase()}"
+			/>
 		{/each}
 	</div>
 </Step>
