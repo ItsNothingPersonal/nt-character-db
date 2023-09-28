@@ -29,9 +29,14 @@
 			playerCharacter.disciplines?.push({ name: discipline, inclan: true, value: 0 });
 		}
 	}
+
+	$: locked =
+		isNullOrUndefined(playerCharacter.clan) ||
+		isNullOrUndefined(playerCharacter.disciplines) ||
+		playerCharacter.disciplines.length === 0;
 </script>
 
-<Step>
+<Step {locked}>
 	<svelte:fragment slot="header">Step 3: Choose a Clan</svelte:fragment>
 	<div class="grid auto-rows-auto grid-cols-1">
 		<label>

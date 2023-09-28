@@ -13,6 +13,7 @@
 		socialSpecialization,
 		type SocialSpecialization
 	} from '$lib/zod/enums/socialSpecialization';
+	import { playerAttribute } from '$lib/zod/playerCharacter/playerAttribute';
 	import type { PlayerCharacterCreate } from '$lib/zod/playerCharacter/playerCharacter';
 	import { RadioGroup, RadioItem, Step } from '@skeletonlabs/skeleton';
 	import ValueRating from '../valueRating/valueRating.svelte';
@@ -52,7 +53,8 @@
 		isNullOrUndefined(selectedMentalSpecialization) ||
 		physical === social ||
 		physical === mental ||
-		social === mental;
+		social === mental ||
+		!playerAttribute.safeParse(playerCharacter.attributes).success;
 
 	$: {
 		if (!isNullOrUndefined(playerCharacter.attributes)) {

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PlayerCharacterCreate } from '$lib/zod/playerCharacter/playerCharacter';
+	import { playerExperience } from '$lib/zod/playerCharacter/playerExperience';
 	import { Step } from '@skeletonlabs/skeleton';
 
 	export let playerCharacter: PlayerCharacterCreate;
@@ -9,9 +10,11 @@
 	];
 
 	let value = 0;
+
+	$: locked = !playerExperience.array().safeParse(playerCharacter.experience).success;
 </script>
 
-<Step>
+<Step {locked}>
 	<svelte:fragment slot="header">Step 2: Record Initial XP</svelte:fragment>
 	<div class="grid auto-rows-auto grid-cols-1">
 		<label>

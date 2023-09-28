@@ -2,6 +2,7 @@
 	import { isNullOrUndefined, typedObjectKeys } from '$lib/util';
 	import { skillName, type SkillName } from '$lib/zod/enums/skillName';
 	import type { PlayerCharacterCreate } from '$lib/zod/playerCharacter/playerCharacter';
+	import { playerSkill } from '$lib/zod/playerCharacter/playerSkill';
 	import { Step } from '@skeletonlabs/skeleton';
 	import ValueRating from '../valueRating/valueRating.svelte';
 
@@ -43,7 +44,7 @@
 		}
 	}
 
-	$: locked = playerCharacter.skills ? playerCharacter.skills?.length !== 10 : true;
+	$: locked = !playerSkill.array().length(10).safeParse(playerCharacter.skills).success;
 </script>
 
 <Step {locked}>
@@ -91,7 +92,7 @@
 		Remove Skill
 	</button>
 	<div class="grid auto-rows-auto grid-cols-3 gap-2">
-		{#each playerCharacter.skills ?? [] as skill}
+		{#each playerCharacter.skills?.toSorted((a, b) => a.name.localeCompare(b.name)) ?? [] as skill}
 			{#if hasSpecialization.includes(skill.name)}
 				<ValueRating
 					label={skill.name}
