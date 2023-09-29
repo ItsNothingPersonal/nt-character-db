@@ -81,13 +81,19 @@
 				on:change={() => setSelectedCharacterStore(selectedCharacter)}
 			>
 				{#each selectionValues as entry (entry.id)}
-					<option value={entry.value}>{entry.name}</option>
+					<option value={entry.value}> {entry.name} </option>
 				{/each}
 			</select>
 
-			<button type="button" class="variant-filled btn rounded-none">
+			<button type="button" class="variant-filled-primary btn rounded-none">
 				<a href={`/sheet/${selectedCharacter}`} class="w-full"> Charakter-Sheet öffnen </a>
 			</button>
 		</div>
 	{/if}
+
+	<div class="grid grid-cols-1 grid-rows-1 gap-2">
+		<button type="button" class="variant-filled-secondary btn mt-2 rounded-none">
+			<a href="/sheet/create" class="w-full"> Charakter erstellen </a>
+		</button>
+	</div>
 </div>
