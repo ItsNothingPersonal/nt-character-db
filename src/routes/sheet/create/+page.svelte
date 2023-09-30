@@ -1,4 +1,5 @@
 <script lang="ts">
+	import StepEight from '$lib/components/character-create/stepEight.svelte';
 	import StepFive from '$lib/components/character-create/stepFive.svelte';
 	import StepFour from '$lib/components/character-create/stepFour.svelte';
 	import StepOne from '$lib/components/character-create/stepOne.svelte';
@@ -28,4 +29,5 @@
 	<StepFive bind:playerCharacter />
 	<StepSix bind:playerCharacter />
 	<StepSeven bind:playerCharacter />
+	<StepEight bind:playerCharacter />
 </Stepper>

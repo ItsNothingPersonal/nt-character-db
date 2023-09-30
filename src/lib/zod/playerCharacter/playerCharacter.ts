@@ -1,4 +1,4 @@
-import type { z } from 'zod';
+import { z } from 'zod';
 import { playerAttribute, playerAttributeCreate } from './playerAttribute';
 import { playerBackground } from './playerBackground';
 import { playerBeastTraits } from './playerBeastTraits';
@@ -50,3 +50,6 @@ export const playerCharacterCreate = playerCharacterBaseCreate.extend({
 	beastTraits: playerBeastTraits.optional()
 });
 export type PlayerCharacterCreate = z.infer<typeof playerCharacterCreate>;
+
+export const playerCharacterCombined = z.intersection(playerCharacter, playerCharacterCreate);
+export type PlayerCharacterCombined = z.infer<typeof playerCharacterCombined>;
