@@ -1,7 +1,7 @@
 <script lang="ts">
+	import P from '$lib/components/typography/p.svelte';
 	import type { ArchetypeName } from '$lib/zod/enums/archetypeName';
 	import type { ClanName } from '$lib/zod/enums/clanName';
-	import P from './typography/p.svelte';
 
 	export let clan: ClanName;
 	export let generation: number;

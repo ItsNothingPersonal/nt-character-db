@@ -1,7 +1,7 @@
 <script lang="ts">
+	import ValueRating from '$lib/components/valueRating/valueRating.svelte';
 	import { getAttributesMaximum } from '$lib/validation/attributes';
 	import type { PlayerAttribute } from '$lib/zod/playerCharacter/playerAttribute';
-	import ValueRating from './valueRating/valueRating.svelte';
 
 	export let attributes: PlayerAttribute;
 	export let generation: number;

@@ -1,6 +1,6 @@
 <script lang="ts">
+	import ValueRating from '$lib/components/valueRating/valueRating.svelte';
 	import type { PlayerDiscipline } from '$lib/zod/playerCharacter/playerDiscipline';
-	import ValueRating from './valueRating/valueRating.svelte';
 
 	export let disciplines: PlayerDiscipline[];
 
