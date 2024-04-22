@@ -65,7 +65,7 @@
 		</svelte:fragment>
 	</AccordionItem>
 
-	{#if ($characterStore.techniques && $characterStore.techniques.length > 0) || $interactiveModeStore || $characterStore.generation >= 8}
+	{#if ($characterStore.techniques && $characterStore.techniques.length > 0) || ($interactiveModeStore && $characterStore.generation >= 8)}
 		<AccordionItem {autocollapse}>
 			<svelte:fragment slot="summary">
 				<h2 class="h2">Techniques</h2>
