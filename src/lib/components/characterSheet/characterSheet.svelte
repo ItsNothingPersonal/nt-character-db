@@ -1,6 +1,7 @@
 <script lang="ts">
-	import type { PlayerCharacter } from '$lib/zod/playerCharacter/playerCharacter';
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
+	import { onMount } from 'svelte';
+	import { characterStore } from './characterStore';
 	import Attributes from './charactersheet-elements/attributes.svelte';
 	import Backgrounds from './charactersheet-elements/backgrounds.svelte';
 	import BaseInformation from './charactersheet-elements/baseInformation.svelte';
@@ -12,122 +13,127 @@
 	import Morality from './charactersheet-elements/morality.svelte';
 	import Skills from './charactersheet-elements/skills.svelte';
 	import Techniques from './charactersheet-elements/techniques.svelte';
+	import { interactiveModeStore } from './interactiveModeStore';
 
-	export let characterData: PlayerCharacter;
-	export let open: boolean;
+	export let autocollapse: boolean;
+	export let interactive: boolean = false;
+
+	onMount(() => {
+		if (interactive) {
+			interactiveModeStore.set(true);
+		} else {
+			interactiveModeStore.set(false);
+		}
+	});
 </script>
 
-<h1 class="h1 mb-2 p-1">{characterData.name}</h1>
-<Accordion padding="p-1" rounded="container" spacing="space-y-2" autocollapse={open}>
-	<AccordionItem {open}>
+<h1 class="h1 mb-2 p-1">{$characterStore.name}</h1>
+<Accordion padding="p-1" rounded="container" spacing="space-y-2" {autocollapse}>
+	<AccordionItem {autocollapse}>
 		<svelte:fragment slot="summary">
 			<h2 class="h2">Base</h2>
 		</svelte:fragment>
 		<svelte:fragment slot="content">
-			<BaseInformation
-				clan={characterData.clan}
-				generation={characterData.generation}
-				archetype={characterData.archetype}
-			/>
+			<BaseInformation />
 		</svelte:fragment>
 	</AccordionItem>
 
-	<AccordionItem {open}>
+	<AccordionItem {autocollapse}>
 		<svelte:fragment slot="summary">
 			<h2 class="h2">Attributes</h2>
 		</svelte:fragment>
 		<svelte:fragment slot="content">
-			<Attributes attributes={characterData.attributes} generation={characterData.generation} />
+			<Attributes />
 		</svelte:fragment>
 	</AccordionItem>
 
-	<AccordionItem {open}>
+	<AccordionItem {autocollapse}>
 		<svelte:fragment slot="summary">
 			<h2 class="h2">Skills</h2>
 		</svelte:fragment>
 		<svelte:fragment slot="content">
-			<Skills skills={characterData.skills} />
+			<Skills />
 		</svelte:fragment>
 	</AccordionItem>
 
-	<AccordionItem {open}>
+	<AccordionItem {autocollapse}>
 		<svelte:fragment slot="summary">
 			<h2 class="h2">Disciplines</h2>
 		</svelte:fragment>
 		<svelte:fragment slot="content">
-			<Disciplines disciplines={characterData.disciplines} />
+			<Disciplines />
 		</svelte:fragment>
 	</AccordionItem>
 
-	{#if characterData.techniques && characterData.techniques.length > 0}
-		<AccordionItem {open}>
+	{#if ($characterStore.techniques && $characterStore.techniques.length > 0) || $interactiveModeStore || $characterStore.generation >= 8}
+		<AccordionItem {autocollapse}>
 			<svelte:fragment slot="summary">
 				<h2 class="h2">Techniques</h2>
 			</svelte:fragment>
 			<svelte:fragment slot="content">
-				<Techniques techniques={characterData.techniques} />
+				<Techniques />
 			</svelte:fragment>
 		</AccordionItem>
 	{/if}
 
-	<AccordionItem {open}>
+	<AccordionItem {autocollapse}>
 		<svelte:fragment slot="summary">
 			<h2 class="h2">Morality</h2>
 		</svelte:fragment>
 		<svelte:fragment slot="content">
-			<Morality morality={characterData.morality} />
+			<Morality />
 		</svelte:fragment>
 	</AccordionItem>
 
-	{#if characterData.merits && characterData.merits.length > 0}
-		<AccordionItem {open}>
+	{#if ($characterStore.merits && $characterStore.merits.length > 0) || $interactiveModeStore}
+		<AccordionItem {autocollapse}>
 			<svelte:fragment slot="summary">
 				<h2 class="h2">Merits</h2>
 			</svelte:fragment>
 			<svelte:fragment slot="content">
-				<Merits merits={characterData.merits} />
+				<Merits />
 			</svelte:fragment>
 		</AccordionItem>
 	{/if}
 
-	{#if characterData.flaws && characterData.flaws.length > 0}
-		<AccordionItem {open}>
+	{#if ($characterStore.flaws && $characterStore.flaws.length > 0) || $interactiveModeStore}
+		<AccordionItem {autocollapse}>
 			<svelte:fragment slot="summary">
 				<h2 class="h2">Flaws</h2>
 			</svelte:fragment>
 			<svelte:fragment slot="content">
-				<Flaws flaws={characterData.flaws} />
+				<Flaws />
 			</svelte:fragment>
 		</AccordionItem>
 	{/if}
 
-	<AccordionItem {open}>
+	<AccordionItem {autocollapse}>
 		<svelte:fragment slot="summary">
 			<h2 class="h2">Backgrounds</h2>
 		</svelte:fragment>
 		<svelte:fragment slot="content">
-			<Backgrounds backgrounds={characterData.backgrounds} />
+			<Backgrounds />
 		</svelte:fragment>
 	</AccordionItem>
 
-	{#if characterData.items && characterData.items.length > 0}
-		<AccordionItem {open}>
+	{#if $characterStore.items && $characterStore.items.length > 0}
+		<AccordionItem {autocollapse}>
 			<svelte:fragment slot="summary">
 				<h2 class="h2">Items</h2>
 			</svelte:fragment>
 			<svelte:fragment slot="content">
-				<Items items={characterData.items} />
+				<Items items={$characterStore.items} />
 			</svelte:fragment>
 		</AccordionItem>
 	{/if}
 
-	{#if characterData.experience && characterData.experience.length > 0}
-		<AccordionItem {open}>
+	{#if $characterStore.experience && $characterStore.experience.length > 0}
+		<AccordionItem {autocollapse}>
 			<svelte:fragment slot="summary">
 				<h2 class="h2">Experience</h2>
 			</svelte:fragment>
 			<svelte:fragment slot="content">
-				<Experience experience={characterData.experience} />
+				<Experience experience={$characterStore.experience} />
 			</svelte:fragment>
 		</AccordionItem>
 	{/if}

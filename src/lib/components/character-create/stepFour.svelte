@@ -1,30 +1,13 @@
 <script lang="ts">
 	import { isNullOrUndefined, typedObjectKeys } from '$lib/util';
-	import {
-		mentalSpecialization,
-		type MentalSpecialization
-	} from '$lib/zod/enums/mentalSpecialization';
-	import {
-		physicalSpecialization,
-		type PhysicalSpecialization
-	} from '$lib/zod/enums/physicalSpecialization';
+	import { mentalSpecialization } from '$lib/zod/enums/mentalSpecialization';
+	import { physicalSpecialization } from '$lib/zod/enums/physicalSpecialization';
 	import { priorities, type Priorities } from '$lib/zod/enums/priorities';
-	import {
-		socialSpecialization,
-		type SocialSpecialization
-	} from '$lib/zod/enums/socialSpecialization';
+	import { socialSpecialization } from '$lib/zod/enums/socialSpecialization';
 	import { playerAttribute } from '$lib/zod/playerCharacter/playerAttribute';
-	import type { PlayerCharacterCreate } from '$lib/zod/playerCharacter/playerCharacter';
 	import { RadioGroup, RadioItem, Step } from '@skeletonlabs/skeleton';
+	import { characterCreateStore } from '../characterSheet/characterStore';
 	import ValueRating from '../valueRating/valueRating.svelte';
-
-	export let playerCharacter: PlayerCharacterCreate;
-
-	playerCharacter.attributes = {
-		physical_value: 0,
-		social_value: 0,
-		mental_value: 0
-	};
 
 	const cfg: Record<Priorities, number> = {
 		Primary: 7,
@@ -38,33 +21,26 @@
 	const validPriorities = typedObjectKeys(priorities.Values);
 
 	let physical: Priorities;
-	let selectedPhysicalSpecialization: PhysicalSpecialization;
 	let social: Priorities;
-	let selectedSocialSpecialization: SocialSpecialization;
 	let mental: Priorities;
-	let selectedMentalSpecialization: MentalSpecialization;
 
 	$: locked =
 		isNullOrUndefined(physical) ||
 		isNullOrUndefined(social) ||
 		isNullOrUndefined(mental) ||
-		isNullOrUndefined(selectedPhysicalSpecialization) ||
-		isNullOrUndefined(selectedSocialSpecialization) ||
-		isNullOrUndefined(selectedMentalSpecialization) ||
+		isNullOrUndefined($characterCreateStore.attributes.physical_specialization) ||
+		isNullOrUndefined($characterCreateStore.attributes.social_specialization) ||
+		isNullOrUndefined($characterCreateStore.attributes.mental_specialization) ||
 		physical === social ||
 		physical === mental ||
 		social === mental ||
-		!playerAttribute.safeParse(playerCharacter.attributes).success;
+		!playerAttribute.safeParse($characterCreateStore.attributes).success;
 
 	$: {
-		if (!isNullOrUndefined(playerCharacter.attributes)) {
-			playerCharacter.attributes.physical_value = cfg[physical];
-			playerCharacter.attributes.social_value = cfg[social];
-			playerCharacter.attributes.mental_value = cfg[mental];
-
-			playerCharacter.attributes.physical_specialization = [selectedPhysicalSpecialization];
-			playerCharacter.attributes.social_specialization = [selectedSocialSpecialization];
-			playerCharacter.attributes.mental_specialization = [selectedMentalSpecialization];
+		if (!isNullOrUndefined($characterCreateStore.attributes)) {
+			$characterCreateStore.attributes.physical_value = cfg[physical];
+			$characterCreateStore.attributes.social_value = cfg[social];
+			$characterCreateStore.attributes.mental_value = cfg[mental];
 		}
 	}
 </script>
@@ -72,21 +48,27 @@
 <Step {locked}>
 	<svelte:fragment slot="header">Step 4: Assign Initial Attributes</svelte:fragment>
 	<div class="grid auto-rows-auto grid-cols-3 gap-2">
-		<RadioGroup id="physical" rounded="rounded-none">
-			{#each validPriorities as priority}
-				<RadioItem bind:group={physical} name="justify" value={priority}>{priority}</RadioItem>
+		<RadioGroup rounded="rounded-none">
+			{#each validPriorities as priority, indexPhysical}
+				<RadioItem bind:group={physical} name="physical-priority-{indexPhysical}" value={priority}>
+					{priority}
+				</RadioItem>
 			{/each}
 		</RadioGroup>
 
-		<RadioGroup id="social" rounded="rounded-none">
-			{#each validPriorities as priority}
-				<RadioItem bind:group={social} name="justify" value={priority}>{priority}</RadioItem>
+		<RadioGroup rounded="rounded-none">
+			{#each validPriorities as priority, indexSocial}
+				<RadioItem bind:group={social} name="social-priority-{indexSocial}" value={priority}>
+					{priority}
+				</RadioItem>
 			{/each}
 		</RadioGroup>
 
-		<RadioGroup id="mental" rounded="rounded-none">
-			{#each validPriorities as priority}
-				<RadioItem bind:group={mental} name="justify" value={priority}>{priority}</RadioItem>
+		<RadioGroup rounded="rounded-none">
+			{#each validPriorities as priority, indexMental}
+				<RadioItem bind:group={mental} name="mental-priority-{indexMental}" value={priority}>
+					{priority}
+				</RadioItem>
 			{/each}
 		</RadioGroup>
 	</div>
@@ -95,19 +77,19 @@
 	>
 		<ValueRating
 			label="Physical"
-			value={playerCharacter.attributes?.physical_value ?? 0}
+			value={$characterCreateStore.attributes.physical_value}
 			max={10}
 		/>
-		<ValueRating label="Social" value={playerCharacter.attributes?.social_value ?? 0} max={10} />
-		<ValueRating label="Mental" value={playerCharacter.attributes?.mental_value ?? 0} max={10} />
+		<ValueRating label="Social" value={$characterCreateStore.attributes.social_value} max={10} />
+		<ValueRating label="Mental" value={$characterCreateStore.attributes.mental_value} max={10} />
 	</div>
 	<div class="grid auto-rows-auto grid-cols-3 gap-2">
 		<RadioGroup id="physical_specialization" rounded="rounded-none">
-			{#each validPhysicalSpecializations as specialization}
+			{#each validPhysicalSpecializations as specialization, indexPhysical}
 				<RadioItem
-					bind:group={selectedPhysicalSpecialization}
-					name="justify"
-					value={specialization}
+					bind:group={$characterCreateStore.attributes.physical_specialization}
+					name="physical-focus-{indexPhysical}"
+					value={[specialization]}
 				>
 					{specialization}
 				</RadioItem>
@@ -115,16 +97,24 @@
 		</RadioGroup>
 
 		<RadioGroup id="social_specialization" rounded="rounded-none">
-			{#each validSocialSpecializations as specialization}
-				<RadioItem bind:group={selectedSocialSpecialization} name="justify" value={specialization}>
+			{#each validSocialSpecializations as specialization, indexSocial}
+				<RadioItem
+					bind:group={$characterCreateStore.attributes.social_specialization}
+					name="social-focus-{indexSocial}"
+					value={[specialization]}
+				>
 					{specialization}
 				</RadioItem>
 			{/each}
 		</RadioGroup>
 
 		<RadioGroup id="mental_specialization" rounded="rounded-none">
-			{#each validMentalSpecializations as specialization}
-				<RadioItem bind:group={selectedMentalSpecialization} name="justify" value={specialization}>
+			{#each validMentalSpecializations as specialization, indexMental}
+				<RadioItem
+					bind:group={$characterCreateStore.attributes.mental_specialization}
+					name="mental-focus-{indexMental}"
+					value={[specialization]}
+				>
 					{specialization}
 				</RadioItem>
 			{/each}

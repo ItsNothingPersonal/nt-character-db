@@ -1,12 +1,11 @@
 <script lang="ts">
-	import { isNullOrUndefined, typedObjectKeys } from '$lib/util';
+	import { typedObjectKeys } from '$lib/util';
 	import { skillName, type SkillName } from '$lib/zod/enums/skillName';
-	import type { PlayerCharacterCreate } from '$lib/zod/playerCharacter/playerCharacter';
 	import { playerSkill } from '$lib/zod/playerCharacter/playerSkill';
 	import { Step } from '@skeletonlabs/skeleton';
+	import { characterCreateStore } from '../characterSheet/characterStore';
+	import EditableRatingSelection from '../editableRatingSelection/editableRatingSelection.svelte';
 	import ValueRating from '../valueRating/valueRating.svelte';
-
-	export let playerCharacter: PlayerCharacterCreate;
 
 	const validSkills = typedObjectKeys(skillName.Values);
 	$: validRating = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1];
@@ -20,84 +19,22 @@
 	];
 	const baseUrl = 'https://vamp.bynightstudios.com/vampire/skills';
 
-	let selectedSkill: SkillName;
-	let selectedValue: number;
-
-	function addButton(skillName: SkillName, skillValue: number) {
-		playerCharacter.skills = [
-			...(playerCharacter.skills ?? []),
-			{ name: skillName, value: skillValue }
-		];
-
-		[validRating.find((e) => e === skillValue)].filter((x) => x !== undefined);
-
-		const indexRating = validRating.findIndex((e) => e === skillValue);
-		validRating = validRating.filter((_, i) => i !== indexRating);
-		if (validRating.length > 0) {
-			selectedValue = validRating[0];
-		}
-	}
-
-	function removeButton(skillName: SkillName) {
-		if (playerCharacter.skills) {
-			const skillToBeRemoved = playerCharacter.skills?.find((e) => e.name === skillName);
-
-			if (skillToBeRemoved) {
-				playerCharacter.skills = playerCharacter.skills.filter((e) => e.name !== skillName);
-				validRating = [...validRating, skillToBeRemoved.value].toSorted((a, b) => b - a);
-			}
-		}
-	}
-
-	$: locked = !playerSkill.array().length(10).safeParse(playerCharacter.skills).success;
+	$: locked = !playerSkill.array().length(10).safeParse($characterCreateStore.skills).success;
 </script>
 
 <Step {locked}>
 	<svelte:fragment slot="header">Step 5: Assign Initial Skills</svelte:fragment>
+	<EditableRatingSelection
+		label="Skill"
+		propertyName="skills"
+		configKey="Skill"
+		validNames={validSkills}
+		{validRating}
+		bind:playerCharacter={$characterCreateStore}
+	/>
+
 	<div class="grid auto-rows-auto grid-cols-3 gap-2">
-		<label>
-			Skill
-			<select class="select rounded-none" bind:value={selectedSkill}>
-				{#each validSkills as entry}
-					<option value={entry}>{entry}</option>
-				{/each}
-			</select>
-		</label>
-		<label>
-			Rating
-			<select
-				class="select rounded-none"
-				bind:value={selectedValue}
-				disabled={validRating.length === 0}
-			>
-				{#each validRating as entry}
-					<option value={entry}>{entry}</option>
-				{/each}
-			</select>
-		</label>
-	</div>
-	<button
-		type="button"
-		class="variant-filled btn rounded-none"
-		on:click={() => addButton(selectedSkill, selectedValue)}
-		disabled={validRating.length === 0 ||
-			!isNullOrUndefined(playerCharacter.skills?.find((e) => e.name === selectedSkill))}
-	>
-		Add Skill
-	</button>
-	<button
-		type="button"
-		class="variant-filled btn rounded-none"
-		on:click={() => removeButton(selectedSkill)}
-		disabled={playerCharacter.skills
-			? playerCharacter.skills.length === 0 ||
-			  isNullOrUndefined(playerCharacter.skills.find((e) => e.name === selectedSkill))
-			: true}
-	>
-		Remove Skill
-	</button>
-	<div class="grid auto-rows-auto grid-cols-3 gap-2">
-		{#each playerCharacter.skills?.toSorted((a, b) => a.name.localeCompare(b.name)) ?? [] as skill}
+		{#each $characterCreateStore.skills?.toSorted( (a, b) => a.name.localeCompare(b.name) ) ?? [] as skill}
 			<ValueRating
 				label={skill.name}
 				value={skill.value}

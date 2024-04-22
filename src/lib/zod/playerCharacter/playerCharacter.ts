@@ -25,7 +25,7 @@ export const playerCharacter = playerCharacterBase.extend({
 	flaws: playerFlaw.array().optional(),
 	backgrounds: playerBackground.array().nonempty(),
 	items: playerItem.array().optional(),
-	experience: playerExperience.array().optional(),
+	experience: playerExperience.array(),
 	blood: playerBlood,
 	willpower: playerWillpower,
 	damageTaken: playerDamageTaken,
@@ -34,20 +34,26 @@ export const playerCharacter = playerCharacterBase.extend({
 export type PlayerCharacter = z.infer<typeof playerCharacter>;
 
 export const playerCharacterCreate = playerCharacterBaseCreate.extend({
-	attributes: playerAttributeCreate.optional(),
-	skills: playerSkill.array().optional(),
-	disciplines: playerDiscipline.array().optional(),
+	attributes: playerAttributeCreate.default({
+		physical_value: 0,
+		social_value: 0,
+		mental_value: 0
+	}),
+	skills: playerSkill.array().default([]),
+	disciplines: playerDiscipline.array().default([]),
 	techniques: playerTechnique.array().optional(),
-	morality: playerMorality.optional(),
+	morality: playerMorality.default({ name: 'Humanity', value: 5 }),
 	merits: playerMerit.array().optional(),
 	flaws: playerFlaw.array().optional(),
-	backgrounds: playerBackground.array().optional(),
+	backgrounds: playerBackground.array().default([]),
 	items: playerItem.array().optional(),
-	experience: playerExperience.array().optional(),
-	blood: playerBlood.optional(),
-	willpower: playerWillpower.optional(),
-	damageTaken: playerDamageTaken.optional(),
-	beastTraits: playerBeastTraits.optional()
+	experience: playerExperience
+		.array()
+		.default([{ value: 0, date: new Date(), type: 'add', reason: 'Initial Expierience-Bonus' }]),
+	blood: playerBlood.optional().default({ value: 10 }),
+	willpower: playerWillpower.default({ value: 6 }),
+	damageTaken: playerDamageTaken.default({ normal: 0, aggrevated: 0 }),
+	beastTraits: playerBeastTraits.default({ value: 0 })
 });
 export type PlayerCharacterCreate = z.infer<typeof playerCharacterCreate>;
 

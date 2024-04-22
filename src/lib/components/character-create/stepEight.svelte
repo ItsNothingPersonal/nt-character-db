@@ -4,10 +4,10 @@
 	import { addMerit, maxMerits, removeMerit } from '$lib/validation/mutations/merits';
 	import { flawName, type FlawName } from '$lib/zod/enums/flawName';
 	import { meritName, type MeritName } from '$lib/zod/enums/meritName';
-	import type { PlayerCharacterCreate } from '$lib/zod/playerCharacter/playerCharacter';
+	import { playerCharacter } from '$lib/zod/playerCharacter/playerCharacter';
 	import { Step } from '@skeletonlabs/skeleton';
-
-	export let playerCharacter: PlayerCharacterCreate;
+	import { characterCreateStore, characterStore } from '../characterSheet/characterStore';
+	import Selectionbox from '../selectionbox/selectionbox.svelte';
 
 	const baseUrl = 'https://vamp.bynightstudios.com/vampire/disciplines';
 	const validMerits = typedObjectKeys(meritName.Values);
@@ -15,6 +15,14 @@
 
 	let selectedMerit: MeritName;
 	let selectedFlaw: FlawName;
+
+	$: {
+		//warum kann er die vorhandenen disziplinen nicht erkennen? die sind drin! nach hmr ist er sichtbar
+		const characterData = playerCharacter.safeParse($characterCreateStore);
+		if (characterData.success) {
+			characterStore.set(characterData.data);
+		}
+	}
 
 	$: locked = $maxMerits < 0 || $maxFlaws < 0;
 </script>
@@ -27,42 +35,34 @@
 				Available Merit Points
 				<p id="maxMerits">{$maxMerits}</p>
 			</label>
-			<label>
-				Merits
-				<select class="select rounded-none" bind:value={selectedMerit}>
-					{#each validMerits as merit}
-						<option value={merit}>{merit}</option>
-					{/each}
-				</select>
-			</label>
-			<button
-				type="button"
-				class="variant-filled btn rounded-none"
-				on:click={() => (playerCharacter = addMerit(playerCharacter, selectedMerit))}
-				disabled={!isNullOrUndefined(playerCharacter.merits?.find((e) => e.name === selectedMerit))}
-			>
-				Add Merit
-			</button>
-			<button
-				type="button"
-				class="variant-filled btn col-start-1 row-start-2 rounded-none"
-				on:click={() => (playerCharacter = removeMerit(playerCharacter, selectedMerit))}
-				disabled={playerCharacter.merits
-					? playerCharacter.merits.length === 0 ||
-					  isNullOrUndefined(playerCharacter.merits.find((e) => e.name === selectedMerit))
-					: true}
-			>
-				Remove Merit
-			</button>
+			<Selectionbox
+				label="Merit"
+				selectableValues={validMerits}
+				bind:value={selectedMerit}
+				addButton={{
+					onClick: () => characterCreateStore.set(addMerit($characterCreateStore, selectedMerit)),
+					disabled: !isNullOrUndefined(
+						$characterCreateStore.merits?.find((e) => e.name === selectedMerit)
+					)
+				}}
+				removeButton={{
+					onClick: () =>
+						characterCreateStore.set(removeMerit($characterCreateStore, selectedMerit)),
+					disabled: $characterCreateStore.merits
+						? $characterCreateStore.merits.length === 0 ||
+						  isNullOrUndefined($characterCreateStore.merits.find((e) => e.name === selectedMerit))
+						: true
+				}}
+			/>
 
-			{#if playerCharacter.merits && playerCharacter.merits.length > 0}
+			{#if $characterCreateStore.merits && $characterCreateStore.merits.length > 0}
 				<div class="card mt-4 rounded-none">
 					<header class="card-header">
 						<h4 class="h4">Merits</h4>
 					</header>
 					<section class="p-4">
 						<ul>
-							{#each playerCharacter.merits as merit}
+							{#each $characterCreateStore.merits as merit}
 								<li>
 									<a
 										href="{baseUrl}/{merit.name.toLowerCase()}"
@@ -82,42 +82,33 @@
 				Available Flaw Points
 				<p id="maxFlaws">{$maxFlaws}</p>
 			</label>
-			<label>
-				Flaws
-				<select class="select rounded-none" bind:value={selectedFlaw}>
-					{#each validFlaws as flaw}
-						<option value={flaw}>{flaw}</option>
-					{/each}
-				</select>
-			</label>
-			<button
-				type="button"
-				class="variant-filled btn rounded-none"
-				on:click={() => (playerCharacter = addFlaw(playerCharacter, selectedFlaw))}
-				disabled={!isNullOrUndefined(playerCharacter.flaws?.find((e) => e.name === selectedFlaw))}
-			>
-				Add Flaw
-			</button>
-			<button
-				type="button"
-				class="variant-filled btn col-start-1 row-start-2 rounded-none"
-				on:click={() => (playerCharacter = removeFlaw(playerCharacter, selectedFlaw))}
-				disabled={playerCharacter.flaws
-					? playerCharacter.flaws.length === 0 ||
-					  isNullOrUndefined(playerCharacter.flaws.find((e) => e.name === selectedFlaw))
-					: true}
-			>
-				Remove Flaw
-			</button>
+			<Selectionbox
+				label="Flaw"
+				selectableValues={validFlaws}
+				bind:value={selectedFlaw}
+				addButton={{
+					onClick: () => ($characterCreateStore = addFlaw($characterCreateStore, selectedFlaw)),
+					disabled: !isNullOrUndefined(
+						$characterCreateStore.flaws?.find((e) => e.name === selectedFlaw)
+					)
+				}}
+				removeButton={{
+					onClick: () => ($characterCreateStore = removeFlaw($characterCreateStore, selectedFlaw)),
+					disabled: $characterCreateStore.flaws
+						? $characterCreateStore.flaws.length === 0 ||
+						  isNullOrUndefined($characterCreateStore.flaws.find((e) => e.name === selectedFlaw))
+						: true
+				}}
+			/>
 
-			{#if playerCharacter.flaws && playerCharacter.flaws.length > 0}
+			{#if $characterCreateStore.flaws && $characterCreateStore.flaws.length > 0}
 				<div class="card mt-4 rounded-none">
 					<header class="card-header">
 						<h4 class="h4">Flaws</h4>
 					</header>
 					<section class="p-4">
 						<ul>
-							{#each playerCharacter.flaws as flaw}
+							{#each $characterCreateStore.flaws as flaw}
 								<li>
 									<a href="{baseUrl}/{flaw.name.toLowerCase()}" class="underline decoration-dotted">
 										<span class="flex-auto">{flaw.name}</span>

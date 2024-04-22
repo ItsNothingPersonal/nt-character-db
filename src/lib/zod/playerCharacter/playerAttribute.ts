@@ -16,11 +16,11 @@ export type PlayerAttribute = z.infer<typeof playerAttribute>;
 
 export const playerAttributeCreate = z.object({
 	physical_value: z.number().min(0).max(15).default(0),
-	physical_specialization: physicalSpecialization.array().optional(),
+	physical_specialization: physicalSpecialization.array().default([]),
 	social_value: z.number().min(0).max(15).default(0),
-	social_specialization: socialSpecialization.array().optional(),
+	social_specialization: socialSpecialization.array().default([]),
 	mental_value: z.number().min(0).max(15).default(0),
-	mental_specialization: mentalSpecialization.array().optional()
+	mental_specialization: mentalSpecialization.array().default([])
 });
 
 export type PlayerAttributeCreate = z.infer<typeof playerAttributeCreate>;

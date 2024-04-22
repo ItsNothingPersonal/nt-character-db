@@ -12,10 +12,10 @@ export const playerCharacterBase = z.object({
 export type PlayerCharacterBase = z.infer<typeof playerCharacterBase>;
 
 export const playerCharacterBaseCreate = z.object({
-	id: z.string().optional(),
-	name: z.string().default('').optional(),
+	id: z.string().default('-1'),
+	name: z.string().optional(),
 	clan: clanName.optional(),
-	generation: z.number().min(6).max(13).optional(),
+	generation: z.number().min(6).max(13).default(13),
 	archetype: archetypeName.optional()
 });
 export type PlayerCharacterBaseCreate = z.infer<typeof playerCharacterBaseCreate>;

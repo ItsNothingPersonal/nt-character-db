@@ -1,12 +1,30 @@
 <script lang="ts">
 	import ValueRating from '$lib/components/valueRating/valueRating.svelte';
+	import { isNullOrUndefined } from '$lib/util';
 	import { getAttributesMaximum } from '$lib/validation/attributes';
-	import type { PlayerAttribute } from '$lib/zod/playerCharacter/playerAttribute';
+	import { costConfig } from '$lib/validation/config/constConfig';
+	import { get } from 'svelte/store';
+	import { characterStore } from '../characterStore';
 
-	export let attributes: PlayerAttribute;
-	export let generation: number;
+	const max = getAttributesMaximum($characterStore.generation);
 
-	const max = getAttributesMaximum(generation);
+	function handleChange(event: CustomEvent<{ label: string; old: number; new: number }>): void {
+		const costConfigEntry = costConfig.get('Attribute');
+
+		if (isNullOrUndefined(costConfigEntry)) {
+			console.error('Config zum Steigern für Attribute fehlen!');
+			return;
+		}
+
+		$characterStore = costConfigEntry(
+			get(characterStore),
+			event.detail.label,
+			event.detail.new > event.detail.old ? 'add' : 'remove',
+			true,
+			event.detail.old,
+			event.detail.new
+		);
+	}
 </script>
 
 <div
@@ -14,20 +32,26 @@
 >
 	<ValueRating
 		label="Physical"
-		value={attributes.physical_value}
-		specialization={attributes.physical_specialization}
+		bind:value={$characterStore.attributes.physical_value}
+		specialization={$characterStore.attributes.physical_specialization}
 		{max}
+		on:change={handleChange}
+		start={get(characterStore).attributes.physical_value}
 	/>
 	<ValueRating
 		label="Social"
-		value={attributes.social_value}
-		specialization={attributes.social_specialization}
+		bind:value={$characterStore.attributes.social_value}
+		specialization={$characterStore.attributes.social_specialization}
 		{max}
+		on:change={handleChange}
+		start={get(characterStore).attributes.social_value}
 	/>
 	<ValueRating
 		label="Mental"
-		value={attributes.mental_value}
-		specialization={attributes.mental_specialization}
+		bind:value={$characterStore.attributes.mental_value}
+		specialization={$characterStore.attributes.mental_specialization}
 		{max}
+		on:change={handleChange}
+		start={get(characterStore).attributes.mental_value}
 	/>
 </div>

@@ -3,10 +3,9 @@
 	import { inClanDisciplineConfig } from '$lib/validation/config/inClanDisciplineConfig';
 	import { clanName, type ClanName } from '$lib/zod/enums/clanName';
 	import type { DisciplineName } from '$lib/zod/enums/disciplineName';
-	import type { PlayerCharacterCreate } from '$lib/zod/playerCharacter/playerCharacter';
 	import { Step } from '@skeletonlabs/skeleton';
-
-	export let playerCharacter: PlayerCharacterCreate;
+	import { characterCreateStore } from '../characterSheet/characterStore';
+	import Selectionbox from '../selectionbox/selectionbox.svelte';
 
 	const validClanNames = typedObjectKeys(clanName.Values);
 	const baseUrl = 'https://vamp.bynightstudios.com/vampire/disciplines';
@@ -23,35 +22,27 @@
 		}
 		selectedConfigEntry = config;
 
-		playerCharacter.disciplines = [];
+		$characterCreateStore.disciplines = [];
 
 		for (const discipline of selectedConfigEntry) {
-			playerCharacter.disciplines?.push({ name: discipline, inclan: true, value: 0 });
+			$characterCreateStore.disciplines?.push({ name: discipline, inclan: true, value: 0 });
 		}
 	}
 
 	$: locked =
-		isNullOrUndefined(playerCharacter.clan) ||
-		isNullOrUndefined(playerCharacter.disciplines) ||
-		playerCharacter.disciplines.length === 0;
+		isNullOrUndefined($characterCreateStore.clan) ||
+		isNullOrUndefined($characterCreateStore.disciplines) ||
+		$characterCreateStore.disciplines.length === 0;
 </script>
 
 <Step {locked}>
 	<svelte:fragment slot="header">Step 3: Choose a Clan</svelte:fragment>
-	<div class="grid auto-rows-auto grid-cols-1">
-		<label>
-			Clan
-			<select
-				class="select rounded-none"
-				bind:value={playerCharacter.clan}
-				on:change={() => setInClanDisciplines(playerCharacter.clan)}
-			>
-				{#each validClanNames as entry}
-					<option value={entry}>{entry}</option>
-				{/each}
-			</select>
-		</label>
-	</div>
+	<Selectionbox
+		label="Clan"
+		selectableValues={validClanNames}
+		bind:value={$characterCreateStore.clan}
+		onChange={() => setInClanDisciplines($characterCreateStore.clan)}
+	/>
 
 	{#if selectedConfigEntry}
 		<div class="card mt-6 rounded-none">
