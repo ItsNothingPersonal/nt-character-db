@@ -20,7 +20,7 @@ export async function GET({ url, locals }) {
 	if (playerBeastTraitsParsed.success) {
 		return json(playerBeastTraitsParsed.data);
 	} else {
-		throw error(
+		error(
 			HttpStatusCode.INTERNAL_SERVER_ERROR,
 			'Charakter-Beast-Traits in Datenbank entsprechen nicht dem korrekten Schema'
 		);

@@ -17,7 +17,7 @@ export async function GET({ url, locals }) {
 	if (playerMeritsParsed.success) {
 		return json(playerMeritsParsed.data);
 	} else {
-		throw error(
+		error(
 			HttpStatusCode.INTERNAL_SERVER_ERROR,
 			'Charakter-Merits in Datenbank entsprechen nicht dem korrekten Schema'
 		);

@@ -17,7 +17,7 @@ export async function GET({ url, locals }) {
 	if (playerSkillsParsed.success) {
 		return json(playerSkillsParsed.data);
 	} else {
-		throw error(
+		error(
 			HttpStatusCode.INTERNAL_SERVER_ERROR,
 			'Charakter-Skills in Datenbank entsprechen nicht dem korrekten Schema'
 		);

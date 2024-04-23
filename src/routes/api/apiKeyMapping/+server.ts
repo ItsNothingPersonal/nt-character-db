@@ -20,9 +20,9 @@ export async function POST({ locals, request }) {
 				.getFirstListItem<ApiKeyMapping>(`api_key='${apiKeyRequestParsed.data.apiKey}'`);
 		} catch (e) {
 			if (e instanceof ClientResponseError) {
-				throw error(HttpStatusCode.NOT_FOUND, `API-Key existiert nicht: ${e.message}`);
+				error(HttpStatusCode.NOT_FOUND, `API-Key existiert nicht: ${e.message}`);
 			}
-			throw error(
+			error(
 				HttpStatusCode.INTERNAL_SERVER_ERROR,
 				`Unbekannter Fehler aufgetreten: ${JSON.stringify(e)}`
 			);
@@ -33,12 +33,12 @@ export async function POST({ locals, request }) {
 		if (apiKeyMappingParsed.success) {
 			return json(apiKeyMappingParsed.data);
 		} else {
-			throw error(
+			error(
 				HttpStatusCode.INTERNAL_SERVER_ERROR,
 				'API-Key-Eintrag in Datenbank entspricht nicht dem korrekten Schema'
 			);
 		}
 	} else {
-		throw error(HttpStatusCode.BAD_REQUEST, 'Der Requestbody ist nicht korrekt formatiert');
+		error(HttpStatusCode.BAD_REQUEST, 'Der Requestbody ist nicht korrekt formatiert');
 	}
 }

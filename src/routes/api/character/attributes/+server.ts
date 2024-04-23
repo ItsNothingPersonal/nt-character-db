@@ -17,7 +17,7 @@ export async function GET({ url, locals }) {
 	if (playerAttributeParsed.success) {
 		return json(playerAttributeParsed.data);
 	} else {
-		throw error(
+		error(
 			HttpStatusCode.INTERNAL_SERVER_ERROR,
 			'Charakter-Attribut in Datenbank entspricht nicht dem korrekten Schema'
 		);

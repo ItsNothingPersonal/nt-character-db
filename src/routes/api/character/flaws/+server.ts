@@ -17,7 +17,7 @@ export async function GET({ url, locals }) {
 	if (playerFlawsParsed.success) {
 		return json(playerFlawsParsed.data);
 	} else {
-		throw error(
+		error(
 			HttpStatusCode.INTERNAL_SERVER_ERROR,
 			'Charakter-Flaws in Datenbank entsprechen nicht dem korrekten Schema'
 		);

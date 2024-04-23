@@ -29,12 +29,9 @@ export async function POST({ url, locals, request }) {
 				});
 		} catch (e) {
 			if (e instanceof ClientResponseError) {
-				throw error(
-					HttpStatusCode.INTERNAL_SERVER_ERROR,
-					`Datenbankupdate fehlgeschlagen: ${e.message}`
-				);
+				error(HttpStatusCode.INTERNAL_SERVER_ERROR, `Datenbankupdate fehlgeschlagen: ${e.message}`);
 			}
-			throw error(
+			error(
 				HttpStatusCode.INTERNAL_SERVER_ERROR,
 				`Unbekannter Fehler aufgetreten: ${JSON.stringify(e)}`
 			);
@@ -42,6 +39,6 @@ export async function POST({ url, locals, request }) {
 
 		return new Response(null, { status: HttpStatusCode.NO_CONTENT });
 	} else {
-		throw error(HttpStatusCode.BAD_REQUEST, 'Der Requestbody ist nicht korrekt formatiert');
+		error(HttpStatusCode.BAD_REQUEST, 'Der Requestbody ist nicht korrekt formatiert');
 	}
 }

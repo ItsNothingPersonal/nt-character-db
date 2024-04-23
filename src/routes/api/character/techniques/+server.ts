@@ -16,7 +16,7 @@ export async function GET({ url, locals }) {
 	if (playerTechniquesParsed.success) {
 		return json(playerTechniquesParsed.data);
 	} else {
-		throw error(
+		error(
 			HttpStatusCode.INTERNAL_SERVER_ERROR,
 			'Charakter-Techniken in Datenbank entsprechen nicht dem korrekten Schema'
 		);

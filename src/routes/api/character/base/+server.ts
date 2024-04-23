@@ -20,7 +20,7 @@ export async function GET({ url, locals }) {
 	if (playerCharacterBaseParsed.success) {
 		return json(playerCharacterBaseParsed.data);
 	} else {
-		throw error(
+		error(
 			HttpStatusCode.INTERNAL_SERVER_ERROR,
 			'Charakter-Basisdaten in Datenbank entsprichen nicht dem korrekten Schema'
 		);

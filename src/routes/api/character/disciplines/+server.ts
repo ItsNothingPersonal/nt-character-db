@@ -20,7 +20,7 @@ export async function GET({ url, locals }) {
 	if (playerDisciplinesParsed.success) {
 		return json(playerDisciplinesParsed.data);
 	} else {
-		throw error(
+		error(
 			HttpStatusCode.INTERNAL_SERVER_ERROR,
 			'Charakter-Disziplinen in Datenbank entsprechen nicht dem korrekten Schema'
 		);
