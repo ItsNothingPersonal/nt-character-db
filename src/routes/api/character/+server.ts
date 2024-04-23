@@ -99,7 +99,7 @@ export async function GET({ url, fetch }) {
 		// Parsen insgesamt erfolgreich
 		return json(playerCharacterParsed.data);
 	} else {
-		throw error(
+		error(
 			HttpStatusCode.INTERNAL_SERVER_ERROR,
 			'Charakter in Datenbank entspricht nicht dem korrekten Schema'
 		);

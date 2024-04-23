@@ -17,7 +17,7 @@ export async function GET({ url, locals }) {
 	if (playerItemsParsed.success) {
 		return json(playerItemsParsed.data);
 	} else {
-		throw error(
+		error(
 			HttpStatusCode.INTERNAL_SERVER_ERROR,
 			'Charakter-Items in Datenbank entsprechen nicht dem korrekten Schema'
 		);

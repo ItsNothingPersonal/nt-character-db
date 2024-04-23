@@ -17,7 +17,7 @@ export async function GET({ url, locals }) {
 	if (playerWillpowerParsed.success) {
 		return json(playerWillpowerParsed.data);
 	} else {
-		throw error(
+		error(
 			HttpStatusCode.INTERNAL_SERVER_ERROR,
 			'Charakter-Willpower in Datenbank entsprechen nicht dem korrekten Schema'
 		);

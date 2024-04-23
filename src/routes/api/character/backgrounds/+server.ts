@@ -20,7 +20,7 @@ export async function GET({ url, locals }) {
 	if (playerBackgroundsParsed.success) {
 		return json(playerBackgroundsParsed.data);
 	} else {
-		throw error(
+		error(
 			HttpStatusCode.INTERNAL_SERVER_ERROR,
 			'Charakter-Backgrounds in Datenbank entsprechen nicht dem korrekten Schema'
 		);

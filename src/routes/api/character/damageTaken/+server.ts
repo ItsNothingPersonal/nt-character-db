@@ -20,7 +20,7 @@ export async function GET({ url, locals }) {
 	if (playerDamageTakenParsed.success) {
 		return json(playerDamageTakenParsed.data);
 	} else {
-		throw error(
+		error(
 			HttpStatusCode.INTERNAL_SERVER_ERROR,
 			'Charakter-Damage-Taken in Datenbank entsprechen nicht dem korrekten Schema'
 		);

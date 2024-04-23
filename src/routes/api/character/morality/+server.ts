@@ -17,7 +17,7 @@ export async function GET({ url, locals }) {
 	if (playerMoralityParsed.success) {
 		return json(playerMoralityParsed.data);
 	} else {
-		throw error(
+		error(
 			HttpStatusCode.INTERNAL_SERVER_ERROR,
 			'Charakter-Morality in Datenbank entspricht nicht dem korrekten Schema'
 		);

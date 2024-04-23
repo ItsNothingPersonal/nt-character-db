@@ -17,7 +17,7 @@ export async function GET({ url, locals }) {
 	if (playerBloodParsed.success) {
 		return json(playerBloodParsed.data);
 	} else {
-		throw error(
+		error(
 			HttpStatusCode.INTERNAL_SERVER_ERROR,
 			'Charakter-Blood in Datenbank entsprechen nicht dem korrekten Schema'
 		);
