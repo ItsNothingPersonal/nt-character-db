@@ -1,6 +1,6 @@
 <script lang="ts">
+	import ValueNumber from '$lib/components/valueNumber/valueNumber.svelte';
 	import type { PlayerItem } from '$lib/zod/playerCharacter/playerItem';
-	import ValueNumber from './valueNumber/valueNumber.svelte';
 
 	export let items: PlayerItem[];
 </script>

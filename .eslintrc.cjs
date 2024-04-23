@@ -20,6 +20,20 @@ module.exports = {
 	},
 	overrides: [
 		{
+			files: [
+				'src/lib/components/selectionbox/selectionbox.svelte',
+				'src/lib/components/editableRatingSelection/editableRatingSelection.svelte',
+				'src/lib/components/ratingSelection/ratingSelection.svelte'
+			],
+			parser: 'svelte-eslint-parser',
+			parserOptions: {
+				parser: '@typescript-eslint/parser'
+			},
+			rules: {
+				'no-undef': 0
+			}
+		},
+		{
 			files: ['*.svelte'],
 			parser: 'svelte-eslint-parser',
 			parserOptions: {

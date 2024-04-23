@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Tracker from '$lib/components/tracker.svelte';
+	import Tracker from '$lib/components/tracker/tracker.svelte';
 	import type { DamageUpdateBody } from '$lib/zod/updateBody/damageUpdateBody';
 	import type { NumberUpdateBody } from '$lib/zod/updateBody/numberUpdateBody';
 

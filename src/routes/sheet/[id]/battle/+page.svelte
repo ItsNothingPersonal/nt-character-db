@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Tracker from '$lib/components/tracker.svelte';
+	import Tracker from '$lib/components/tracker/tracker.svelte';
 	import Checkbox from '$lib/components/typography/checkbox.svelte';
 	import Select from '$lib/components/typography/select.svelte';
 	import { getAllDisciplineTestpools } from '$lib/util';

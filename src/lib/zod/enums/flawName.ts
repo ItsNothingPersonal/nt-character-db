@@ -40,6 +40,7 @@ export const flawName = z.enum([
 	'Death’s Reflection',
 	'Deep Sleeper',
 	'Deer in Headlights',
+	'Derangement',
 	"Devil's Mark",
 	'Diluted Blood',
 	'Discipline Illiterate',

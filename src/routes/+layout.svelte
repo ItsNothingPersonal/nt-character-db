@@ -9,6 +9,7 @@
 		AppShell,
 		Drawer,
 		LightSwitch,
+		Modal,
 		getDrawerStore,
 		initializeStores,
 		storePopup
@@ -36,6 +37,8 @@
 	}
 </script>
 
+<Modal />
+
 <Drawer>
 	<h2 class="p-4">Navigation</h2>
 	<hr />
@@ -45,7 +48,7 @@
 <!-- App Shell -->
 <AppShell
 	slotSidebarLeft="bg-surface-500/5 {classesSidebar}"
-	slotPageContent="container px-2 sm:mx-auto"
+	slotPageContent="container px-2 sm:mx-auto mt-4"
 	slotFooter={$page.url.pathname === '/' ? '' : 'h-0'}
 >
 	<svelte:fragment slot="header">
