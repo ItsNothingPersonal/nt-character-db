@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import Navigation from '$lib/components/navigation/navigation.svelte';
+	import Navigation from '$lib/components/Navigation/navigation.svelte';
 	import Footer from '$lib/components/typography/footer.svelte';
 	import { selectedCharacterIdStore } from '$lib/stores/selectedCharacterIdStore';
+	import { isNotNullOrUndefined } from '$lib/util';
 	import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 	import {
 		AppBar,
@@ -25,9 +26,6 @@
 
 	const drawerStore = getDrawerStore();
 
-	$: classesSidebar =
-		$page.url.pathname === '/' || $page.url.pathname === '/impressum' ? 'w-0' : 'w-0 lg:w-64';
-
 	function drawerOpen(): void {
 		drawerStore.open({});
 	}
@@ -47,7 +45,7 @@
 
 <!-- App Shell -->
 <AppShell
-	slotSidebarLeft="bg-surface-500/5 {classesSidebar}"
+	slotSidebarLeft="bg-surface-500/5"
 	slotPageContent="container px-2 sm:mx-auto mt-4"
 	slotFooter={$page.url.pathname === '/' ? '' : 'h-0'}
 >
@@ -78,7 +76,7 @@
 
 	<!-- Left Sidebar Slot -->
 	<svelte:fragment slot="sidebarLeft">
-		<Navigation />
+		<Navigation loggedIn={isNotNullOrUndefined(data.user)} />
 	</svelte:fragment>
 
 	<!-- Footer -->

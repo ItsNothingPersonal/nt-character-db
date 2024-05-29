@@ -1,3 +1,4 @@
+import { PBUser } from '$lib/zod/user';
 import PocketBase from 'pocketbase';
 
 // See https://kit.svelte.dev/docs/types#app
@@ -7,14 +8,11 @@ declare global {
 		// interface Error {}
 		interface Locals {
 			pb: PocketBase;
+			user: PBUser | undefined;
 		}
 		// interface PageData {}
 		// interface Platform {}
 	}
-}
-
-declare module '@fortawesome/free-solid-svg-icons/index.es' {
-	export * from '@fortawesome/free-solid-svg-icons';
 }
 
 export {};
