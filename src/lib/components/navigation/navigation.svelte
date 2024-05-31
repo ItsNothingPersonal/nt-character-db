@@ -14,7 +14,7 @@
 			<svelte:fragment slot="lead">
 				<iconify-icon icon="ic:baseline-home" width="48" height="48" />
 			</svelte:fragment>
-			Charaktere
+			Übersicht
 		</AppRailAnchor>
 	</svelte:fragment>
 	<!-- --- -->

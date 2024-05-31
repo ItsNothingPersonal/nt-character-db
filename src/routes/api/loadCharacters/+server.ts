@@ -9,7 +9,7 @@ export async function POST({ locals }) {
 	try {
 		characters = await locals.pb
 			.collection<PlayerCharacterSelection>('player_character')
-			.getFullList({ fields: 'id, name' });
+			.getFullList({ fields: 'id, name', filter: "status='accepted'" });
 	} catch (e) {
 		if (e instanceof ClientResponseError) {
 			error(HttpStatusCode.NOT_FOUND, `Charaktere konnten nicht geladen werden: ${e.message}`);
