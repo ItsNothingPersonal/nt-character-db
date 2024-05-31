@@ -17,6 +17,7 @@
 
 	export let autocollapse: boolean;
 	export let interactive: boolean = false;
+	export let open: boolean = false;
 
 	onMount(() => {
 		if (interactive) {
@@ -29,7 +30,7 @@
 
 <h1 class="h1 mb-2 p-1">{$characterStore.name}</h1>
 <Accordion padding="p-1" rounded="container" spacing="space-y-2" {autocollapse}>
-	<AccordionItem {autocollapse}>
+	<AccordionItem {autocollapse} {open}>
 		<svelte:fragment slot="summary">
 			<h2 class="h2">Base</h2>
 		</svelte:fragment>
@@ -38,7 +39,7 @@
 		</svelte:fragment>
 	</AccordionItem>
 
-	<AccordionItem {autocollapse}>
+	<AccordionItem {autocollapse} {open}>
 		<svelte:fragment slot="summary">
 			<h2 class="h2">Attributes</h2>
 		</svelte:fragment>
@@ -47,7 +48,7 @@
 		</svelte:fragment>
 	</AccordionItem>
 
-	<AccordionItem {autocollapse}>
+	<AccordionItem {autocollapse} {open}>
 		<svelte:fragment slot="summary">
 			<h2 class="h2">Skills</h2>
 		</svelte:fragment>
@@ -56,7 +57,7 @@
 		</svelte:fragment>
 	</AccordionItem>
 
-	<AccordionItem {autocollapse}>
+	<AccordionItem {autocollapse} {open}>
 		<svelte:fragment slot="summary">
 			<h2 class="h2">Disciplines</h2>
 		</svelte:fragment>
@@ -66,7 +67,7 @@
 	</AccordionItem>
 
 	{#if ($characterStore.techniques && $characterStore.techniques.length > 0) || ($interactiveModeStore && $characterStore.generation >= 8)}
-		<AccordionItem {autocollapse}>
+		<AccordionItem {autocollapse} {open}>
 			<svelte:fragment slot="summary">
 				<h2 class="h2">Techniques</h2>
 			</svelte:fragment>
@@ -76,7 +77,7 @@
 		</AccordionItem>
 	{/if}
 
-	<AccordionItem {autocollapse}>
+	<AccordionItem {autocollapse} {open}>
 		<svelte:fragment slot="summary">
 			<h2 class="h2">Morality</h2>
 		</svelte:fragment>
@@ -86,7 +87,7 @@
 	</AccordionItem>
 
 	{#if ($characterStore.merits && $characterStore.merits.length > 0) || $interactiveModeStore}
-		<AccordionItem {autocollapse}>
+		<AccordionItem {autocollapse} {open}>
 			<svelte:fragment slot="summary">
 				<h2 class="h2">Merits</h2>
 			</svelte:fragment>
@@ -97,7 +98,7 @@
 	{/if}
 
 	{#if ($characterStore.flaws && $characterStore.flaws.length > 0) || $interactiveModeStore}
-		<AccordionItem {autocollapse}>
+		<AccordionItem {autocollapse} {open}>
 			<svelte:fragment slot="summary">
 				<h2 class="h2">Flaws</h2>
 			</svelte:fragment>
@@ -107,7 +108,7 @@
 		</AccordionItem>
 	{/if}
 
-	<AccordionItem {autocollapse}>
+	<AccordionItem {autocollapse} {open}>
 		<svelte:fragment slot="summary">
 			<h2 class="h2">Backgrounds</h2>
 		</svelte:fragment>
@@ -117,7 +118,7 @@
 	</AccordionItem>
 
 	{#if $characterStore.items && $characterStore.items.length > 0}
-		<AccordionItem {autocollapse}>
+		<AccordionItem {autocollapse} {open}>
 			<svelte:fragment slot="summary">
 				<h2 class="h2">Items</h2>
 			</svelte:fragment>
@@ -128,7 +129,7 @@
 	{/if}
 
 	{#if $characterStore.experience && $characterStore.experience.length > 0}
-		<AccordionItem {autocollapse}>
+		<AccordionItem {autocollapse} {open}>
 			<svelte:fragment slot="summary">
 				<h2 class="h2">Experience</h2>
 			</svelte:fragment>

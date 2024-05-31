@@ -1,39 +1,36 @@
 <script lang="ts">
-	import { apiKeyStore } from '$lib/stores/apiKeyStore';
 	import { selectedCharacterIdStore } from '$lib/stores/selectedCharacterIdStore';
-	import { isNullOrUndefined } from '$lib/util';
-	import { apiKeyMapping } from '$lib/zod/apiKey/apiKeyMapping';
-	import type { ApiKeyRequestBody } from '$lib/zod/apiKey/apiKeyRequestBody';
 	import {
 		playerCharacterBase,
 		type PlayerCharacterBase
 	} from '$lib/zod/playerCharacter/playerCharacterBase';
+	import { playerCharacterSelection } from '$lib/zod/playerCharacterSelection/playerCharacterSelection';
+	import { onMount } from 'svelte';
 
 	let selectedCharacter: string;
 	let selectionValues: { id: string; value: string; name: string }[] = [];
 
-	async function loadCharacters(apiKey: string | undefined) {
-		if (isNullOrUndefined(apiKey) || apiKey.trim().length === 0) {
-			return;
-		}
+	onMount(async () => {
+		await loadCharacters();
+	});
 
-		const requestBody: ApiKeyRequestBody = { apiKey };
-		const apiKeyResponse = await fetch(`/api/apiKeyMapping`, {
-			method: 'POST',
-			body: JSON.stringify(requestBody)
+	async function loadCharacters() {
+		const loadCharacterResponse = await fetch(`/api/loadCharacters`, {
+			method: 'POST'
 		});
 
-		const apiKeyResponseParsed = apiKeyMapping.parse(await apiKeyResponse.json());
+		const loadCharacterResponseParsed = playerCharacterSelection
+			.array()
+			.parse(await loadCharacterResponse.json());
 
-		$apiKeyStore = apiKey;
-		apiKeyResponseParsed.characters.forEach(async (value) => {
-			const playerCharacter = await getCharacterNameById(value);
+		loadCharacterResponseParsed.forEach(async (value) => {
+			const playerCharacter = await getCharacterNameById(value.id);
 
 			// kein push, da svelte sonst updates nicht mitbekommt
 			// siehe https://learn.svelte.dev/tutorial/updating-arrays-and-objects
 			selectionValues = [
 				...selectionValues,
-				{ id: playerCharacter.id, name: playerCharacter.name, value }
+				{ id: playerCharacter.id, name: playerCharacter.name, value: value.id }
 			];
 
 			$selectedCharacterIdStore = selectionValues[0].id;
@@ -60,17 +57,6 @@
 			Character-Sheet
 		</span>
 	</h1>
-
-	<div class="mt-6 grid grid-cols-1 grid-rows-2 gap-2">
-		<input class="input variant-form-material" bind:value={$apiKeyStore} />
-		<button
-			type="button"
-			class="variant-filled btn rounded-none"
-			on:click={() => loadCharacters($apiKeyStore)}
-		>
-			Verfügbare Charaktere laden
-		</button>
-	</div>
 
 	{#if selectionValues.length > 0}
 		<hr class="mb-4 mt-4" />
