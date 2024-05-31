@@ -45,9 +45,10 @@
 
 <!-- App Shell -->
 <AppShell
+	regionPage="relative"
 	slotSidebarLeft="bg-surface-500/5"
-	slotPageContent="container px-2 sm:mx-auto mt-4"
-	slotFooter={$page.url.pathname === '/' ? '' : 'h-0'}
+	slotPageContent="container px-2 sm:mx-auto mt-4 sm:mt-4 lg:mt-8"
+	slotPageFooter="sticky bottom-0 z-10"
 >
 	<svelte:fragment slot="header">
 		<!-- App Bar -->
@@ -65,7 +66,7 @@
 							</span>
 						</button>
 					{/if}
-					<a href="/"><strong class="text-xl uppercase">Character-Sheet</strong></a>
+					<a href="/"><strong class="text-xl uppercase">Elysium</strong></a>
 				</div>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">

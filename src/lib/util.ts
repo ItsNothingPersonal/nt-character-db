@@ -104,3 +104,8 @@ export function getImageURL(
 ): string {
 	return `${PUBLIC_CHARACTER_DB_PB_URL}/api/files/${collectionId}/${recordId}/${fileName}?thumb=${size}`;
 }
+
+export function titleCaseWord(word: string): string {
+	if (!word) return word;
+	return word[0].toUpperCase() + word.substring(1).toLowerCase();
+}

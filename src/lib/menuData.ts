@@ -8,19 +8,19 @@ export const menuData: {
 	{
 		id: 0,
 		label: 'Sheet',
-		href: '/sheet',
+		href: '/sheet/[id]',
 		icon: 'mdi:google-spreadsheet'
 	},
 	{
 		id: 1,
 		label: 'Trackers',
-		href: 'trackers',
+		href: '/sheet/[id]/trackers',
 		icon: 'mdi:chart-line'
 	},
 	{
 		id: 2,
 		label: 'Battle',
-		href: 'battle',
+		href: '/sheet/[id]/battle',
 		icon: 'mdi:sword'
 	}
 ];
