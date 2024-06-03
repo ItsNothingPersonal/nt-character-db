@@ -22,6 +22,8 @@ jobs:
         run: pnpm exec playwright test
         env:
           PUBLIC_CHARACTER_DB_PB_URL: ${{ secrets.PUBLIC_CHARACTER_DB_PB_URL }}
+          IS_PRODUCTION: ${{ secrets.IS_PRODUCTION }}
+          COOKIE_NAME: ${{ secrets.pb_auth }}
       - uses: actions/upload-artifact@v3
         if: always()
         with:
