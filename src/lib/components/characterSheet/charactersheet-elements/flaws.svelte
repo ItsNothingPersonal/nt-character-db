@@ -26,7 +26,7 @@
 				onClick: () => characterStore.set(removeFlaw($characterStore, selectedFlaw)),
 				disabled: $characterStore.flaws
 					? $characterStore.flaws.length === 0 ||
-					  isNullOrUndefined($characterStore.flaws.find((e) => e.name === selectedFlaw))
+						isNullOrUndefined($characterStore.flaws.find((e) => e.name === selectedFlaw))
 					: true
 			}}
 		/>

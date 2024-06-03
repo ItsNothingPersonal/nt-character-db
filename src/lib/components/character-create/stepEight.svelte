@@ -50,7 +50,7 @@
 						characterCreateStore.set(removeMerit($characterCreateStore, selectedMerit)),
 					disabled: $characterCreateStore.merits
 						? $characterCreateStore.merits.length === 0 ||
-						  isNullOrUndefined($characterCreateStore.merits.find((e) => e.name === selectedMerit))
+							isNullOrUndefined($characterCreateStore.merits.find((e) => e.name === selectedMerit))
 						: true
 				}}
 			/>
@@ -96,7 +96,7 @@
 					onClick: () => ($characterCreateStore = removeFlaw($characterCreateStore, selectedFlaw)),
 					disabled: $characterCreateStore.flaws
 						? $characterCreateStore.flaws.length === 0 ||
-						  isNullOrUndefined($characterCreateStore.flaws.find((e) => e.name === selectedFlaw))
+							isNullOrUndefined($characterCreateStore.flaws.find((e) => e.name === selectedFlaw))
 						: true
 				}}
 			/>

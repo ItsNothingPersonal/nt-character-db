@@ -1,25 +1,36 @@
-import { CHARACTER_DB_PB_URL } from '$env/static/private';
+import { COOKIE_NAME, IS_PRODUCTION } from '$env/static/private';
+import { PUBLIC_CHARACTER_DB_PB_URL } from '$env/static/public';
+import { serializeNonPOJOs } from '$lib/util';
 import type { Handle } from '@sveltejs/kit';
 import PocketBase from 'pocketbase';
 
-export const handle: Handle = async ({ event, resolve }) => {
-	event.locals.pb = new PocketBase(CHARACTER_DB_PB_URL);
-
-	// load the store data from the request cookie string
-	event.locals.pb.authStore.loadFromCookie(event.request.headers.get('cookie') || '');
+export const handle = (async ({ event, resolve }) => {
+	const cookie = event.request.headers.get('cookie');
+	event.locals.pb = new PocketBase(PUBLIC_CHARACTER_DB_PB_URL);
+	event.locals.pb.authStore.loadFromCookie(cookie || '', COOKIE_NAME);
 
 	try {
-		// get an up-to-date auth store state by verifying and refreshing the loaded auth model (if any)
-		event.locals.pb.authStore.isValid && (await event.locals.pb.collection('users').authRefresh());
+		if (event.locals.pb.authStore.isValid) {
+			await event.locals.pb.collection('users').authRefresh();
+			event.locals.user = serializeNonPOJOs(event.locals.pb.authStore.model);
+
+			if (!IS_PRODUCTION) console.log('User:', event.locals.user?.username);
+		}
 	} catch (_) {
-		// clear the auth store on failed refresh
 		event.locals.pb.authStore.clear();
+		event.locals.user = undefined;
+
+		if (!IS_PRODUCTION) console.log('User: authStore cleared');
 	}
 
 	const response = await resolve(event);
 
-	// send back the default 'pb_auth' cookie to the client with the latest store state
-	response.headers.append('set-cookie', event.locals.pb.authStore.exportToCookie());
+	response.headers.set(
+		'set-cookie',
+		event.locals.pb.authStore.exportToCookie({ secure: Boolean(IS_PRODUCTION), sameSite: 'lax' })
+	);
+
+	if (!IS_PRODUCTION) console.log('User:', event.locals.user?.username);
 
 	return response;
-};
+}) satisfies Handle;

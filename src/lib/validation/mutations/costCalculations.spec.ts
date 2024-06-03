@@ -463,6 +463,7 @@ function createTestCharacter(): PlayerCharacter {
 		clan: 'Brujah',
 		generation: 9,
 		archetype: 'Troublemaker',
+		status: 'draft',
 		attributes: {
 			physical_value: 7,
 			physical_specialization: ['Strength'],

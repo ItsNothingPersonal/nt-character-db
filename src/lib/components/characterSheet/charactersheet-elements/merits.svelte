@@ -26,7 +26,7 @@
 				onClick: () => characterStore.set(removeMerit($characterStore, selectedMerit)),
 				disabled: $characterStore.merits
 					? $characterStore.merits.length === 0 ||
-					  isNullOrUndefined($characterStore.merits.find((e) => e.name === selectedMerit))
+						isNullOrUndefined($characterStore.merits.find((e) => e.name === selectedMerit))
 					: true
 			}}
 		/>

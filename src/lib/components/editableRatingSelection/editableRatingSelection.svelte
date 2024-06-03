@@ -42,16 +42,16 @@
 
 	$: disabledAdd = uniqueEntries
 		? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-		  (playerCharacter[propertyName] as any[])?.find((e) => e.name === selectedName)
+			(playerCharacter[propertyName] as any[])?.find((e) => e.name === selectedName)
 		: showRating && validRating.length === 0;
 
 	$: disabledRemove = playerCharacter[propertyName]
 		? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-		  (playerCharacter[propertyName] as any[]).length === 0 ||
-		  isNullOrUndefined(
+			(playerCharacter[propertyName] as any[]).length === 0 ||
+			isNullOrUndefined(
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				(playerCharacter[propertyName] as any[]).find((e) => e.name === selectedName)
-		  )
+			)
 		: true;
 
 	function updateProperty<X>(
@@ -84,7 +84,7 @@
 		const propertyContent = !playerCharacter[propertyName]
 			? []
 			: // eslint-disable-next-line @typescript-eslint/no-explicit-any
-			  (playerCharacter[propertyName] as any[]);
+				(playerCharacter[propertyName] as any[]);
 		const contentIndex = propertyContent.findIndex((e) => e.name === selectedName);
 
 		if (contentIndex !== -1) {

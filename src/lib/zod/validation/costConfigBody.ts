@@ -5,7 +5,7 @@ export const costConfigBody = z
 	.function()
 	.args(
 		playerCharacter,
-		z.string().nonempty(),
+		z.string().min(1),
 		z.literal('add').or(z.literal('remove')),
 		z.boolean(),
 		z.number().gte(0),
