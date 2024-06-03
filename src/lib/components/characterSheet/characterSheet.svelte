@@ -28,7 +28,7 @@
 	});
 </script>
 
-<h1 class="h1 mb-2 p-1">{$characterStore.name}</h1>
+<h1 class="h1 mb-2 w-full p-1">{$characterStore.name}</h1>
 <Accordion padding="p-1" rounded="container" spacing="space-y-2" {autocollapse}>
 	<AccordionItem {autocollapse} {open}>
 		<svelte:fragment slot="summary">
