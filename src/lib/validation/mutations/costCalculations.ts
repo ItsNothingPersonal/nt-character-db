@@ -1,5 +1,5 @@
 import { isNullOrUndefined } from '$lib/util';
-import type { PlayerCharacter } from '$lib/zod/playerCharacter/playerCharacter';
+import type { PlayerCharacter } from '$lib/zod/classic/playerCharacter/playerCharacter';
 import { xpChartConfig } from '../config/xpChartConfig';
 
 export function calculateAttributeCosts(

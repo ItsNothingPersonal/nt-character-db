@@ -1,4 +1,4 @@
-import type { DamageTypeName } from '$lib/zod/enums/damageTypeName';
+import type { DamageTypeName } from '$lib/zod/classic/enums/damageTypeName';
 import { error } from '@sveltejs/kit';
 import HttpStatusCode from './httpStatusCode';
 
@@ -38,5 +38,5 @@ export async function updateDamage(
 		default:
 			updateString = {};
 	}
-	await locals.pb.collection('player_character_damage_taken').update(id, updateString);
+	await locals.pb.collection('classic_player_character_damage_taken').update(id, updateString);
 }

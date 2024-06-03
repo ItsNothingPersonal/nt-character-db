@@ -42,41 +42,41 @@
 </script>
 
 <form
-	action="?/updateProfile"
-	method="post"
-	enctype="multipart/form-data"
-	use:enhance={submitUpdateProfile}
 	class="flex w-full flex-col gap-2 sm:max-w-screen-sm"
+	action="?/updateProfile"
+	enctype="multipart/form-data"
+	method="post"
+	use:enhance={submitUpdateProfile}
 >
-	<label for="avatar" class="label pb-1 font-medium"> Profil Bild </label>
+	<label class="label pb-1 font-medium" for="avatar"> Profil Bild </label>
 	<div class="group relative max-w-[128px]">
 		<label
-			for="avatar"
 			class="absolute bottom-0 left-20 z-10 w-32 text-primary-500 mix-blend-hard-light hover:cursor-pointer"
+			for="avatar"
 		>
 			<Icon icon="material-symbols:edit-document-outline" width={32} />
 		</label>
 		<Avatar
+			initials={data.user?.username.slice(0, 2)}
+			rounded="rounded-full"
 			src={previewUrl
 				? previewUrl
 				: data.user && data.user.avatar.length > 0
 					? getImageURL(data.user.collectionId, data.user.id, data.user.avatar, '128x128')
 					: undefined}
-			initials={data.user?.username.slice(0, 2)}
 			width="w-32"
-			rounded="rounded-full"
 		/>
 	</div>
 
 	<input
 		id="avatar"
 		name="avatar"
-		type="file"
 		class="input variant-form-material"
 		accept="image/*"
-		on:change={showPreview}
 		disabled={loading}
 		hidden
+		type="file"
+		on:change={showPreview}
 	/>
 
 	<label>
@@ -85,12 +85,12 @@
 			id="name"
 			name="name"
 			class="input variant-form-material"
-			value={data.user?.name}
 			disabled={loading}
+			value={data.user?.name}
 		/>
 	</label>
 
-	<button type="submit" class="variant-filled btn rounded-none" disabled={loading}>
+	<button class="variant-filled btn rounded-none" disabled={loading} type="submit">
 		Profil aktualisieren
 	</button>
 </form>

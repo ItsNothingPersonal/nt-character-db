@@ -1,5 +1,5 @@
-import type { FlawName } from '$lib/zod/enums/flawName';
-import type { AdvantageConfigBody } from '$lib/zod/validation/advantageConfigBody';
+import type { FlawName } from '$lib/zod/classic/enums/flawName';
+import type { AdvantageConfigBody } from '$lib/zod/classic/validation/advantageConfigBody';
 
 export const flawConfig = new Map<FlawName, AdvantageConfigBody>([
 	['Derangement', { cost: 2 }],

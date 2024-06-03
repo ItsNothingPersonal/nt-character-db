@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Navigation from '$lib/components/Navigation/navigation.svelte';
+	import Navigation from '$lib/components/navigation/navigation.svelte';
 	import Footer from '$lib/components/typography/footer.svelte';
 	import { selectedCharacterIdStore } from '$lib/stores/selectedCharacterIdStore';
 	import { isNotNullOrUndefined } from '$lib/util';
@@ -34,9 +34,9 @@
 <!-- App Shell -->
 <AppShell
 	regionPage="relative"
-	slotSidebarLeft="bg-surface-500/5"
 	slotPageContent="container px-2 sm:mx-auto mt-4 lg:mt-8"
 	slotPageFooter="sticky bottom-0 z-10"
+	slotSidebarLeft="bg-surface-500/5"
 >
 	<svelte:fragment slot="header">
 		<!-- App Bar -->

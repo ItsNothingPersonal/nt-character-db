@@ -15,13 +15,13 @@
 
 <a
 	class={styling}
-	role="button"
-	href={socialIconConfig[icon].href ? socialIconConfig[icon].href : href}
 	aria-label={icon !== 'email'
 		? `Link zu unserem Social-Media-Auftritt bei ${titleCaseWord(icon)}`
 		: `E-Mail-Adresse ${text}`}
+	href={socialIconConfig[icon].href ? socialIconConfig[icon].href : href}
+	role="button"
 >
-	<Icon icon={socialIconConfig[icon].icon} class="{style === 'button' ? 'mr-2' : ''} {iconSize}" />
+	<Icon class="{style === 'button' ? 'mr-2' : ''} {iconSize}" icon={socialIconConfig[icon].icon} />
 	{#if style === 'button'}
 		{#if icon === 'discord'}
 			Discord

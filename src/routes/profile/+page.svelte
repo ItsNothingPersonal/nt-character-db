@@ -13,9 +13,9 @@
 <h3 class="text-2xl font-medium">Einstellungen</h3>
 <hr class="py-2" />
 <TabGroup>
-	<Tab bind:group={tabSet} name="tab1" value={0}>Account</Tab>
-	<Tab bind:group={tabSet} name="tab2" value={1}>Profil</Tab>
-	<Tab bind:group={tabSet} name="tab3" value={2}>Sicherheit</Tab>
+	<Tab name="tab1" value={0} bind:group={tabSet}>Account</Tab>
+	<Tab name="tab2" value={1} bind:group={tabSet}>Profil</Tab>
+	<Tab name="tab3" value={2} bind:group={tabSet}>Sicherheit</Tab>
 
 	<svelte:fragment slot="panel">
 		{#if tabSet === 0}

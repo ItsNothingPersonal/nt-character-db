@@ -1,5 +1,5 @@
-import type { MeritName } from '$lib/zod/enums/meritName';
-import type { AdvantageConfigBody } from '$lib/zod/validation/advantageConfigBody';
+import type { MeritName } from '$lib/zod/classic/enums/meritName';
+import type { AdvantageConfigBody } from '$lib/zod/classic/validation/advantageConfigBody';
 
 export const meritConfig = new Map<MeritName, AdvantageConfigBody>([
 	['Surprise Attack', { cost: 1 }],

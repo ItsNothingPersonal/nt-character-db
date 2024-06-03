@@ -1,11 +1,11 @@
 import { isNullOrUndefined } from '$lib/util';
-import type { FlawName } from '$lib/zod/enums/flawName';
+import type { FlawName } from '$lib/zod/classic/enums/flawName';
 import {
 	playerCharacter as pc,
 	playerCharacterCombined,
 	type PlayerCharacter,
 	type PlayerCharacterCreate
-} from '$lib/zod/playerCharacter/playerCharacter';
+} from '$lib/zod/classic/playerCharacter/playerCharacter';
 import { get, writable } from 'svelte/store';
 
 import { flawConfig } from '../config/flawConfig';

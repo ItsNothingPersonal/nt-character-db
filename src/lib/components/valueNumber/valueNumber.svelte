@@ -11,7 +11,7 @@
 <div class="grid auto-rows-auto grid-cols-1">
 	<label class="label flex w-full flex-col" for={label}>
 		{#if href}
-			<a {href} class="underline decoration-dotted">
+			<a class="underline decoration-dotted" {href}>
 				<span class="whitespace-nowrap font-bold">{label}</span>
 			</a>
 		{:else}

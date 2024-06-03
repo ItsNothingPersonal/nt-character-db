@@ -1,19 +1,39 @@
 import { browser } from '$app/environment';
 import { PUBLIC_CHARACTER_DB_PB_URL } from '$env/static/public';
-import { getDisciplineTestpool } from './validation/testpools';
-import type { AttributeName } from './zod/enums/attributeName';
-import type { DisciplineName } from './zod/enums/disciplineName';
-import type { SkillName } from './zod/enums/skillName';
-import type { PlayerAttribute } from './zod/playerCharacter/playerAttribute';
-import type { PlayerSkill } from './zod/playerCharacter/playerSkill';
-import type { Testpool } from './zod/validation/testpool';
+import { getDisciplineTestpool } from '$lib/validation/testpools';
+import type { AttributeName } from '$lib/zod/classic/enums/attributeName';
+import type { DisciplineName } from '$lib/zod/classic/enums/disciplineName';
+import type { SkillName } from '$lib/zod/classic/enums/skillName';
+import type { PlayerAttribute } from '$lib/zod/classic/playerCharacter/playerAttribute';
+import type { PlayerSkill } from '$lib/zod/classic/playerCharacter/playerSkill';
+import type { Testpool } from '$lib/zod/classic/validation/testpool';
 
 export function isNullOrUndefined<T>(obj: T | null | undefined): obj is null | undefined {
 	return typeof obj === 'undefined' || obj === null;
 }
 
 export function detectTouchscreen() {
-	return 'ontouchstart' in window;
+	let isTouchscreen = false;
+	if (typeof window !== 'undefined' && typeof navigator !== 'undefined') {
+		if ('maxTouchPoints' in navigator && navigator.maxTouchPoints > 0) {
+			isTouchscreen = true;
+		} else if ('msMaxTouchPoints' in navigator && (navigator.msMaxTouchPoints as number) > 0) {
+			isTouchscreen = true;
+		} else {
+			const mQ = matchMedia('(pointer:coarse)');
+			if (mQ && mQ.matches) {
+				isTouchscreen = true;
+			} else if ('orientation' in window) {
+				isTouchscreen = true;
+			} else {
+				const userAgent = navigator.userAgent;
+				if (/Mobi|Android|iPhone|iPad|iPod/.test(userAgent)) {
+					isTouchscreen = true;
+				}
+			}
+		}
+	}
+	return isTouchscreen;
 }
 
 export function getAllDisciplineTestpools(disciplineNames: DisciplineName[]) {

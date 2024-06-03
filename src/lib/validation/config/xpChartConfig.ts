@@ -1,4 +1,4 @@
-import type { XpConfigBody } from '$lib/zod/validation/xpChartConfigBody';
+import type { XpConfigBody } from '$lib/zod/classic/validation/xpChartConfigBody';
 
 export const xpChartConfig = new Map<number, XpConfigBody>([
 	[13, { background: 1, skill: 1, outOfClanDiscipline: 4, technique: 12 }],

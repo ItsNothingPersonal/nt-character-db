@@ -1,7 +1,7 @@
 <script lang="ts">
+	import { interactiveModeStore } from '$lib/components/classic/characterSheet/interactiveModeStore';
 	import { Ratings } from '@skeletonlabs/skeleton';
 	import { createEventDispatcher } from 'svelte';
-	import { interactiveModeStore } from '../characterSheet/interactiveModeStore';
 
 	export let label: string;
 	export let value: number;
@@ -35,7 +35,7 @@
 <div class="flex flex-col">
 	<label class="label grid grid-cols-1 grid-rows-2" for="clan">
 		{#if href}
-			<a {href} class="underline decoration-dotted underline-offset-4">
+			<a class="underline decoration-dotted underline-offset-4" {href}>
 				<span class="font-bold">{label}</span>
 			</a>
 		{:else}
@@ -44,10 +44,10 @@
 
 		<p id="clan">
 			<Ratings
-				bind:value
-				{max}
-				justify="justify-left"
 				interactive={$interactiveModeStore}
+				justify="justify-left"
+				{max}
+				bind:value
 				on:icon={iconClick}
 			>
 				<svelte:fragment slot="empty">

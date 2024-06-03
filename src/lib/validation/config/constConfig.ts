@@ -10,8 +10,8 @@ import {
 	calculateSkillCost,
 	calculateTechniqueCosts
 } from '$lib/validation/mutations/costCalculations';
-import type { CharacterSheetSectionName } from '$lib/zod/enums/characterSheetSectionName';
-import type { CostConfigBody } from '$lib/zod/validation/costConfigBody';
+import type { CharacterSheetSectionName } from '$lib/zod/classic/enums/characterSheetSectionName';
+import type { CostConfigBody } from '$lib/zod/classic/validation/costConfigBody';
 
 export const costConfig = new Map<CharacterSheetSectionName, CostConfigBody>([
 	['Attribute', calculateAttributeCosts],

@@ -3,8 +3,8 @@
 	import {
 		playerCharacterBase,
 		type PlayerCharacterBase
-	} from '$lib/zod/playerCharacter/playerCharacterBase';
-	import { playerCharacterSelection } from '$lib/zod/playerCharacterSelection/playerCharacterSelection';
+	} from '$lib/zod/classic/playerCharacter/playerCharacterBase';
+	import { playerCharacterSelection } from '$lib/zod/classic/playerCharacterSelection/playerCharacterSelection';
 	import { onMount } from 'svelte';
 
 	let selectedCharacter: string;
@@ -15,7 +15,7 @@
 	});
 
 	async function loadCharacters() {
-		const loadCharacterResponse = await fetch(`/api/loadCharacters`, {
+		const loadCharacterResponse = await fetch(`/api/classic/loadCharacters`, {
 			method: 'POST'
 		});
 
@@ -38,7 +38,7 @@
 	}
 
 	async function getCharacterNameById(characterId: string): Promise<PlayerCharacterBase> {
-		const apiKeyResponse = await fetch(`/api/character/base?id=${characterId}`);
+		const apiKeyResponse = await fetch(`/api/classic/character/base?id=${characterId}`);
 		const playerCharacterBaseParsed = playerCharacterBase.parse(await apiKeyResponse.json());
 
 		return playerCharacterBaseParsed;
@@ -71,15 +71,15 @@
 				{/each}
 			</select>
 
-			<button type="button" class="variant-filled-primary btn rounded-none">
-				<a href={`/sheet/${selectedCharacter}`} class="w-full"> Charakter-Sheet öffnen </a>
+			<button class="variant-filled-primary btn rounded-none" type="button">
+				<a class="w-full" href={`/classic/sheet/${selectedCharacter}`}> Charakter-Sheet öffnen </a>
 			</button>
 		</div>
 	{/if}
 
 	<div class="grid grid-cols-1 grid-rows-1 gap-2">
-		<button type="button" class="variant-filled-secondary btn mt-2 rounded-none">
-			<a href="/sheet/create" class="w-full"> Charakter erstellen </a>
+		<button class="variant-filled-secondary btn mt-2 rounded-none" type="button">
+			<a class="w-full" href="/sheet/create"> Charakter erstellen </a>
 		</button>
 	</div>
 </div>

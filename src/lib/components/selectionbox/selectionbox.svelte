@@ -1,4 +1,4 @@
-<script lang="ts" generics="T">
+<script generics="T" lang="ts">
 	import type { SelectionBoxButtonConfig } from './selectionboxButtonConfig';
 
 	export let selectableValues: T[];
@@ -29,10 +29,10 @@
 			{#if addButton}
 				<button
 					id="add-{label.toLocaleLowerCase()}"
-					type="button"
 					class="variant-filled btn rounded-none"
-					on:click={addButton.onClick}
 					disabled={addButton.disabled}
+					type="button"
+					on:click={addButton.onClick}
 				>
 					Add {label}
 				</button>
@@ -40,10 +40,10 @@
 			{#if removeButton}
 				<button
 					id="remove-{label.toLocaleLowerCase()}"
-					type="button"
 					class="variant-filled btn rounded-none"
-					on:click={removeButton.onClick}
 					disabled={removeButton.disabled}
+					type="button"
+					on:click={removeButton.onClick}
 				>
 					Remove {label}
 				</button>

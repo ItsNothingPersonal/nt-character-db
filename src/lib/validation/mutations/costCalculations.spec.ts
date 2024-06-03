@@ -1,4 +1,4 @@
-import type { PlayerCharacter } from '$lib/zod/playerCharacter/playerCharacter';
+import type { PlayerCharacter } from '$lib/zod/classic/playerCharacter/playerCharacter';
 import { beforeEach, describe, expect, test } from 'vitest';
 import {
 	calculateAttributeCosts,

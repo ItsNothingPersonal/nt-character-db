@@ -1,23 +1,23 @@
-<script lang="ts" generics="T extends PlayerCharacterCreate|PlayerCharacter">
+<script generics="T extends PlayerCharacterCreate|PlayerCharacter" lang="ts">
+	import { characterStore } from '$lib/components/classic/characterSheet/characterStore';
+	import RatingSelection from '$lib/components/ratingSelection/ratingSelection.svelte';
 	import { isNullOrUndefined } from '$lib/util';
 	import { getGenerationNumber } from '$lib/validation/backgrounds';
 	import { costConfig } from '$lib/validation/config/constConfig';
-	import type { BackgroundName } from '$lib/zod/enums/backgroundName';
-	import type { CharacterSheetSectionName } from '$lib/zod/enums/characterSheetSectionName';
-	import type { DisciplineName } from '$lib/zod/enums/disciplineName';
-	import type { FlawName } from '$lib/zod/enums/flawName';
-	import type { MeritName } from '$lib/zod/enums/meritName';
-	import type { SkillName } from '$lib/zod/enums/skillName';
-	import type { TechniqueName } from '$lib/zod/enums/techniqueName';
+	import type { BackgroundName } from '$lib/zod/classic/enums/backgroundName';
+	import type { CharacterSheetSectionName } from '$lib/zod/classic/enums/characterSheetSectionName';
+	import type { DisciplineName } from '$lib/zod/classic/enums/disciplineName';
+	import type { FlawName } from '$lib/zod/classic/enums/flawName';
+	import type { MeritName } from '$lib/zod/classic/enums/meritName';
+	import type { SkillName } from '$lib/zod/classic/enums/skillName';
+	import type { TechniqueName } from '$lib/zod/classic/enums/techniqueName';
 	import type {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		PlayerCharacter,
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		PlayerCharacterCreate
-	} from '$lib/zod/playerCharacter/playerCharacter';
+	} from '$lib/zod/classic/playerCharacter/playerCharacter';
 	import { get } from 'svelte/store';
-	import { characterStore } from '../characterSheet/characterStore';
-	import RatingSelection from '../ratingSelection/ratingSelection.svelte';
 
 	export let label: string;
 	export let playerCharacter: T;
@@ -166,23 +166,23 @@
 	{label}
 	optionNames={validNames}
 	optionRatings={validRating}
+	{showRating}
 	bind:selectedName
 	bind:selectedValue
-	{showRating}
 />
 <button
-	type="button"
 	class="variant-filled btn rounded-none"
-	on:click={addButton}
 	disabled={disabledAdd}
+	type="button"
+	on:click={addButton}
 >
 	Add {label}
 </button>
 <button
-	type="button"
 	class="variant-filled btn rounded-none"
-	on:click={removeButton}
 	disabled={disabledRemove}
+	type="button"
+	on:click={removeButton}
 >
 	Remove {label}
 </button>

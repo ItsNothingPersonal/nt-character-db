@@ -1,6 +1,6 @@
 import { isNullOrUndefined } from '$lib/util';
-import type { AttackMode } from '$lib/zod/enums/attackMode';
-import type { ItemQualityName } from '$lib/zod/enums/itemQualityName';
+import type { AttackMode } from '$lib/zod/classic/enums/attackMode';
+import type { ItemQualityName } from '$lib/zod/classic/enums/itemQualityName';
 import { itemQualityBonusConfig } from './config/itemQualityBonusConfig';
 
 export function checkForApplicableItemAttackBonus(

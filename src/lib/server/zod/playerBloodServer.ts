@@ -1,4 +1,4 @@
-import { playerBlood } from '$lib/zod/playerCharacter/playerBlood';
+import { playerBlood } from '$lib/zod/classic/playerCharacter/playerBlood';
 import { z } from 'zod';
 
 export const playerBloodServer = playerBlood.extend({

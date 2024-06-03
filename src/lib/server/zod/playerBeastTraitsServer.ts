@@ -1,4 +1,4 @@
-import { playerBeastTraits } from '$lib/zod/playerCharacter/playerBeastTraits';
+import { playerBeastTraits } from '$lib/zod/classic/playerCharacter/playerBeastTraits';
 import { z } from 'zod';
 
 export const playerBeastTraitsServer = playerBeastTraits.extend({

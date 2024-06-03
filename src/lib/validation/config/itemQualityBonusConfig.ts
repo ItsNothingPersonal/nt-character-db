@@ -1,6 +1,6 @@
-import type { AttackMode } from '$lib/zod/enums/attackMode';
-import type { ItemQualityName } from '$lib/zod/enums/itemQualityName';
-import type { ItemQualityBonus } from '$lib/zod/validation/itemQualityBonus';
+import type { AttackMode } from '$lib/zod/classic/enums/attackMode';
+import type { ItemQualityName } from '$lib/zod/classic/enums/itemQualityName';
+import type { ItemQualityBonus } from '$lib/zod/classic/validation/itemQualityBonus';
 
 export const itemQualityBonusConfig = new Map<ItemQualityName, ItemQualityBonus[]>([
 	[

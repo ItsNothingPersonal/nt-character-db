@@ -1,11 +1,11 @@
 import { isNullOrUndefined } from '$lib/util';
-import type { MeritName } from '$lib/zod/enums/meritName';
+import type { MeritName } from '$lib/zod/classic/enums/meritName';
 import {
 	playerCharacter as pc,
 	playerCharacterCombined,
 	type PlayerCharacter,
 	type PlayerCharacterCreate
-} from '$lib/zod/playerCharacter/playerCharacter';
+} from '$lib/zod/classic/playerCharacter/playerCharacter';
 import { get, writable } from 'svelte/store';
 import { meritConfig } from '../config/meritConfig';
 import { calculateMeritCost } from './costCalculations';

@@ -4,15 +4,18 @@ import {
 	getSkillForDisciplineName,
 	getSkillValueByName
 } from '$lib/util';
-import type { AttackMode } from '$lib/zod/enums/attackMode';
-import type { DisciplineName } from '$lib/zod/enums/disciplineName';
-import type { PlayerAttribute } from '$lib/zod/playerCharacter/playerAttribute';
-import type { PlayerItem } from '$lib/zod/playerCharacter/playerItem';
-import type { PlayerSkill } from '$lib/zod/playerCharacter/playerSkill';
-import type { PlayerWillpower } from '$lib/zod/playerCharacter/playerWillpower';
-import type { Testpool } from '$lib/zod/validation/testpool';
+import {
+	checkForApplicableItemAttackBonus,
+	checkForApplicableItemDefenseBonus
+} from '$lib/validation/items';
+import type { AttackMode } from '$lib/zod/classic/enums/attackMode';
+import type { DisciplineName } from '$lib/zod/classic/enums/disciplineName';
+import type { PlayerAttribute } from '$lib/zod/classic/playerCharacter/playerAttribute';
+import type { PlayerItem } from '$lib/zod/classic/playerCharacter/playerItem';
+import type { PlayerSkill } from '$lib/zod/classic/playerCharacter/playerSkill';
+import type { PlayerWillpower } from '$lib/zod/classic/playerCharacter/playerWillpower';
+import type { Testpool } from '$lib/zod/classic/validation/testpool';
 import { disciplineTestpoolConfig } from './config/testpoolConfig';
-import { checkForApplicableItemAttackBonus, checkForApplicableItemDefenseBonus } from './items';
 
 export function getDisciplineTestpool(disciplineName: DisciplineName) {
 	return disciplineTestpoolConfig.get(disciplineName);
