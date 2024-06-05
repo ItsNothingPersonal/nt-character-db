@@ -6,8 +6,20 @@ import PocketBase from 'pocketbase';
 
 export const handle = (async ({ event, resolve }) => {
 	const cookie = event.request.headers.get('cookie');
+	const authorization = event.request.headers.get('authorization');
+
+	let token;
+	if (authorization && authorization.startsWith('Bearer ')) {
+		token = authorization.split(' ')[1];
+	}
+
 	event.locals.pb = new PocketBase(PUBLIC_CHARACTER_DB_PB_URL);
-	event.locals.pb.authStore.loadFromCookie(cookie || '', COOKIE_NAME);
+
+	if (token) {
+		event.locals.pb.authStore.save(token);
+	} else {
+		event.locals.pb.authStore.loadFromCookie(cookie || '', COOKIE_NAME);
+	}
 
 	try {
 		if (event.locals.pb.authStore.isValid) {

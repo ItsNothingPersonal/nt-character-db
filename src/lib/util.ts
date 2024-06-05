@@ -129,3 +129,8 @@ export function titleCaseWord(word: string): string {
 	if (!word) return word;
 	return word[0].toUpperCase() + word.substring(1).toLowerCase();
 }
+
+export const transformStringToArray = (str: string) => {
+	const result = str.split(',').map((s) => s.trim());
+	return result.length === 1 && result[0] === '' ? undefined : result;
+};
