@@ -22,3 +22,18 @@ export const playerBackground = z.object({
 });
 
 export type PlayerBackground = z.infer<typeof playerBackground>;
+
+export const playerBackgroundSingleRequestBodyDB = playerBackground.extend({
+	id: z.string().optional(),
+	character_id: z.string()
+});
+export type PlayerBackgroundSingleRequestBodyDB = z.infer<
+	typeof playerBackgroundSingleRequestBodyDB
+>;
+
+export const playerBackgroundRequestBodyDB = z.object({
+	id: z.string().optional(),
+	character_id: z.string(),
+	backgrounds: playerBackground.array().nonempty()
+});
+export type PlayerBackgroundRequestBodyDB = z.infer<typeof playerBackgroundRequestBodyDB>;

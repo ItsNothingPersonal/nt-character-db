@@ -1,10 +1,14 @@
 import HttpStatusCode from '$lib/server/httpStatusCode';
 import { validateIdParameter } from '$lib/server/util';
+import { oblivionCeremonyName } from '$lib/zod/lotn/enums/oblivionCeremonyName.js';
 import {
 	playerCeremony,
-	type PlayerCeremony
+	playerCeremonyRequestBodyDB,
+	type PlayerCeremony,
+	type PlayerCeremonyRequestBodyDB
 } from '$lib/zod/lotn/playerCharacter/playerCeremony.js';
 import { error, json } from '@sveltejs/kit';
+import { ClientResponseError } from 'pocketbase';
 
 export async function GET({ url, locals }) {
 	const id = validateIdParameter(url);
@@ -30,5 +34,42 @@ export async function GET({ url, locals }) {
 			HttpStatusCode.INTERNAL_SERVER_ERROR,
 			'LotN-Charakter-Oblivion-Ceremonies in Datenbank entsprechen nicht dem korrekten Schema'
 		);
+	}
+}
+
+export async function POST({ locals, request }) {
+	if (!locals.user) {
+		error(HttpStatusCode.UNAUTHORIZED, 'Nicht eingeloggt');
+	}
+	const requestJson = await request.json();
+	const playerCeremoniesCreateBodyParsed = playerCeremonyRequestBodyDB.safeParse(requestJson);
+
+	if (playerCeremoniesCreateBodyParsed.success) {
+		// Parsen insgesamt erfolgreich
+		let result: PlayerCeremonyRequestBodyDB;
+		try {
+			result = await locals.pb
+				.collection('lotn_player_character_oblivion_ceremony')
+				.create<PlayerCeremonyRequestBodyDB>({
+					ceremonies: playerCeremoniesCreateBodyParsed.data.ceremonies,
+					character_id: playerCeremoniesCreateBodyParsed.data.character_id
+				});
+		} catch (e) {
+			if (e instanceof ClientResponseError) {
+				error(HttpStatusCode.INTERNAL_SERVER_ERROR, `Datenbankupdate fehlgeschlagen: ${e.message}`);
+			} else {
+				error(
+					HttpStatusCode.INTERNAL_SERVER_ERROR,
+					`Unbekannter Fehler aufgetreten: ${JSON.stringify(e)}`
+				);
+			}
+		}
+
+		return new Response(JSON.stringify(oblivionCeremonyName.array().parse(result.ceremonies)), {
+			status: HttpStatusCode.OK
+		});
+	} else {
+		console.error(playerCeremoniesCreateBodyParsed.error.issues);
+		error(HttpStatusCode.BAD_REQUEST, 'Der Requestbody ist nicht korrekt formatiert');
 	}
 }

@@ -7,3 +7,16 @@ export const playerMerit = z.object({
 });
 
 export type PlayerMerit = z.infer<typeof playerMerit>;
+
+export const playerMeritSingleRequestBodyDB = playerMerit.extend({
+	id: z.string().optional(),
+	character_id: z.string()
+});
+export type PlayerMeritSingleRequestBodyDB = z.infer<typeof playerMeritSingleRequestBodyDB>;
+
+export const playerMeritRequestBodyDB = z.object({
+	id: z.string().optional(),
+	character_id: z.string(),
+	merits: playerMerit.array().nonempty()
+});
+export type PlayerMeritRequestBodyDB = z.infer<typeof playerMeritRequestBodyDB>;

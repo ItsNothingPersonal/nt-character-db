@@ -11,3 +11,16 @@ export const playerSkill = z.object({
 });
 
 export type PlayerSkill = z.infer<typeof playerSkill>;
+
+export const playerSkillSingleRequestBodyDB = playerSkill.extend({
+	id: z.string().optional(),
+	character_id: z.string()
+});
+export type PlayerSkillSingleRequestBodyDB = z.infer<typeof playerSkillSingleRequestBodyDB>;
+
+export const playerSkillRequestBodyDB = z.object({
+	id: z.string().optional(),
+	character_id: z.string(),
+	skills: playerSkill.array().nonempty()
+});
+export type PlayerSkillRequestBodyDB = z.infer<typeof playerSkillRequestBodyDB>;

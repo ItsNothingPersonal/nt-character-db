@@ -6,3 +6,9 @@ export const playerHumanity = z.object({
 });
 
 export type PlayerHumanity = z.infer<typeof playerHumanity>;
+
+export const playerHumanityRequestBodyDB = playerHumanity.extend({
+	id: z.string().optional(),
+	character_id: z.string()
+});
+export type PlayerHumanityRequestBodyDB = z.infer<typeof playerHumanityRequestBodyDB>;

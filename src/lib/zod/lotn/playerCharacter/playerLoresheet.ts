@@ -7,3 +7,9 @@ export const playerLoresheet = z.object({
 });
 
 export type PlayerLoresheet = z.infer<typeof playerLoresheet>;
+
+export const playerLoresheetRequestBodyDB = playerLoresheet.extend({
+	id: z.string().optional(),
+	character_id: z.string()
+});
+export type PlayerLoresheetRequestBodyDB = z.infer<typeof playerLoresheetRequestBodyDB>;

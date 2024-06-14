@@ -5,7 +5,7 @@ import { damageUpdateBody } from '$lib/zod/classic/updateBody/damageUpdateBody';
 import {
 	playerHealthServer,
 	type PlayerHealthServer
-} from '$lib/zod/lotn/updateBody/playerHealthServer';
+} from '$lib/zod/lotn/types/playerHealthServer';
 import { error } from '@sveltejs/kit';
 import { ClientResponseError } from 'pocketbase';
 

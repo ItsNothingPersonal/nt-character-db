@@ -20,7 +20,7 @@ import { playerWillpower } from './playerWillpower';
 export const playerCharacter = playerCharacterBase.extend({
 	attributes: playerAttribute,
 	skills: playerSkill.array(),
-	discipline: playerDiscipline.array(),
+	disciplines: playerDiscipline.array(),
 	morality: playerMorality.array(),
 	rituals: bloodSorceryRitualName.array().optional(),
 	ceremonies: oblivionCeremonyName.array().optional(),
@@ -38,9 +38,9 @@ export const playerCharacter = playerCharacterBase.extend({
 export type PlayerCharacter = z.infer<typeof playerCharacter>;
 
 export const playerCharacterCreate = playerCharacterBaseCreate.extend({
-	attributes: playerAttributeCreate,
+	attributes: playerAttributeCreate.optional(),
 	skills: playerSkill.array().default([]),
-	discipline: playerDiscipline.array().default([]),
+	disciplines: playerDiscipline.array().default([]),
 	morality: playerMorality.array().default([]),
 	rituals: bloodSorceryRitualName.array().default([]),
 	ceremonies: oblivionCeremonyName.array().default([]),
@@ -53,7 +53,7 @@ export const playerCharacterCreate = playerCharacterBaseCreate.extend({
 	willpower: playerWillpower.default({ value: 0 }),
 	experience: playerExperience.array().default([]),
 	humanity: playerHumanity.default({ value: 7, stains: 0 }),
-	characterStatus: playerStatus.array().default([]).optional()
+	characterStatus: playerStatus.array().optional()
 });
 export type PlayerCharacterCreate = z.infer<typeof playerCharacterCreate>;
 

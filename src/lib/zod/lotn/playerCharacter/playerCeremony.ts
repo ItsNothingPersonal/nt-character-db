@@ -6,3 +6,9 @@ export const playerCeremony = z.object({
 });
 
 export type PlayerCeremony = z.infer<typeof playerCeremony>;
+
+export const playerCeremonyRequestBodyDB = playerCeremony.extend({
+	id: z.string().optional(),
+	character_id: z.string()
+});
+export type PlayerCeremonyRequestBodyDB = z.infer<typeof playerCeremonyRequestBodyDB>;

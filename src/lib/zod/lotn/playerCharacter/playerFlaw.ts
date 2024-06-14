@@ -7,3 +7,16 @@ export const playerFlaw = z.object({
 });
 
 export type PlayerFlaw = z.infer<typeof playerFlaw>;
+
+export const playerFlawSingleRequestBodyDB = playerFlaw.extend({
+	id: z.string().optional(),
+	character_id: z.string()
+});
+export type PlayerFlawSingleRequestBodyDB = z.infer<typeof playerFlawSingleRequestBodyDB>;
+
+export const playerFlawRequestBodyDB = z.object({
+	id: z.string().optional(),
+	character_id: z.string(),
+	flaws: playerFlaw.array().nonempty()
+});
+export type PlayerFlawRequestBodyDB = z.infer<typeof playerFlawRequestBodyDB>;

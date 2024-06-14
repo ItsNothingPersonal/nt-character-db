@@ -2,20 +2,30 @@ import { transformStringToArray } from '$lib/util';
 import { z } from 'zod';
 import { sectName } from '../enums/sectName';
 
-export const playerStatusDB = z.object({
+export const playerStatus = z.object({
 	sect: sectName.optional(),
 	value: z.number().int().min(0).max(5).optional(),
-	monikers: z.string().transform(transformStringToArray).optional(),
-	support: z.string().transform(transformStringToArray).optional(),
-	opposition: z.string().transform(transformStringToArray).optional()
+	monikers: z
+		.union([z.string(), z.array(z.string())])
+		.transform((val) => (typeof val === 'string' ? transformStringToArray(val) : val))
+		.optional(),
+	support: z.string().array().optional(),
+	opposition: z.string().array().optional()
 });
-export const playerStatus = z.object({
-	sect: sectName,
-	value: z.number().int().min(0).max(5),
-	monikers: z.array(z.string()).optional(),
-	support: z.array(z.string()).optional(),
-	opposition: z.array(z.string()).optional()
-});
-
-export type PlayerStatusDB = z.infer<typeof playerStatusDB>;
 export type PlayerStatus = z.infer<typeof playerStatus>;
+
+export const playerStatusDB = playerStatus.extend({
+	id: z.string().optional(),
+	monikers: z
+		.array(z.string())
+		.transform((e) => e.join(', '))
+		.optional()
+});
+export type PlayerStatusDB = z.infer<typeof playerStatusDB>;
+
+export const playerStatusRequestBodyDB = z.object({
+	id: z.string().optional(),
+	character_id: z.string(),
+	status: playerStatusDB.array().nonempty().optional()
+});
+export type PlayerStatusRequestBodyDB = z.infer<typeof playerStatusRequestBodyDB>;

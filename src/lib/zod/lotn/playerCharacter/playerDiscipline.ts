@@ -26,3 +26,19 @@ export const playerDiscipline = z.discriminatedUnion('name', [
 ]);
 
 export type PlayerDiscipline = z.infer<typeof playerDiscipline>;
+
+export const playerDisciplineSingleRequestBodyDB = z.object({
+	discipline: playerDiscipline,
+	id: z.string().optional(),
+	character_id: z.string()
+});
+export type PlayerDisciplineSingleRequestBodyDB = z.infer<
+	typeof playerDisciplineSingleRequestBodyDB
+>;
+
+export const playerDisciplineRequestBodyDB = z.object({
+	id: z.string().optional(),
+	character_id: z.string(),
+	disciplines: playerDiscipline.array().nonempty()
+});
+export type PlayerDisciplineRequestBodyDB = z.infer<typeof playerDisciplineRequestBodyDB>;

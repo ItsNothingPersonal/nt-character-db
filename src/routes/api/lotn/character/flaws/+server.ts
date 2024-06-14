@@ -1,8 +1,14 @@
 import HttpStatusCode from '$lib/server/httpStatusCode';
 import { validateIdParameter } from '$lib/server/util';
-import { playerFlaw, type PlayerFlaw } from '$lib/zod/lotn/playerCharacter/playerFlaw.js';
+import {
+	playerFlaw,
+	playerFlawRequestBodyDB,
+	type PlayerFlaw,
+	type PlayerFlawSingleRequestBodyDB
+} from '$lib/zod/lotn/playerCharacter/playerFlaw.js';
 
 import { error, json } from '@sveltejs/kit';
+import { ClientResponseError } from 'pocketbase';
 
 export async function GET({ url, locals }) {
 	const id = validateIdParameter(url);
@@ -27,5 +33,48 @@ export async function GET({ url, locals }) {
 			HttpStatusCode.INTERNAL_SERVER_ERROR,
 			'LotN-Charakter-Flaws in Datenbank entsprechen nicht dem korrekten Schema'
 		);
+	}
+}
+
+export async function POST({ locals, request }) {
+	if (!locals.user) {
+		error(HttpStatusCode.UNAUTHORIZED, 'Nicht eingeloggt');
+	}
+	const requestJson = await request.json();
+	const playerFlawCreateBodyParsed = playerFlawRequestBodyDB.safeParse(requestJson);
+
+	if (playerFlawCreateBodyParsed.success) {
+		// Parsen insgesamt erfolgreich
+		const globalResult: PlayerFlawSingleRequestBodyDB[] = [];
+		for (const flaw of playerFlawCreateBodyParsed.data.flaws) {
+			try {
+				const result = await locals.pb
+					.collection('lotn_player_character_flaw')
+					.create<PlayerFlawSingleRequestBodyDB>({
+						...flaw,
+						character_id: playerFlawCreateBodyParsed.data.character_id
+					});
+				globalResult.push(result);
+			} catch (e) {
+				if (e instanceof ClientResponseError) {
+					error(
+						HttpStatusCode.INTERNAL_SERVER_ERROR,
+						`Datenbankupdate fehlgeschlagen: ${e.message}`
+					);
+				} else {
+					error(
+						HttpStatusCode.INTERNAL_SERVER_ERROR,
+						`Unbekannter Fehler aufgetreten: ${JSON.stringify(e)}`
+					);
+				}
+			}
+		}
+
+		return new Response(JSON.stringify(playerFlaw.array().parse(globalResult)), {
+			status: HttpStatusCode.OK
+		});
+	} else {
+		console.error(playerFlawCreateBodyParsed.error.issues);
+		error(HttpStatusCode.BAD_REQUEST, 'Der Requestbody ist nicht korrekt formatiert');
 	}
 }

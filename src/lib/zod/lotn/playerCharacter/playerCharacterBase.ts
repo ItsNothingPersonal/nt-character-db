@@ -24,3 +24,30 @@ export const playerCharacterBaseCreate = z.object({
 	status: characterStatus.default('draft').readonly()
 });
 export type PlayerCharacterBaseCreate = z.infer<typeof playerCharacterBaseCreate>;
+
+export const playerCharacterBaseCreateRequestBody = z.object({
+	name: z.string(),
+	clan: clanName,
+	generation: z.number().min(9).max(16),
+	predatorType: predatorType,
+	bloodPotency: z.number().min(0).max(7)
+});
+export type PlayerCharacterBaseCreateRequestBody = z.infer<
+	typeof playerCharacterBaseCreateRequestBody
+>;
+
+export const playerCharacterBaseCreateRequestBodyDB = playerCharacterBaseCreateRequestBody.extend({
+	id: z.string().optional(),
+	user: z.string().optional(),
+	status: characterStatus.default('draft')
+});
+export type PlayerCharacterBaseCreateRequestBodyDB = z.infer<
+	typeof playerCharacterBaseCreateRequestBodyDB
+>;
+
+export const playerCharacterBaseDeleteRequestBody = z.object({
+	id: z.string()
+});
+export type PlayerCharacterBaseDeleteRequestBody = z.infer<
+	typeof playerCharacterBaseDeleteRequestBody
+>;

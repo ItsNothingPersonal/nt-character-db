@@ -1,11 +1,11 @@
 import { updateHealth } from '$lib/lotn/updateHealth';
 import HttpStatusCode from '$lib/server/httpStatusCode';
 import { validateIdParameter } from '$lib/server/util';
-import { damageUpdateBody } from '$lib/zod/lotn/updateBody/damageUpdateBody';
 import {
 	playerHealthServer,
 	type PlayerHealthServer
-} from '$lib/zod/lotn/updateBody/playerHealthServer';
+} from '$lib/zod/lotn/types/playerHealthServer';
+import { damageUpdateBody } from '$lib/zod/lotn/updateBody/damageUpdateBody';
 import { error } from '@sveltejs/kit';
 import { ClientResponseError } from 'pocketbase';
 

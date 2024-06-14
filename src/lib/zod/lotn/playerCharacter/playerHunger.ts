@@ -5,3 +5,9 @@ export const playerHunger = z.object({
 });
 
 export type PlayerHunger = z.infer<typeof playerHunger>;
+
+export const playerHungerRequestBodyDB = playerHunger.extend({
+	id: z.string().optional(),
+	character_id: z.string()
+});
+export type PlayerHungerRequestBodyDB = z.infer<typeof playerHungerRequestBodyDB>;

@@ -27,3 +27,9 @@ export const playerAttributeCreate = z.object({
 });
 
 export type PlayerAttributeCreate = z.infer<typeof playerAttributeCreate>;
+
+export const playerAttributeRequestBodyDB = playerAttribute.extend({
+	id: z.string().optional(),
+	character_id: z.string()
+});
+export type PlayerAttributeRequestBodyDB = z.infer<typeof playerAttributeRequestBodyDB>;

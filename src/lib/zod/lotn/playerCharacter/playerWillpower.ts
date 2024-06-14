@@ -5,3 +5,9 @@ export const playerWillpower = z.object({
 });
 
 export type PlayerWillpower = z.infer<typeof playerWillpower>;
+
+export const playerWillpowerRequestBodyDB = playerWillpower.extend({
+	id: z.string().optional(),
+	character_id: z.string()
+});
+export type PlayerWillpowerRequestBodyDB = z.infer<typeof playerWillpowerRequestBodyDB>;
