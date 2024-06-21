@@ -19,3 +19,9 @@ export const playerMoralityRequestBodyDB = z.object({
 	morality: playerMorality.array().nonempty()
 });
 export type PlayerMoralityRequestBodyDB = z.infer<typeof playerMoralityRequestBodyDB>;
+
+export const playerMoralityUpdateRequestBody = z.object({
+	character_id: z.string(),
+	updateData: playerMorality.array().nonempty()
+});
+export type PlayerMoralityUpdateRequestBody = z.infer<typeof playerMoralityUpdateRequestBody>;

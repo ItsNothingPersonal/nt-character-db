@@ -11,3 +11,9 @@ export const playerWillpowerRequestBodyDB = playerWillpower.extend({
 	character_id: z.string()
 });
 export type PlayerWillpowerRequestBodyDB = z.infer<typeof playerWillpowerRequestBodyDB>;
+
+export const playerWillpowerUpdateRequestBody = z.object({
+	character_id: z.string(),
+	updateData: playerWillpower
+});
+export type PlayerWillpowerUpdateRequestBody = z.infer<typeof playerWillpowerUpdateRequestBody>;

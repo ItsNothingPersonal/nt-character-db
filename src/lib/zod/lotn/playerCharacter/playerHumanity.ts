@@ -12,3 +12,9 @@ export const playerHumanityRequestBodyDB = playerHumanity.extend({
 	character_id: z.string()
 });
 export type PlayerHumanityRequestBodyDB = z.infer<typeof playerHumanityRequestBodyDB>;
+
+export const playerHumanityUpdateRequestBody = z.object({
+	character_id: z.string(),
+	updateData: playerHumanity.partial()
+});
+export type PlayerHumanityUpdateRequestBody = z.infer<typeof playerHumanityUpdateRequestBody>;

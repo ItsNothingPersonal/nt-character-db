@@ -33,3 +33,9 @@ export const playerAttributeRequestBodyDB = playerAttribute.extend({
 	character_id: z.string()
 });
 export type PlayerAttributeRequestBodyDB = z.infer<typeof playerAttributeRequestBodyDB>;
+
+export const playerAttributeUpdateRequestBody = z.object({
+	character_id: z.string(),
+	updateData: playerAttribute.partial()
+});
+export type PlayerAttributeUpdateRequestBody = z.infer<typeof playerAttributeUpdateRequestBody>;

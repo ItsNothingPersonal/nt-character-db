@@ -37,3 +37,29 @@ export const playerBackgroundRequestBodyDB = z.object({
 	backgrounds: playerBackground.array().nonempty()
 });
 export type PlayerBackgroundRequestBodyDB = z.infer<typeof playerBackgroundRequestBodyDB>;
+
+export const playerBackgroundUpdateRequestBody = z.object({
+	character_id: z.string(),
+	updateData: z
+		.object({
+			name: backgroundName,
+			value: z.number().min(1).max(3).optional(),
+			sphereOfInfluence: spheresOfInfluenceName
+				.or(z.literal(''))
+				.default('')
+				.transform((e) => (e === '' ? undefined : e))
+				.nullable()
+				.optional(),
+			description: z
+				.string()
+				.max(30)
+				.transform((e) => (e === '' ? undefined : e))
+				.nullable()
+				.optional(),
+			advantages: playerBackgroundAdvantage.array().optional(),
+			disadvantages: playerBackgroundDisadvantage.array().optional()
+		})
+		.array()
+		.nonempty()
+});
+export type PlayerBackgroundUpdateRequestBody = z.infer<typeof playerBackgroundUpdateRequestBody>;

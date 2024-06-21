@@ -24,3 +24,11 @@ export const playerBackgroundAdvantageRequestBodyDB = z.object({
 export type PlayerBackgroundAdvantageRequestBodyDB = z.infer<
 	typeof playerBackgroundAdvantageRequestBodyDB
 >;
+
+export const playerBackgroundAdvantageUpdateRequestBody = z.object({
+	background_id: z.string(),
+	updateData: playerBackgroundAdvantage.array().nonempty()
+});
+export type PlayerBackgroundAdvantageUpdateRequestBody = z.infer<
+	typeof playerBackgroundAdvantageUpdateRequestBody
+>;

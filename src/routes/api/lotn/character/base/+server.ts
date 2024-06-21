@@ -5,6 +5,7 @@ import {
 	playerCharacterBaseCreateRequestBody,
 	playerCharacterBaseCreateRequestBodyDB,
 	playerCharacterBaseDeleteRequestBody,
+	playerCharacterBaseUpdateRequestBody,
 	type PlayerCharacterBase,
 	type PlayerCharacterBaseCreateRequestBody
 } from '$lib/zod/lotn/playerCharacter/playerCharacterBase';
@@ -52,6 +53,46 @@ export async function POST({ locals, request }) {
 			result = await locals.pb
 				.collection('lotn_player_character')
 				.create<PlayerCharacterBaseCreateRequestBody>(playerCharacterBaseCreateBodyParsedDB);
+		} catch (e) {
+			if (e instanceof ClientResponseError) {
+				error(HttpStatusCode.INTERNAL_SERVER_ERROR, `Datenbankupdate fehlgeschlagen: ${e.message}`);
+			}
+			error(
+				HttpStatusCode.INTERNAL_SERVER_ERROR,
+				`Unbekannter Fehler aufgetreten: ${JSON.stringify(e)}`
+			);
+		}
+
+		return new Response(JSON.stringify(playerCharacterBaseCreateRequestBodyDB.parse(result)), {
+			status: HttpStatusCode.OK
+		});
+	} else {
+		error(HttpStatusCode.BAD_REQUEST, 'Der Requestbody ist nicht korrekt formatiert');
+	}
+}
+
+export async function PUT({ locals, request }) {
+	if (!locals.user) {
+		error(HttpStatusCode.UNAUTHORIZED, 'Nicht eingeloggt');
+	}
+	const requestJson = await request.json();
+
+	const playerCharacterBaseCreateBodyParsed =
+		playerCharacterBaseUpdateRequestBody.safeParse(requestJson);
+
+	if (playerCharacterBaseCreateBodyParsed.success) {
+		const playerCharacterBaseCreateBodyParsedDB =
+			playerCharacterBaseCreateBodyParsed.data.updateData;
+
+		// Parsen insgesamt erfolgreich
+		let result: PlayerCharacterBaseCreateRequestBody;
+		try {
+			result = await locals.pb
+				.collection('lotn_player_character')
+				.update<PlayerCharacterBaseCreateRequestBody>(
+					playerCharacterBaseCreateBodyParsed.data.id,
+					playerCharacterBaseCreateBodyParsedDB
+				);
 		} catch (e) {
 			if (e instanceof ClientResponseError) {
 				error(HttpStatusCode.INTERNAL_SERVER_ERROR, `Datenbankupdate fehlgeschlagen: ${e.message}`);

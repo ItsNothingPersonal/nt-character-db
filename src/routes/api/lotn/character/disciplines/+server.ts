@@ -4,7 +4,9 @@ import type { Discipline } from '$lib/zod/lotn/disciplines/discipline.js';
 import {
 	playerDiscipline,
 	playerDisciplineRequestBodyDB,
-	type PlayerDiscipline
+	playerDisciplineUpdateRequestBody,
+	type PlayerDiscipline,
+	type PlayerDisciplineRequestBodyDB
 } from '$lib/zod/lotn/playerCharacter/playerDiscipline';
 
 import { error, json } from '@sveltejs/kit';
@@ -48,10 +50,11 @@ export async function POST({ locals, request }) {
 			try {
 				const result = await locals.pb
 					.collection('lotn_player_character_discipline')
-					.create<Discipline>({
+					.create<Discipline & { character_id: string; id?: string }>({
 						...discipline,
 						character_id: playerSkillCreateBodyParsed.data.character_id
 					});
+				console.warn(JSON.stringify(result, undefined, 2));
 				globalResult.push(result);
 			} catch (e) {
 				if (e instanceof ClientResponseError) {
@@ -76,6 +79,56 @@ export async function POST({ locals, request }) {
 		});
 	} else {
 		console.error(playerSkillCreateBodyParsed.error.issues);
+		error(HttpStatusCode.BAD_REQUEST, 'Der Requestbody ist nicht korrekt formatiert');
+	}
+}
+
+export async function PUT({ locals, request }) {
+	if (!locals.user) {
+		error(HttpStatusCode.UNAUTHORIZED, 'Nicht eingeloggt');
+	}
+	const requestJson = await request.json();
+	const updateBodyParsed = playerDisciplineUpdateRequestBody.safeParse(requestJson);
+
+	if (updateBodyParsed.success) {
+		const globalResult: PlayerDiscipline[] = [];
+
+		for (const updateItem of updateBodyParsed.data.updateData) {
+			const oldDataDB = await locals.pb
+				.collection('lotn_player_character_discipline')
+				.getFirstListItem<PlayerDisciplineRequestBodyDB>(
+					`character_id='${updateBodyParsed.data.character_id}' && name='${updateItem.name}'`
+				);
+
+			if (!oldDataDB.id) {
+				error(HttpStatusCode.BAD_REQUEST, 'Eintrag nicht gefunden');
+			}
+
+			// Parsen insgesamt erfolgreich
+			let result: PlayerDiscipline;
+			try {
+				result = await locals.pb
+					.collection('lotn_player_character_discipline')
+					.update<PlayerDiscipline>(oldDataDB.id, updateItem);
+				globalResult.push(result);
+			} catch (e) {
+				if (e instanceof ClientResponseError) {
+					error(
+						HttpStatusCode.INTERNAL_SERVER_ERROR,
+						`Datenbankupdate fehlgeschlagen: ${e.message}`
+					);
+				}
+				error(
+					HttpStatusCode.INTERNAL_SERVER_ERROR,
+					`Unbekannter Fehler aufgetreten: ${JSON.stringify(e)}`
+				);
+			}
+		}
+
+		return new Response(JSON.stringify(playerDiscipline.array().parse(globalResult)), {
+			status: HttpStatusCode.OK
+		});
+	} else {
 		error(HttpStatusCode.BAD_REQUEST, 'Der Requestbody ist nicht korrekt formatiert');
 	}
 }

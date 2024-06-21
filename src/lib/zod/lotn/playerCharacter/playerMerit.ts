@@ -20,3 +20,9 @@ export const playerMeritRequestBodyDB = z.object({
 	merits: playerMerit.array().nonempty()
 });
 export type PlayerMeritRequestBodyDB = z.infer<typeof playerMeritRequestBodyDB>;
+
+export const playerMeritUpdateRequestBody = z.object({
+	character_id: z.string(),
+	updateData: playerMerit.array().nonempty()
+});
+export type PlayerMeritUpdateRequestBody = z.infer<typeof playerMeritUpdateRequestBody>;

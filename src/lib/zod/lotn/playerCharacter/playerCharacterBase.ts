@@ -51,3 +51,11 @@ export const playerCharacterBaseDeleteRequestBody = z.object({
 export type PlayerCharacterBaseDeleteRequestBody = z.infer<
 	typeof playerCharacterBaseDeleteRequestBody
 >;
+
+export const playerCharacterBaseUpdateRequestBody = z.object({
+	id: z.string(),
+	updateData: playerCharacterBaseCreateRequestBody.partial()
+});
+export type PlayerCharacterBaseUpdateRequestBody = z.infer<
+	typeof playerCharacterBaseUpdateRequestBody
+>;

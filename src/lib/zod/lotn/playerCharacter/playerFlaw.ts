@@ -20,3 +20,9 @@ export const playerFlawRequestBodyDB = z.object({
 	flaws: playerFlaw.array().nonempty()
 });
 export type PlayerFlawRequestBodyDB = z.infer<typeof playerFlawRequestBodyDB>;
+
+export const playerFlawUpdateRequestBody = z.object({
+	character_id: z.string(),
+	updateData: playerFlaw.array().nonempty()
+});
+export type PlayerFlawUpdateRequestBody = z.infer<typeof playerFlawUpdateRequestBody>;

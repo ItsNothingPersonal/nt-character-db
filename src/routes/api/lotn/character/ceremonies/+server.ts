@@ -4,6 +4,7 @@ import { oblivionCeremonyName } from '$lib/zod/lotn/enums/oblivionCeremonyName.j
 import {
 	playerCeremony,
 	playerCeremonyRequestBodyDB,
+	playerCeremonyUpdateRequestBody,
 	type PlayerCeremony,
 	type PlayerCeremonyRequestBodyDB
 } from '$lib/zod/lotn/playerCharacter/playerCeremony.js';
@@ -70,6 +71,48 @@ export async function POST({ locals, request }) {
 		});
 	} else {
 		console.error(playerCeremoniesCreateBodyParsed.error.issues);
+		error(HttpStatusCode.BAD_REQUEST, 'Der Requestbody ist nicht korrekt formatiert');
+	}
+}
+
+export async function PUT({ locals, request }) {
+	if (!locals.user) {
+		error(HttpStatusCode.UNAUTHORIZED, 'Nicht eingeloggt');
+	}
+	const requestJson = await request.json();
+	const updateBodyParsed = playerCeremonyUpdateRequestBody.safeParse(requestJson);
+
+	if (updateBodyParsed.success) {
+		const oldDataDB = await locals.pb
+			.collection('lotn_player_character_oblivion_ceremony')
+			.getFirstListItem<PlayerCeremonyRequestBodyDB>(
+				`character_id='${updateBodyParsed.data.character_id}'`
+			);
+
+		if (!oldDataDB.id) {
+			error(HttpStatusCode.BAD_REQUEST, 'ID nicht gefunden');
+		}
+
+		// Parsen insgesamt erfolgreich
+		let result: PlayerCeremony;
+		try {
+			result = await locals.pb
+				.collection('lotn_player_character_oblivion_ceremony')
+				.update<PlayerCeremony>(oldDataDB.id, { ceremonies: updateBodyParsed.data.updateData });
+		} catch (e) {
+			if (e instanceof ClientResponseError) {
+				error(HttpStatusCode.INTERNAL_SERVER_ERROR, `Datenbankupdate fehlgeschlagen: ${e.message}`);
+			}
+			error(
+				HttpStatusCode.INTERNAL_SERVER_ERROR,
+				`Unbekannter Fehler aufgetreten: ${JSON.stringify(e)}`
+			);
+		}
+
+		return new Response(JSON.stringify(oblivionCeremonyName.array().parse(result.ceremonies)), {
+			status: HttpStatusCode.OK
+		});
+	} else {
 		error(HttpStatusCode.BAD_REQUEST, 'Der Requestbody ist nicht korrekt formatiert');
 	}
 }

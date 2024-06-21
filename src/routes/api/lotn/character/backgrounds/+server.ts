@@ -3,16 +3,20 @@ import { validateIdParameter } from '$lib/server/util';
 import {
 	playerBackground,
 	playerBackgroundRequestBodyDB,
+	playerBackgroundUpdateRequestBody,
 	type PlayerBackground,
+	type PlayerBackgroundRequestBodyDB,
 	type PlayerBackgroundSingleRequestBodyDB
 } from '$lib/zod/lotn/playerCharacter/playerBackground';
 import {
 	playerBackgroundAdvantage,
-	playerBackgroundAdvantageRequestBodyDB
+	playerBackgroundAdvantageRequestBodyDB,
+	playerBackgroundAdvantageUpdateRequestBody
 } from '$lib/zod/lotn/playerCharacter/playerBackgroundAdvantage';
 import {
 	playerBackgroundDisadvantage,
-	playerBackgroundDisadvantageRequestBodyDB
+	playerBackgroundDisadvantageRequestBodyDB,
+	playerBackgroundDisadvantageUpdateRequestBody
 } from '$lib/zod/lotn/playerCharacter/playerBackgroundDisdvantage.js';
 import { error, json } from '@sveltejs/kit';
 import { ClientResponseError } from 'pocketbase';
@@ -154,6 +158,97 @@ export async function POST({ locals, request, fetch }) {
 		});
 	} else {
 		console.error(playerMoralityCreateBodyParsed.error.issues);
+		error(HttpStatusCode.BAD_REQUEST, 'Der Requestbody ist nicht korrekt formatiert');
+	}
+}
+
+export async function PUT({ locals, request, fetch }) {
+	if (!locals.user) {
+		error(HttpStatusCode.UNAUTHORIZED, 'Nicht eingeloggt');
+	}
+	const requestJson = await request.json();
+	const updateBodyParsed = playerBackgroundUpdateRequestBody.safeParse(requestJson);
+
+	if (updateBodyParsed.success) {
+		const globalResult: PlayerBackground[] = [];
+
+		for (const updateItem of updateBodyParsed.data.updateData) {
+			const oldDataDB = await locals.pb
+				.collection('lotn_player_character_background')
+				.getFirstListItem<PlayerBackgroundRequestBodyDB>(
+					`character_id='${updateBodyParsed.data.character_id}' && name='${updateItem.name}'`
+				);
+
+			if (!oldDataDB.id) {
+				error(HttpStatusCode.BAD_REQUEST, 'Eintrag nicht gefunden');
+			}
+
+			// Parsen insgesamt erfolgreich
+			let result: PlayerBackgroundSingleRequestBodyDB;
+			try {
+				result = await locals.pb
+					.collection('lotn_player_character_background')
+					.update<PlayerBackgroundSingleRequestBodyDB>(oldDataDB.id, updateItem);
+
+				if (updateItem.advantages && updateItem.advantages.length > 0) {
+					const backgroundAdvantageUpdateRequestBody =
+						playerBackgroundAdvantageUpdateRequestBody.parse({
+							updateData: updateItem.advantages,
+							background_id: result.id
+						});
+					const backgroundAdvantageUpdateRequestBodyDB = await fetch(
+						`/api/lotn/character/backgrounds/advantages`,
+						{
+							method: 'PUT',
+							body: JSON.stringify(backgroundAdvantageUpdateRequestBody)
+						}
+					);
+					const backgroundAdvantageUpdateResult = playerBackgroundAdvantage
+						.array()
+						.parse(await backgroundAdvantageUpdateRequestBodyDB.json());
+
+					result.advantages = backgroundAdvantageUpdateResult;
+				}
+
+				if (updateItem.disadvantages && updateItem.disadvantages.length > 0) {
+					const backgroundDisadvantageUpdateRequestBody =
+						playerBackgroundDisadvantageUpdateRequestBody.parse({
+							updateData: updateItem.disadvantages,
+							background_id: result.id
+						});
+					const backgroundDisadvantageUpdateRequestBodyDB = await fetch(
+						`/api/lotn/character/backgrounds/disadvantages`,
+						{
+							method: 'PUT',
+							body: JSON.stringify(backgroundDisadvantageUpdateRequestBody)
+						}
+					);
+					const backgroundDisadvantageUpdateResult = playerBackgroundDisadvantage
+						.array()
+						.parse(await backgroundDisadvantageUpdateRequestBodyDB.json());
+
+					result.disadvantages = backgroundDisadvantageUpdateResult;
+				}
+
+				globalResult.push(result);
+			} catch (e) {
+				if (e instanceof ClientResponseError) {
+					error(
+						HttpStatusCode.INTERNAL_SERVER_ERROR,
+						`Datenbankupdate fehlgeschlagen: ${e.message}`
+					);
+				}
+				error(
+					HttpStatusCode.INTERNAL_SERVER_ERROR,
+					`Unbekannter Fehler aufgetreten: ${JSON.stringify(e)}`
+				);
+			}
+		}
+
+		return new Response(JSON.stringify(playerBackground.array().parse(globalResult)), {
+			status: HttpStatusCode.OK
+		});
+	} else {
 		error(HttpStatusCode.BAD_REQUEST, 'Der Requestbody ist nicht korrekt formatiert');
 	}
 }

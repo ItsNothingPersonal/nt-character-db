@@ -12,3 +12,9 @@ export const playerRitualRequestBodyDB = playerRitual.extend({
 	character_id: z.string()
 });
 export type PlayerRitualRequestBodyDB = z.infer<typeof playerRitualRequestBodyDB>;
+
+export const playerRitualUpdateRequestBody = z.object({
+	character_id: z.string(),
+	updateData: bloodSorceryRitualName.array().nonempty()
+});
+export type PlayerRitualUpdateRequestBody = z.infer<typeof playerRitualUpdateRequestBody>;

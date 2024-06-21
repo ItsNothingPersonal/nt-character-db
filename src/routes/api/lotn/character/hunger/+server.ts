@@ -3,6 +3,7 @@ import { validateIdParameter } from '$lib/server/util';
 import {
 	playerHunger,
 	playerHungerRequestBodyDB,
+	playerHungerUpdateRequestBody,
 	type PlayerHunger,
 	type PlayerHungerRequestBodyDB
 } from '$lib/zod/lotn/playerCharacter/playerHunger';
@@ -62,6 +63,48 @@ export async function POST({ locals, request }) {
 		});
 	} else {
 		console.error(playerHungerCreateBodyParsed.error.issues);
+		error(HttpStatusCode.BAD_REQUEST, 'Der Requestbody ist nicht korrekt formatiert');
+	}
+}
+
+export async function PUT({ locals, request }) {
+	if (!locals.user) {
+		error(HttpStatusCode.UNAUTHORIZED, 'Nicht eingeloggt');
+	}
+	const requestJson = await request.json();
+	const updateBodyParsed = playerHungerUpdateRequestBody.safeParse(requestJson);
+
+	if (updateBodyParsed.success) {
+		const oldDataDB = await locals.pb
+			.collection('lotn_player_character_hunger')
+			.getFirstListItem<PlayerHungerRequestBodyDB>(
+				`character_id='${updateBodyParsed.data.character_id}'`
+			);
+
+		if (!oldDataDB.id) {
+			error(HttpStatusCode.BAD_REQUEST, 'ID nicht gefunden');
+		}
+
+		// Parsen insgesamt erfolgreich
+		let result: PlayerHunger;
+		try {
+			result = await locals.pb
+				.collection('lotn_player_character_hunger')
+				.update<PlayerHunger>(oldDataDB.id, updateBodyParsed.data.updateData);
+		} catch (e) {
+			if (e instanceof ClientResponseError) {
+				error(HttpStatusCode.INTERNAL_SERVER_ERROR, `Datenbankupdate fehlgeschlagen: ${e.message}`);
+			}
+			error(
+				HttpStatusCode.INTERNAL_SERVER_ERROR,
+				`Unbekannter Fehler aufgetreten: ${JSON.stringify(e)}`
+			);
+		}
+
+		return new Response(JSON.stringify(playerHunger.parse(result)), {
+			status: HttpStatusCode.OK
+		});
+	} else {
 		error(HttpStatusCode.BAD_REQUEST, 'Der Requestbody ist nicht korrekt formatiert');
 	}
 }

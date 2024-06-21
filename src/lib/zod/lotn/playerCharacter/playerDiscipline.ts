@@ -42,3 +42,9 @@ export const playerDisciplineRequestBodyDB = z.object({
 	disciplines: playerDiscipline.array().nonempty()
 });
 export type PlayerDisciplineRequestBodyDB = z.infer<typeof playerDisciplineRequestBodyDB>;
+
+export const playerDisciplineUpdateRequestBody = z.object({
+	character_id: z.string(),
+	updateData: playerDiscipline.array().nonempty()
+});
+export type PlayerDisciplineUpdateRequestBody = z.infer<typeof playerDisciplineUpdateRequestBody>;

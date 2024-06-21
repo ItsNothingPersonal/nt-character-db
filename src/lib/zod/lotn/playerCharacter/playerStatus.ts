@@ -3,8 +3,8 @@ import { z } from 'zod';
 import { sectName } from '../enums/sectName';
 
 export const playerStatus = z.object({
-	sect: sectName.optional(),
-	value: z.number().int().min(0).max(5).optional(),
+	sect: sectName,
+	value: z.number().int().min(0).max(5),
 	monikers: z
 		.union([z.string(), z.array(z.string())])
 		.transform((val) => (typeof val === 'string' ? transformStringToArray(val) : val))
@@ -29,3 +29,9 @@ export const playerStatusRequestBodyDB = z.object({
 	status: playerStatusDB.array().nonempty().optional()
 });
 export type PlayerStatusRequestBodyDB = z.infer<typeof playerStatusRequestBodyDB>;
+
+export const playerStatusUpdateRequestBody = z.object({
+	character_id: z.string(),
+	updateData: playerStatusDB.array().nonempty()
+});
+export type PlayerStatusUpdateRequestBody = z.infer<typeof playerStatusUpdateRequestBody>;
