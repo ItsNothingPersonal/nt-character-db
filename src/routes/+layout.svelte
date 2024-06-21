@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Navigation from '$lib/components/navigation/navigation.svelte';
 	import Footer from '$lib/components/typography/footer.svelte';
-	import { selectedCharacterIdStore } from '$lib/stores/selectedCharacterIdStore';
+	import { selectedCharacterIdStoreClassic } from '$lib/stores/selectedCharacterIdStore';
 	import { isNotNullOrUndefined } from '$lib/util';
 	import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 	import {
@@ -24,7 +24,7 @@
 
 	onMount(() => {
 		if (data.characterId) {
-			selectedCharacterIdStore.set(data.characterId);
+			selectedCharacterIdStoreClassic.set(data.characterId);
 		}
 	});
 </script>
