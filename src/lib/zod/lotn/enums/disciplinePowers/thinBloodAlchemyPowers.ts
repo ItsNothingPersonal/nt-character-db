@@ -16,3 +16,4 @@ export const thinBloodAlchemyPowers = z.enum([
 	'Form of Mist',
 	'Shape Mastery'
 ]);
+export type ThinBloodAlchemyPowers = z.infer<typeof thinBloodAlchemyPowers>;

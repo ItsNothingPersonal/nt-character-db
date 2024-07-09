@@ -14,3 +14,4 @@ export const fortitudePowers = z.enum([
 	'Flesh of Marble',
 	'Personal Armor'
 ]);
+export type FortitudePowers = z.infer<typeof fortitudePowers>;

@@ -1,9 +1,14 @@
 import { z } from 'zod';
 import { meritName } from '../enums/meritName';
+import { idSchema } from '../util';
 
 export const playerMerit = z.object({
 	name: meritName,
-	value: z.number().int().min(0).max(5)
+	value: z.number().int().min(0).max(5),
+	linkedSkill: z
+		.string()
+		.transform((e) => (e === '' ? undefined : e))
+		.optional()
 });
 
 export type PlayerMerit = z.infer<typeof playerMerit>;
@@ -23,6 +28,6 @@ export type PlayerMeritRequestBodyDB = z.infer<typeof playerMeritRequestBodyDB>;
 
 export const playerMeritUpdateRequestBody = z.object({
 	character_id: z.string(),
-	updateData: playerMerit.array().nonempty()
+	updateData: playerMerit.merge(idSchema).array().nonempty()
 });
 export type PlayerMeritUpdateRequestBody = z.infer<typeof playerMeritUpdateRequestBody>;

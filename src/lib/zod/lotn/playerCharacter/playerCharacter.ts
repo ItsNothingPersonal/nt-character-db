@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { bloodSorceryRitualName } from '../enums/bloodSorceryRitualName';
 import { oblivionCeremonyName } from '../enums/oblivionCeremonyName';
+import { idSchema } from '../util';
 import { playerAttribute, playerAttributeCreate } from './playerAttribute';
 import { playerBackground } from './playerBackground';
 import { playerCharacterBase, playerCharacterBaseCreate } from './playerCharacterBase';
@@ -26,8 +27,8 @@ export const playerCharacter = playerCharacterBase.extend({
 	ceremonies: oblivionCeremonyName.array().optional(),
 	backgrounds: playerBackground.array(),
 	loresheet: playerLoresheet.optional(),
-	merits: playerMerit.array().optional(),
-	flaws: playerFlaw.array().optional(),
+	merits: playerMerit.merge(idSchema).array().optional(),
+	flaws: playerFlaw.merge(idSchema).array().optional(),
 	hunger: playerHunger,
 	health: playerHealth,
 	willpower: playerWillpower,

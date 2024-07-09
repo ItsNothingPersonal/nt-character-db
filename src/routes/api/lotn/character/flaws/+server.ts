@@ -5,9 +5,9 @@ import {
 	playerFlawRequestBodyDB,
 	playerFlawUpdateRequestBody,
 	type PlayerFlaw,
-	type PlayerFlawRequestBodyDB,
 	type PlayerFlawSingleRequestBodyDB
 } from '$lib/zod/lotn/playerCharacter/playerFlaw.js';
+import { idSchema } from '$lib/zod/lotn/util';
 
 import { error, json } from '@sveltejs/kit';
 import { ClientResponseError } from 'pocketbase';
@@ -24,7 +24,7 @@ export async function GET({ url, locals }) {
 		});
 
 	// Daten-Schema validieren
-	const playerFlawsParsed = playerFlaw.array().optional().safeParse(playerFlawsDB);
+	const playerFlawsParsed = playerFlaw.merge(idSchema).array().optional().safeParse(playerFlawsDB);
 
 	if (playerFlawsParsed.success) {
 		return playerFlawsParsed.data && playerFlawsParsed.data.length > 0
@@ -92,22 +92,13 @@ export async function PUT({ locals, request }) {
 		const globalResult: PlayerFlaw[] = [];
 
 		for (const updateItem of updateBodyParsed.data.updateData) {
-			const oldDataDB = await locals.pb
-				.collection('lotn_player_character_flaw')
-				.getFirstListItem<PlayerFlawRequestBodyDB>(
-					`character_id='${updateBodyParsed.data.character_id}' && name='${updateItem.name}'`
-				);
-
-			if (!oldDataDB.id) {
-				error(HttpStatusCode.BAD_REQUEST, 'Eintrag nicht gefunden');
-			}
-
 			// Parsen insgesamt erfolgreich
 			let result: PlayerFlaw;
+			const updateItemServer = playerFlaw.parse(updateItem);
 			try {
 				result = await locals.pb
 					.collection('lotn_player_character_flaw')
-					.update<PlayerFlaw>(oldDataDB.id, updateItem);
+					.update<PlayerFlaw>(updateItem.id, updateItemServer);
 				globalResult.push(result);
 			} catch (e) {
 				if (e instanceof ClientResponseError) {
@@ -123,7 +114,7 @@ export async function PUT({ locals, request }) {
 			}
 		}
 
-		return new Response(JSON.stringify(playerFlaw.array().parse(globalResult)), {
+		return new Response(JSON.stringify(playerFlaw.merge(idSchema).array().parse(globalResult)), {
 			status: HttpStatusCode.OK
 		});
 	} else {

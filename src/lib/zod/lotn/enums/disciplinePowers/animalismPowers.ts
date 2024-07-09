@@ -13,3 +13,5 @@ export const animalismPowers = z.enum([
 	'Animal Dominion',
 	'Drawing Out the Beast'
 ]);
+
+export type AnimalismPowers = z.infer<typeof animalismPowers>;

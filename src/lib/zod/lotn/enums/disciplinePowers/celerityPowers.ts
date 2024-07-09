@@ -13,3 +13,4 @@ export const celerityPowers = z.enum([
 	'Bulletstorm',
 	'Lightning Strike'
 ]);
+export type CelerityPowers = z.infer<typeof celerityPowers>;

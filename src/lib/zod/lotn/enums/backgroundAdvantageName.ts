@@ -4,6 +4,7 @@ export const backgroundAdvantageName = z.enum([
 	"At Arm's Length",
 	'Diversity',
 	'Reliable',
+	'Retainer',
 	'Fan Club',
 	'Star Power',
 	'Armory',

@@ -5,9 +5,10 @@ import {
 	playerMeritRequestBodyDB,
 	playerMeritUpdateRequestBody,
 	type PlayerMerit,
-	type PlayerMeritRequestBodyDB,
 	type PlayerMeritSingleRequestBodyDB
 } from '$lib/zod/lotn/playerCharacter/playerMerit.js';
+import type { PlayerSkill } from '$lib/zod/lotn/playerCharacter/playerSkill';
+import { idSchema } from '$lib/zod/lotn/util';
 
 import { error, json } from '@sveltejs/kit';
 import { ClientResponseError } from 'pocketbase';
@@ -16,15 +17,29 @@ export async function GET({ url, locals }) {
 	const id = validateIdParameter(url);
 
 	// Daten aus DB laden
-	const playerMeritsDB = await locals.pb
+	let playerMeritsDB = await locals.pb
 		.collection('lotn_player_character_merit')
-		.getFullList<PlayerMerit>({ filter: `character_id='${id}'` })
+		.getFullList<PlayerMerit & { expand?: { linkedSkill?: PlayerSkill } }>({
+			filter: `character_id='${id}'`,
+			expand: 'linkedSkill'
+		})
 		.catch(() => {
 			return undefined;
 		});
 
+	//Den SkillNamen ggfs. übernehmen
+	playerMeritsDB = playerMeritsDB?.map((e) => {
+		e.linkedSkill = e.expand?.linkedSkill?.name;
+
+		return e;
+	});
+
 	// Daten-Schema validieren
-	const playerMeritsParsed = playerMerit.array().optional().safeParse(playerMeritsDB);
+	const playerMeritsParsed = playerMerit
+		.merge(idSchema)
+		.array()
+		.optional()
+		.safeParse(playerMeritsDB);
 
 	if (playerMeritsParsed.success) {
 		return playerMeritsParsed.data && playerMeritsParsed.data.length > 0
@@ -72,7 +87,7 @@ export async function POST({ locals, request }) {
 			}
 		}
 
-		return new Response(JSON.stringify(playerMerit.array().parse(globalResult)), {
+		return new Response(JSON.stringify(playerMerit.merge(idSchema).array().parse(globalResult)), {
 			status: HttpStatusCode.OK
 		});
 	} else {
@@ -92,22 +107,13 @@ export async function PUT({ locals, request }) {
 		const globalResult: PlayerMerit[] = [];
 
 		for (const updateItem of updateBodyParsed.data.updateData) {
-			const oldDataDB = await locals.pb
-				.collection('lotn_player_character_merit')
-				.getFirstListItem<PlayerMeritRequestBodyDB>(
-					`character_id='${updateBodyParsed.data.character_id}' && name='${updateItem.name}'`
-				);
-
-			if (!oldDataDB.id) {
-				error(HttpStatusCode.BAD_REQUEST, 'Eintrag nicht gefunden');
-			}
-
 			// Parsen insgesamt erfolgreich
 			let result: PlayerMerit;
+			const updateItemServer = playerMerit.parse(updateItem);
 			try {
 				result = await locals.pb
 					.collection('lotn_player_character_merit')
-					.update<PlayerMerit>(oldDataDB.id, updateItem);
+					.update<PlayerMerit>(updateItem.id, updateItemServer);
 				globalResult.push(result);
 			} catch (e) {
 				if (e instanceof ClientResponseError) {
@@ -123,7 +129,7 @@ export async function PUT({ locals, request }) {
 			}
 		}
 
-		return new Response(JSON.stringify(playerMerit.array().parse(globalResult)), {
+		return new Response(JSON.stringify(playerMerit.merge(idSchema).array().parse(globalResult)), {
 			status: HttpStatusCode.OK
 		});
 	} else {

@@ -15,3 +15,5 @@ export const auspexPowers = z.enum([
 	'Telepathy',
 	'Unburdening the Bestial Soul'
 ]);
+
+export type AuspexPowers = z.infer<typeof auspexPowers>;

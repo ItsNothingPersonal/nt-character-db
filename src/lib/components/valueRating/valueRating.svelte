@@ -2,14 +2,15 @@
 	import { interactiveModeStore } from '$lib/components/classic/characterSheet/interactiveModeStore';
 	import { Ratings } from '@skeletonlabs/skeleton';
 	import { createEventDispatcher } from 'svelte';
+	import HelpText from '../lotn/characterSheet/components/HelpText.svelte';
 
 	export let label: string;
 	export let value: number;
-	export let specialization: string[] | string | undefined = undefined;
-	export let href: string | undefined = undefined;
+	export let specialization: string[] | string | undefined | null = undefined;
 	export let max = 5;
 	export let showInput: boolean = false;
 	export let start = 0;
+	export let labelBold: boolean = true;
 
 	const dispatch = createEventDispatcher<{
 		change: { label: string; old: number; new: number };
@@ -33,15 +34,13 @@
 </script>
 
 <div class="flex flex-col">
-	<label class="label grid grid-cols-1 grid-rows-2" for="clan">
-		{#if href}
-			<a class="underline decoration-dotted underline-offset-4" {href}>
-				<span class="font-bold">{label}</span>
-			</a>
-		{:else}
-			<span class="font-bold">{label}</span>
-		{/if}
-
+	<label class="label grid grid-cols-2 grid-rows-1" for={label}>
+		<HelpText id={label}>
+			<span id={label} class={labelBold ? 'text-bold' : ''}>{label}</span>
+			<svelte:fragment slot="helpText">
+				<slot name="helpContent" />
+			</svelte:fragment>
+		</HelpText>
 		<p id="clan">
 			<Ratings
 				interactive={$interactiveModeStore}
@@ -51,10 +50,10 @@
 				on:icon={iconClick}
 			>
 				<svelte:fragment slot="empty">
-					<iconify-icon icon="prime:circle"></iconify-icon>
+					<iconify-icon icon="prime:circle" />
 				</svelte:fragment>
 				<svelte:fragment slot="full">
-					<iconify-icon icon="prime:circle-fill"></iconify-icon>
+					<iconify-icon icon="prime:circle-fill" />
 				</svelte:fragment>
 			</Ratings>
 		</p>

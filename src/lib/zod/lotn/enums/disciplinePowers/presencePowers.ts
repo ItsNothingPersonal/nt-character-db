@@ -13,3 +13,4 @@ export const presencePowers = z.enum([
 	'Majesty',
 	'Capricious Visage'
 ]);
+export type PresencePowers = z.infer<typeof presencePowers>;

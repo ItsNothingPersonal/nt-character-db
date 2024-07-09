@@ -2,10 +2,9 @@ import HttpStatusCode from '$lib/server/httpStatusCode';
 import { validateIdParameter } from '$lib/server/util';
 import {
 	playerBackground,
-	playerBackgroundRequestBodyDB,
+	playerBackgroundCreateRequestBodyDB,
 	playerBackgroundUpdateRequestBody,
 	type PlayerBackground,
-	type PlayerBackgroundRequestBodyDB,
 	type PlayerBackgroundSingleRequestBodyDB
 } from '$lib/zod/lotn/playerCharacter/playerBackground';
 import {
@@ -20,7 +19,6 @@ import {
 } from '$lib/zod/lotn/playerCharacter/playerBackgroundDisdvantage.js';
 import { error, json } from '@sveltejs/kit';
 import { ClientResponseError } from 'pocketbase';
-import { z } from 'zod';
 
 export async function GET({ url, locals, fetch }) {
 	const id = validateIdParameter(url);
@@ -32,7 +30,6 @@ export async function GET({ url, locals, fetch }) {
 
 	// Daten-Schema validieren
 	const playerBackgroundsParsed = playerBackground
-		.extend({ id: z.string() })
 		.array()
 		.nonempty()
 		.safeParse(playerBackgroundsDB);
@@ -76,7 +73,7 @@ export async function POST({ locals, request, fetch }) {
 		error(HttpStatusCode.UNAUTHORIZED, 'Nicht eingeloggt');
 	}
 	const requestJson = await request.json();
-	const playerMoralityCreateBodyParsed = playerBackgroundRequestBodyDB.safeParse(requestJson);
+	const playerMoralityCreateBodyParsed = playerBackgroundCreateRequestBodyDB.safeParse(requestJson);
 
 	if (playerMoralityCreateBodyParsed.success) {
 		// Parsen insgesamt erfolgreich
@@ -145,6 +142,7 @@ export async function POST({ locals, request, fetch }) {
 		}
 		const returnResult: PlayerBackground[] = globalResult.map((result) => {
 			return {
+				id: result.id,
 				name: result.name,
 				value: result.value,
 				sphereOfInfluence: result.sphereOfInfluence,
@@ -173,22 +171,13 @@ export async function PUT({ locals, request, fetch }) {
 		const globalResult: PlayerBackground[] = [];
 
 		for (const updateItem of updateBodyParsed.data.updateData) {
-			const oldDataDB = await locals.pb
-				.collection('lotn_player_character_background')
-				.getFirstListItem<PlayerBackgroundRequestBodyDB>(
-					`character_id='${updateBodyParsed.data.character_id}' && name='${updateItem.name}'`
-				);
-
-			if (!oldDataDB.id) {
-				error(HttpStatusCode.BAD_REQUEST, 'Eintrag nicht gefunden');
-			}
-
 			// Parsen insgesamt erfolgreich
 			let result: PlayerBackgroundSingleRequestBodyDB;
 			try {
+				const updateItemBodyDB = playerBackground.omit({ id: true }).parse(updateItem);
 				result = await locals.pb
 					.collection('lotn_player_character_background')
-					.update<PlayerBackgroundSingleRequestBodyDB>(oldDataDB.id, updateItem);
+					.update<PlayerBackgroundSingleRequestBodyDB>(updateItem.id, updateItemBodyDB);
 
 				if (updateItem.advantages && updateItem.advantages.length > 0) {
 					const backgroundAdvantageUpdateRequestBody =

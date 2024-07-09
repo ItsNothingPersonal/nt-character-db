@@ -1,11 +1,7 @@
+<!--
 <script lang="ts">
 	import { characterCreateStore } from '$lib/components/classic/characterSheet/characterStore';
 	import EditableRatingSelection from '$lib/components/editableRatingSelection/editableRatingSelection.svelte';
-	import ValueRating from '$lib/components/valueRating/valueRating.svelte';
-	import { typedObjectKeys } from '$lib/util';
-	import { backgroundName, type BackgroundName } from '$lib/zod/classic/enums/backgroundName';
-	import { playerBackground } from '$lib/zod/classic/playerCharacter/playerBackground';
-	import { Step } from '@skeletonlabs/skeleton';
 
 	const validBackgrounds = typedObjectKeys(backgroundName.Values);
 	$: validRating = [3, 2, 1];
@@ -16,7 +12,8 @@
 		'Influences',
 		'Retainers'
 	];
-	const baseUrl = 'https://vamp.bynightstudios.com/vampire/backgrounds';
+	
+	//const baseUrl = 'https://vamp.bynightstudios.com/vampire/backgrounds';
 
 	$: locked = !playerBackground.array().length(3).safeParse($characterCreateStore.backgrounds)
 		.success;
@@ -44,3 +41,4 @@
 		{/each}
 	</div>
 </Step>
+-->

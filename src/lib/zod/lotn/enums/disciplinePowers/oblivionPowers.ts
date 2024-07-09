@@ -13,3 +13,4 @@ export const oblivionPowers = z.enum([
 	'Shadowstep',
 	'Tenebrous Avatar'
 ]);
+export type OblivionPowers = z.infer<typeof oblivionPowers>;

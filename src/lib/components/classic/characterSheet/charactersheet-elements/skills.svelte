@@ -1,3 +1,4 @@
+<!--
 <script lang="ts">
 	import EditableRatingSelection from '$lib/components/editableRatingSelection/editableRatingSelection.svelte';
 	import ValueRating from '$lib/components/valueRating/valueRating.svelte';
@@ -61,3 +62,4 @@
 		/>
 	{/each}
 </div>
+-->

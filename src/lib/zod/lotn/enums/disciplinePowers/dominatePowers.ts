@@ -13,3 +13,4 @@ export const dominatePowers = z.enum([
 	'Mass Manipulation',
 	'Terminal Decree'
 ]);
+export type DominatePowers = z.infer<typeof dominatePowers>;

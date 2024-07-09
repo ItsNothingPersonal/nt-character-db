@@ -36,11 +36,7 @@ import {
 	playerExperience,
 	playerExperienceRequestBodyDB
 } from '$lib/zod/lotn/playerCharacter/playerExperience.js';
-import {
-	playerFlaw,
-	playerFlawRequestBodyDB,
-	type PlayerFlaw
-} from '$lib/zod/lotn/playerCharacter/playerFlaw.js';
+import { playerFlaw, playerFlawRequestBodyDB } from '$lib/zod/lotn/playerCharacter/playerFlaw.js';
 import {
 	playerHealth,
 	playerHealthRequestBodyDB
@@ -60,8 +56,7 @@ import {
 } from '$lib/zod/lotn/playerCharacter/playerLoresheet.js';
 import {
 	playerMerit,
-	playerMeritRequestBodyDB,
-	type PlayerMerit
+	playerMeritRequestBodyDB
 } from '$lib/zod/lotn/playerCharacter/playerMerit.js';
 import {
 	playerMorality,
@@ -74,6 +69,7 @@ import {
 	playerWillpower,
 	playerWillpowerRequestBodyDB
 } from '$lib/zod/lotn/playerCharacter/playerWillpower.js';
+import { idSchema } from '$lib/zod/lotn/util.js';
 import { error, json } from '@sveltejs/kit';
 
 export async function GET({ url, fetch }) {
@@ -122,24 +118,27 @@ export async function GET({ url, fetch }) {
 	playerCharacterDB.loresheet = loresheet;
 
 	const playerMeritsDB = await fetch(`/api/lotn/character/merits?id=${id}`);
-	let merits: PlayerMerit[] | undefined = undefined;
+
 	if (playerMeritsDB.status === 200) {
-		merits = playerMerit
+		playerCharacterDB.merits = playerMerit
+			.merge(idSchema)
 			.array()
 			.optional()
 			.parse(await playerMeritsDB.json());
+	} else {
+		playerCharacterDB.merits = undefined;
 	}
-	playerCharacterDB.merits = merits;
 
 	const playerFlawsDB = await fetch(`/api/lotn/character/flaws?id=${id}`);
-	let flaws: PlayerFlaw[] | undefined = undefined;
 	if (playerFlawsDB.status === 200) {
-		flaws = playerFlaw
+		playerCharacterDB.flaws = playerFlaw
+			.merge(idSchema)
 			.array()
 			.optional()
 			.parse(await playerFlawsDB.json());
+	} else {
+		playerCharacterDB.flaws = undefined;
 	}
-	playerCharacterDB.flaws = flaws;
 
 	const playerHungerDB = await fetch(`/api/lotn/character/hunger?id=${id}`);
 	playerCharacterDB.hunger = playerHunger.parse(await playerHungerDB.json());

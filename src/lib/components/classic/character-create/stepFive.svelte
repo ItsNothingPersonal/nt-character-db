@@ -1,4 +1,4 @@
-<script lang="ts">
+<!--<script lang="ts">
 	import { characterCreateStore } from '$lib/components/classic/characterSheet/characterStore';
 	import EditableRatingSelection from '$lib/components/editableRatingSelection/editableRatingSelection.svelte';
 	import ValueRating from '$lib/components/valueRating/valueRating.svelte';
@@ -45,3 +45,4 @@
 		{/each}
 	</div>
 </Step>
+-->

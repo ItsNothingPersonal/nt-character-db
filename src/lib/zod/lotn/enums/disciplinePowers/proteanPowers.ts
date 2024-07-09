@@ -16,3 +16,4 @@ export const proteanPowers = z.enum([
 	'Form of Mist',
 	'Shape Mastery'
 ]);
+export type ProteanPowers = z.infer<typeof proteanPowers>;

@@ -14,3 +14,4 @@ export const obfuscatePowers = z.enum([
 	'Cloak the Gathering',
 	'Phantom Hunter'
 ]);
+export type ObfuscatePowers = z.infer<typeof obfuscatePowers>;

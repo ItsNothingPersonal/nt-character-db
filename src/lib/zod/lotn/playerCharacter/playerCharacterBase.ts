@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { characterStatus } from '../enums/characterStatus';
 import { clanName } from '../enums/clanName';
 import { predatorType } from '../enums/predatorType';
+import { sectName } from '../enums/sectName';
 
 export const playerCharacterBase = z.object({
 	id: z.string(),
@@ -10,6 +11,7 @@ export const playerCharacterBase = z.object({
 	generation: z.number().min(9).max(16),
 	predatorType: predatorType,
 	bloodPotency: z.number().min(0).max(7),
+	sect: sectName,
 	status: characterStatus.readonly()
 });
 export type PlayerCharacterBase = z.infer<typeof playerCharacterBase>;
@@ -21,6 +23,7 @@ export const playerCharacterBaseCreate = z.object({
 	generation: z.number().min(9).max(16).default(13),
 	predatorType: predatorType.optional(),
 	bloodPotency: z.number().min(0).max(7).default(0),
+	sect: sectName.optional(),
 	status: characterStatus.default('draft').readonly()
 });
 export type PlayerCharacterBaseCreate = z.infer<typeof playerCharacterBaseCreate>;
@@ -30,7 +33,8 @@ export const playerCharacterBaseCreateRequestBody = z.object({
 	clan: clanName,
 	generation: z.number().min(9).max(16),
 	predatorType: predatorType,
-	bloodPotency: z.number().min(0).max(7)
+	bloodPotency: z.number().min(0).max(7),
+	sect: sectName
 });
 export type PlayerCharacterBaseCreateRequestBody = z.infer<
 	typeof playerCharacterBaseCreateRequestBody

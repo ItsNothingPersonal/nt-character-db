@@ -12,6 +12,7 @@ export const meritName = z.enum([
 	'Bloodhound',
 	'Iron Gullet',
 	'Viscosity',
+	'Blood Empathy',
 	'Vampiric Visage',
 	'Loremaster',
 	'Medium',

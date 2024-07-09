@@ -12,3 +12,4 @@ export const bloodSorceryPowers = z.enum([
 	"Baal's Caress",
 	'Cauldron of Blood'
 ]);
+export type BloodSorceryPowers = z.infer<typeof bloodSorceryPowers>;

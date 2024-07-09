@@ -12,3 +12,4 @@ export const potencePowers = z.enum([
 	'Earth Shock',
 	'Puissance'
 ]);
+export type PotencePowers = z.infer<typeof potencePowers>;
