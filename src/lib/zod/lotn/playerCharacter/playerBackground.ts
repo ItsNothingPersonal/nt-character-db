@@ -5,7 +5,6 @@ import { playerBackgroundAdvantage } from './playerBackgroundAdvantage';
 import { playerBackgroundDisadvantage } from './playerBackgroundDisdvantage';
 
 export const playerBackground = z.object({
-	id: z.string(),
 	name: backgroundName,
 	value: z.number().min(1).max(3),
 	sphereOfInfluence: spheresOfInfluenceName
@@ -32,15 +31,14 @@ export type PlayerBackgroundSingleRequestBodyDB = z.infer<
 >;
 
 export const playerBackgroundRequestBodyDB = z.object({
-	id: z.string(),
 	character_id: z.string(),
-	backgrounds: playerBackground.omit({ id: true }).array().nonempty()
+	backgrounds: playerBackground.array().nonempty()
 });
 export type PlayerBackgroundRequestBodyDB = z.infer<typeof playerBackgroundRequestBodyDB>;
 
 export const playerBackgroundCreateRequestBodyDB = z.object({
 	character_id: z.string(),
-	backgrounds: playerBackground.omit({ id: true }).array().nonempty()
+	backgrounds: playerBackground.array().nonempty()
 });
 export type PlayerBackgroundCreateRequestBodyDB = z.infer<
 	typeof playerBackgroundCreateRequestBodyDB

@@ -108,7 +108,10 @@ export async function GET({ url, fetch }) {
 	playerCharacterDB.ceremonies = ceremonies;
 
 	const playerBackgroundDB = await fetch(`/api/lotn/character/backgrounds?id=${id}`);
-	playerCharacterDB.backgrounds = playerBackground.array().parse(await playerBackgroundDB.json());
+	playerCharacterDB.backgrounds = playerBackground
+		.merge(idSchema)
+		.array()
+		.parse(await playerBackgroundDB.json());
 
 	const playerLoresheetDB = await fetch(`/api/lotn/character/loresheet?id=${id}`);
 	let loresheet: PlayerLoresheet | undefined = undefined;
@@ -187,7 +190,6 @@ export async function POST({ locals, request, fetch }) {
 	const playerCharacterCreateBodyParsed = playerCharacterCreate.safeParse(requestJson);
 
 	if (!playerCharacterCreateBodyParsed.success) {
-		console.warn(playerCharacterCreateBodyParsed.error.issues);
 		error(HttpStatusCode.BAD_REQUEST, 'Der Requestbody ist nicht korrekt formatiert');
 	}
 

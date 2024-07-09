@@ -25,7 +25,7 @@ export const playerCharacter = playerCharacterBase.extend({
 	morality: playerMorality.array(),
 	rituals: bloodSorceryRitualName.array().optional(),
 	ceremonies: oblivionCeremonyName.array().optional(),
-	backgrounds: playerBackground.array(),
+	backgrounds: playerBackground.merge(idSchema).array(),
 	loresheet: playerLoresheet.optional(),
 	merits: playerMerit.merge(idSchema).array().optional(),
 	flaws: playerFlaw.merge(idSchema).array().optional(),

@@ -54,7 +54,6 @@ export async function POST({ locals, request }) {
 						...discipline,
 						character_id: playerSkillCreateBodyParsed.data.character_id
 					});
-				console.warn(JSON.stringify(result, undefined, 2));
 				globalResult.push(result);
 			} catch (e) {
 				if (e instanceof ClientResponseError) {

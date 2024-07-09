@@ -8,7 +8,7 @@
 	import BackgroundSphereOfInfluence from './BackgroundSphereOfInfluence.svelte';
 	import HelpText from './HelpText.svelte';
 
-	export let background: PlayerBackground;
+	export let background: PlayerBackground & { id: string };
 
 	const config = getBackgroundConfig(background.name);
 

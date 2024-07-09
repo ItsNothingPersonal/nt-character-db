@@ -14,7 +14,7 @@
 	import { interactiveModeStore } from '../interactiveModeStore';
 	import HelpText from './HelpText.svelte';
 
-	export let background: PlayerBackground;
+	export let background: PlayerBackground & { id: string };
 	export let advantage: PlayerBackgroundAdvantage;
 	export let config:
 		| AlliesConfigSchema

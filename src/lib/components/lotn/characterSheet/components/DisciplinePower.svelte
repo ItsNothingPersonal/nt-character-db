@@ -30,8 +30,6 @@
 			if (result.success) {
 				const powerParsed = normalDisciplinePowerUnion.parse(power);
 				return result.data[powerParsed];
-			} else {
-				console.warn(result.error);
 			}
 		} else if (!isNormalDiscipline(discipline)) {
 			const schema = createRitualPowerSchema(discipline);

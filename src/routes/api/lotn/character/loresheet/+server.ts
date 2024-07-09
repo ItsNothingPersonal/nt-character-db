@@ -112,7 +112,6 @@ export async function PUT({ locals, request }) {
 			status: HttpStatusCode.OK
 		});
 	} else {
-		console.warn(updateBodyParsed.error.issues);
 		error(HttpStatusCode.BAD_REQUEST, 'Der Requestbody ist nicht korrekt formatiert');
 	}
 }

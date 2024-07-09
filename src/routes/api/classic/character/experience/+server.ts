@@ -20,7 +20,6 @@ export async function GET({ url, locals }) {
 	if (playerExperienceParsed.success) {
 		return json(playerExperienceParsed.data);
 	} else {
-		console.warn(playerExperienceParsed.error.message);
 		error(
 			HttpStatusCode.INTERNAL_SERVER_ERROR,
 			'Charakter-Experience in Datenbank entsprechen nicht dem korrekten Schema'

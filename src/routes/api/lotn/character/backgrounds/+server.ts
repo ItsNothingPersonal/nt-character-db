@@ -17,6 +17,7 @@ import {
 	playerBackgroundDisadvantageRequestBodyDB,
 	playerBackgroundDisadvantageUpdateRequestBody
 } from '$lib/zod/lotn/playerCharacter/playerBackgroundDisdvantage.js';
+import { idSchema } from '$lib/zod/lotn/util';
 import { error, json } from '@sveltejs/kit';
 import { ClientResponseError } from 'pocketbase';
 
@@ -30,6 +31,7 @@ export async function GET({ url, locals, fetch }) {
 
 	// Daten-Schema validieren
 	const playerBackgroundsParsed = playerBackground
+		.merge(idSchema)
 		.array()
 		.nonempty()
 		.safeParse(playerBackgroundsDB);
@@ -59,7 +61,7 @@ export async function GET({ url, locals, fetch }) {
 			})
 		);
 
-		return json(playerBackground.array().nonempty().parse(updatedBackgrounds));
+		return json(playerBackground.merge(idSchema).array().nonempty().parse(updatedBackgrounds));
 	} else {
 		error(
 			HttpStatusCode.INTERNAL_SERVER_ERROR,
@@ -82,7 +84,7 @@ export async function POST({ locals, request, fetch }) {
 			try {
 				const result = await locals.pb
 					.collection('lotn_player_character_background')
-					.create<PlayerBackgroundSingleRequestBodyDB>({
+					.create<PlayerBackgroundSingleRequestBodyDB & { id: string }>({
 						...background,
 						character_id: playerMoralityCreateBodyParsed.data.character_id
 					});
@@ -142,7 +144,6 @@ export async function POST({ locals, request, fetch }) {
 		}
 		const returnResult: PlayerBackground[] = globalResult.map((result) => {
 			return {
-				id: result.id,
 				name: result.name,
 				value: result.value,
 				sphereOfInfluence: result.sphereOfInfluence,
@@ -172,12 +173,14 @@ export async function PUT({ locals, request, fetch }) {
 
 		for (const updateItem of updateBodyParsed.data.updateData) {
 			// Parsen insgesamt erfolgreich
-			let result: PlayerBackgroundSingleRequestBodyDB;
+			let result: PlayerBackgroundSingleRequestBodyDB & { id: string };
 			try {
-				const updateItemBodyDB = playerBackground.omit({ id: true }).parse(updateItem);
+				const updateItemBodyDB = playerBackground.parse(updateItem);
 				result = await locals.pb
 					.collection('lotn_player_character_background')
-					.update<PlayerBackgroundSingleRequestBodyDB>(updateItem.id, updateItemBodyDB);
+					.update<
+						PlayerBackgroundSingleRequestBodyDB & { id: string }
+					>(updateItem.id, updateItemBodyDB);
 
 				if (updateItem.advantages && updateItem.advantages.length > 0) {
 					const backgroundAdvantageUpdateRequestBody =
@@ -234,9 +237,12 @@ export async function PUT({ locals, request, fetch }) {
 			}
 		}
 
-		return new Response(JSON.stringify(playerBackground.array().parse(globalResult)), {
-			status: HttpStatusCode.OK
-		});
+		return new Response(
+			JSON.stringify(playerBackground.merge(idSchema).array().parse(globalResult)),
+			{
+				status: HttpStatusCode.OK
+			}
+		);
 	} else {
 		error(HttpStatusCode.BAD_REQUEST, 'Der Requestbody ist nicht korrekt formatiert');
 	}

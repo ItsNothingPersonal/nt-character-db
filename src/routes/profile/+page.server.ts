@@ -106,7 +106,6 @@ export const actions: Actions = {
 		};
 	},
 	updatePassword: async ({ request, locals }) => {
-		console.warn(`updating pasword for ${locals.user?.id}`);
 		if (isNullOrUndefined(locals.user)) redirect(303, '/login');
 
 		const formData = await request.formData();

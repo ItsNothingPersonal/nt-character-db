@@ -95,7 +95,6 @@ export async function PUT({ locals, request }) {
 		const globalResult: PlayerBackgroundAdvantage[] = [];
 
 		for (const updateItem of updateBodyParsed.data.updateData) {
-			console.warn(updateBodyParsed.data.background_id + ' ' + updateItem.name);
 			const oldDataDB = await locals.pb
 				.collection('lotn_player_character_background_advantage')
 				.getFirstListItem<PlayerBackgroundAdvantageRequestBodyDB>(
