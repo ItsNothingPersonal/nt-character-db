@@ -48,15 +48,15 @@
 				<p class="whitespace-pre-line">
 					<span class="font-bold">Masquerade Threat:</span>
 					{disciplineConfig.characteristics.masqueradeThreat.type}
-					{disciplineConfig.characteristics.masqueradeThreat.type}
 
 					{#if disciplineConfig.characteristics.masqueradeThreat.description}
+						<br />
 						{disciplineConfig.characteristics.masqueradeThreat.description}
 					{/if}
 				</p>
-				<br />
 
 				{#if disciplineConfig.characteristics.description}
+					<br />
 					<p class="whitespace-pre-line">
 						{disciplineConfig.characteristics.description}
 					</p>
