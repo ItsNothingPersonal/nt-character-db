@@ -53,7 +53,6 @@
 			</Ratings>
 			<svelte:fragment slot="helpText">
 				<p class="whitespace-pre-line">
-					<span class="font-bold">Stufe: {background.value}</span>
 					{getValueDescription(background.value)}
 				</p>
 			</svelte:fragment>

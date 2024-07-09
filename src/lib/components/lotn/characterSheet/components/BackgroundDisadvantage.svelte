@@ -80,7 +80,9 @@
 >
 	{#if description}
 		<HelpText id={`${background.id}-${disadvantage.name}`}>
-			<span id={disadvantage.name}>{disadvantage.name}</span>
+			<span id={`${background.id}-${disadvantage.name}`}>
+				{disadvantage.name}
+			</span>
 			<svelte:fragment slot="helpText">
 				{#if prerequisite}
 					<p class="whitespace-pre-line">
@@ -95,8 +97,42 @@
 				</p>
 			</svelte:fragment>
 		</HelpText>
+	{:else if valueDescription}
+		<HelpText id={`${background.id}-${disadvantage.name}`}>
+			<span id={`${background.id}-${disadvantage.name}`}>
+				{disadvantage.name}
+			</span>
+			<svelte:fragment slot="helpText">
+				{#if prerequisite}
+					<p class="whitespace-pre-line">
+						<span class="font-bold">Prerequisite:</span>
+						{prerequisite.name}
+						{prerequisite.value}
+					</p>
+					<br />
+				{/if}
+				<p class="whitespace-pre-line">
+					{valueDescription}
+				</p>
+			</svelte:fragment>
+		</HelpText>
+	{:else if prerequisite}
+		<HelpText id={`${background.id}-${disadvantage.name}`}>
+			<span id={`${background.id}-${disadvantage.name}`}>
+				{disadvantage.name}
+			</span>
+			<svelte:fragment slot="helpText">
+				<p class="whitespace-pre-line">
+					<span class="font-bold">Prerequisite:</span>
+					{prerequisite.name}
+					{prerequisite.value}
+				</p>
+			</svelte:fragment>
+		</HelpText>
 	{:else}
-		<span id={`${background.id}-${disadvantage.name}`}>{disadvantage.name}</span>
+		<span id={`${background.id}-${disadvantage.name}`}>
+			{disadvantage.name}
+		</span>
 	{/if}
 	<p id={`${background.id}-${disadvantage.name}-value`}>
 		<HelpText id={`${background.id}-${disadvantage.name}-value`}>

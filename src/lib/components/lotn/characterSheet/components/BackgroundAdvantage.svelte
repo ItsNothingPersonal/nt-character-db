@@ -64,15 +64,30 @@
 <label class="label grid w-full grid-cols-2 grid-rows-1" for={`${background.id}-${advantage.name}`}>
 	{#if description}
 		<HelpText id={`${background.id}-${advantage.name}`}>
-			<span id={advantage.name}>{advantage.name}</span>
+			<span id={`${background.id}-${advantage.name}`}>
+				{advantage.name}
+			</span>
 			<svelte:fragment slot="helpText">
 				<p class="whitespace-pre-line">
 					{description}
 				</p>
 			</svelte:fragment>
 		</HelpText>
+	{:else if valueDescription}
+		<HelpText id={`${background.id}-${advantage.name}`}>
+			<span id={`${background.id}-${advantage.name}`}>
+				{advantage.name}
+			</span>
+			<svelte:fragment slot="helpText">
+				<p class="whitespace-pre-line">
+					{valueDescription}
+				</p>
+			</svelte:fragment>
+		</HelpText>
 	{:else}
-		<span id={`${background.id}-${advantage.name}`}>{advantage.name}</span>
+		<span id={`${background.id}-${advantage.name}`}>
+			{advantage.name}
+		</span>
 	{/if}
 	<p id={`${background.id}-${advantage.name}-value`}>
 		<HelpText id={`${background.id}-${advantage.name}-value`}>
