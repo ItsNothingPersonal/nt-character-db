@@ -37,5 +37,11 @@ export const menuDataLotN: {
 		label: 'Sheet',
 		href: '/lotn/sheet/[id]',
 		icon: 'mdi:google-spreadsheet'
+	},
+	{
+		id: 1,
+		label: 'Trackers',
+		href: '/lotn/sheet/[id]/trackers',
+		icon: 'mdi:chart-line'
 	}
 ];
