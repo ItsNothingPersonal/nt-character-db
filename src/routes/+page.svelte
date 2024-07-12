@@ -114,37 +114,39 @@
 		</table>
 	</div>
 
-	<h2
-		class="font-gothica h2 mb-4 bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center text-transparent dark:from-white dark:to-red-800"
-	>
-		Entwürfe
-	</h2>
+	{#if selectionDraftValuesLotN.length > 0}
+		<h2
+			class="font-gothica h2 mb-4 bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center text-transparent dark:from-white dark:to-red-800"
+		>
+			Entwürfe
+		</h2>
 
-	<div class="table-container rounded-lg">
-		<!-- Native Table Element -->
-		<table class="table table-hover rounded-lg">
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Clan</th>
-					<th>Status</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each selectionDraftValuesLotN as entry}
+		<div class="table-container rounded-lg">
+			<!-- Native Table Element -->
+			<table class="table table-hover rounded-lg">
+				<thead>
 					<tr>
-						<td>
-							<a href={`/lotn/sheet/${entry.id}`}>
-								{entry.name}
-							</a>
-						</td>
-						<td><a href={`/lotn/sheet/${entry.id}`}>{entry.clan}</a></td>
-						<td class="capitalize"><a href={`/lotn/sheet/${entry.id}`}>{entry.status}</a></td>
+						<th>Name</th>
+						<th>Clan</th>
+						<th>Status</th>
 					</tr>
-				{/each}
-			</tbody>
-		</table>
-	</div>
+				</thead>
+				<tbody>
+					{#each selectionDraftValuesLotN as entry}
+						<tr>
+							<td>
+								<a href={`/lotn/sheet/${entry.id}`}>
+									{entry.name}
+								</a>
+							</td>
+							<td><a href={`/lotn/sheet/${entry.id}`}>{entry.clan}</a></td>
+							<td class="capitalize"><a href={`/lotn/sheet/${entry.id}`}>{entry.status}</a></td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
+	{/if}
 
 	<div class="grid grid-cols-1 grid-rows-1 gap-2">
 		<button class="variant-filled-secondary btn mt-2 rounded-none" disabled type="button">
