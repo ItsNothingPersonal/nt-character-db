@@ -1,16 +1,21 @@
 <script lang="ts">
 	import { selectedCharacterIdStoreLotN } from '$lib/stores/selectedCharacterIdStore';
-	import { playerCharacterSelection } from '$lib/zod/classic/playerCharacterSelection/playerCharacterSelection';
 	import {
 		playerCharacterBase as playerCharacterBaseLotN,
 		type PlayerCharacterBase as PlayerCharacterBaseLotN
 	} from '$lib/zod/lotn/playerCharacter/playerCharacterBase';
+	import {
+		playerCharacterSelection,
+		type PlayerCharacterSelection
+	} from '$lib/zod/lotn/types/playerCharacterSelection';
 	import { onMount } from 'svelte';
 
-	let selectionValuesLotN: { id: string; value: string; name: string }[] = [];
+	let selectionValuesLotN: PlayerCharacterSelection[] = [];
+	let selectionDraftValuesLotN: PlayerCharacterSelection[] = [];
 
 	onMount(async () => {
 		await loadLotNCharacters();
+		await loadLotNDrafts();
 	});
 
 	async function loadLotNCharacters() {
@@ -29,7 +34,40 @@
 			// siehe https://learn.svelte.dev/tutorial/updating-arrays-and-objects
 			selectionValuesLotN = [
 				...selectionValuesLotN,
-				{ id: playerCharacter.id, name: playerCharacter.name, value: value.id }
+				{
+					id: playerCharacter.id,
+					name: playerCharacter.name,
+					clan: playerCharacter.clan,
+					status: playerCharacter.status
+				}
+			];
+
+			$selectedCharacterIdStoreLotN = selectionValuesLotN[0].id;
+		});
+	}
+
+	async function loadLotNDrafts() {
+		const loadCharacterResponse = await fetch(`/api/lotn/loadDrafts`, {
+			method: 'POST'
+		});
+
+		const loadCharacterResponseParsed = playerCharacterSelection
+			.array()
+			.parse(await loadCharacterResponse.json());
+
+		loadCharacterResponseParsed.forEach(async (value) => {
+			const playerCharacter = await getLotNCharacterNameById(value.id);
+
+			// kein push, da svelte sonst updates nicht mitbekommt
+			// siehe https://learn.svelte.dev/tutorial/updating-arrays-and-objects
+			selectionDraftValuesLotN = [
+				...selectionDraftValuesLotN,
+				{
+					id: playerCharacter.id,
+					name: playerCharacter.name,
+					clan: playerCharacter.clan,
+					status: playerCharacter.status
+				}
 			];
 
 			$selectedCharacterIdStoreLotN = selectionValuesLotN[0].id;
@@ -45,32 +83,72 @@
 </script>
 
 <div class="mx-auto max-w-lg">
-	<h1 class="h1 text-center">
-		<span
-			class="bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center text-transparent dark:from-white dark:to-red-800"
-		>
-			Character-Sheet
-		</span>
+	<h1
+		class="font-gothica h1 mb-4 bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center text-transparent dark:from-white dark:to-red-800"
+	>
+		Character-Sheet
 	</h1>
+	<div class="table-container mb-6 rounded-lg">
+		<!-- Native Table Element -->
+		<table class="table table-hover rounded-lg">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Clan</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+			<tbody>
+				{#each selectionValuesLotN as entry}
+					<tr>
+						<td>
+							<a href={`/lotn/sheet/${entry.id}`}>
+								{entry.name}
+							</a>
+						</td>
+						<td><a href={`/lotn/sheet/${entry.id}`}>{entry.clan}</a></td>
+						<td class="capitalize"><a href={`/lotn/sheet/${entry.id}`}>{entry.status}</a></td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
+	</div>
 
-	<hr class="mb-4 mt-4" />
-	<div class="flex flex-row justify-center gap-4">
-		<div class="flex w-full flex-col gap-2">
-			<h2 class="h2 text-center">Protektorat</h2>
+	<h2
+		class="font-gothica h2 mb-4 bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center text-transparent dark:from-white dark:to-red-800"
+	>
+		Entwürfe
+	</h2>
 
-			{#each selectionValuesLotN as entry}
-				<a
-					class="variant-filled-primary btn rounded-none"
-					href={`/lotn/sheet/${entry.id}`}
-					type="button">{entry.name}</a
-				>
-			{/each}
+	<div class="table-container rounded-lg">
+		<!-- Native Table Element -->
+		<table class="table table-hover rounded-lg">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Clan</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+			<tbody>
+				{#each selectionDraftValuesLotN as entry}
+					<tr>
+						<td>
+							<a href={`/lotn/sheet/${entry.id}`}>
+								{entry.name}
+							</a>
+						</td>
+						<td><a href={`/lotn/sheet/${entry.id}`}>{entry.clan}</a></td>
+						<td class="capitalize"><a href={`/lotn/sheet/${entry.id}`}>{entry.status}</a></td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
+	</div>
 
-			<div class="grid grid-cols-1 grid-rows-1 gap-2">
-				<button class="variant-filled-secondary btn mt-2 rounded-none" type="button">
-					<a class="w-full" href="/sheet/create"> Charakter erstellen </a>
-				</button>
-			</div>
-		</div>
+	<div class="grid grid-cols-1 grid-rows-1 gap-2">
+		<button class="variant-filled-secondary btn mt-2 rounded-none" disabled type="button">
+			Charakter erstellen
+		</button>
 	</div>
 </div>

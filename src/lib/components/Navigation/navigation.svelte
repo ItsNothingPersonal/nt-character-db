@@ -11,12 +11,14 @@
 
 <AppRail>
 	<svelte:fragment slot="lead">
-		<AppRailAnchor href="/" selected={$page.url.pathname === '/'}>
-			<svelte:fragment slot="lead">
-				<iconify-icon height="48" icon="ic:baseline-home" width="48" />
-			</svelte:fragment>
-			Übersicht
-		</AppRailAnchor>
+		{#if loggedIn}
+			<AppRailAnchor href="/" selected={$page.url.pathname === '/'}>
+				<svelte:fragment slot="lead">
+					<iconify-icon height="48" icon="ic:baseline-home" width="48" />
+				</svelte:fragment>
+				Übersicht
+			</AppRailAnchor>
+		{/if}
 	</svelte:fragment>
 	<!-- --- -->
 	{#if loggedIn && $characterStoreClassic}

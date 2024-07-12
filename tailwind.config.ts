@@ -18,6 +18,9 @@ const config = {
 			gridTemplateRows: {
 				'double-center': 'auto 2fr 1fr',
 				'title-content': 'auto 1fr'
+			},
+			fontFamily: {
+				gothica: ['Gothica Bold']
 			}
 		}
 	},

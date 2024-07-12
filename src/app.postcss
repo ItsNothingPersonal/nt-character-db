@@ -4,6 +4,16 @@
 @tailwind utilities;
 @tailwind variants;
 
+@layer base {
+	@font-face {
+		font-family: 'Gothica Bold';
+		src: local('Gothica Bold'), local('Gothica-Bold'), local('gothica bold'), local('gothica-bold'),
+			url('/fonts/gothica_2/Gothica-Bold.ttf');
+		font-weight: normal;
+		font-display: swap;
+	}
+}
+
 html,
 body {
 	@apply h-full overflow-hidden;
