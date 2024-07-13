@@ -171,7 +171,12 @@
 			buttonsConfig={{
 				addFunction: () => changeDamage(1, 'add', 'normal'),
 				substractFunction: () => changeDamage(1, 'substract', 'normal'),
-				updating
+				updating,
+				max:
+					get(characterStore).attributes.physical_stamina +
+					3 -
+					$characterStore.health.aggrevated +
+					1
 			}}
 			title="Normal"
 			value={$characterStore.health.normal}
@@ -181,7 +186,8 @@
 			buttonsConfig={{
 				addFunction: () => changeDamage(1, 'add', 'aggrevated'),
 				substractFunction: () => changeDamage(1, 'substract', 'aggrevated'),
-				updating
+				updating,
+				max: get(characterStore).attributes.physical_stamina + 3 - $characterStore.health.normal + 1
 			}}
 			title="Aggrevated"
 			value={$characterStore.health.aggrevated}
@@ -202,7 +208,8 @@
 			buttonsConfig={{
 				addFunction: () => changeWillpower(1, 'add'),
 				substractFunction: () => changeWillpower(1, 'substract'),
-				updating
+				updating,
+				max: $characterStore.attributes.social_composure + $characterStore.attributes.mental_resolve
 			}}
 			title="Willpower Remaining"
 			value={$characterStore.willpower.value}
@@ -233,7 +240,8 @@
 						value: $characterStore.humanity.value - 1,
 						stains: $characterStore.humanity.stains
 					}),
-				updating
+				updating,
+				max: 10
 			}}
 			title="Humanity"
 			value={$characterStore.humanity.value}
@@ -251,7 +259,8 @@
 						value: $characterStore.humanity.value,
 						stains: $characterStore.humanity.stains - 1
 					}),
-				updating
+				updating,
+				max: 10 - $characterStore.humanity.value
 			}}
 			title="Stains"
 			value={$characterStore.humanity.stains}

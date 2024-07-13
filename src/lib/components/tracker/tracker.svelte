@@ -2,7 +2,17 @@
 	export let title: string;
 	export let value: number;
 	export let buttonsConfig:
-		| { addFunction: () => void; substractFunction: () => void; updating: boolean }
+		| {
+				addFunction: () => void;
+				substractFunction: () => void;
+				updating: boolean;
+		  }
+		| {
+				addFunction: () => void;
+				substractFunction: () => void;
+				updating: boolean;
+				max: number;
+		  }
 		| undefined = undefined;
 </script>
 
@@ -23,7 +33,7 @@
 		<div class="grid h-full w-full grid-cols-2 grid-rows-1 gap-x-1 pb-1 pl-1 pr-1">
 			<button
 				class="variant-filled-primary btn rounded-none"
-				disabled={buttonsConfig.updating}
+				disabled={buttonsConfig.updating || ('max' in buttonsConfig && value === buttonsConfig.max)}
 				type="button"
 				on:click={buttonsConfig.addFunction}
 			>
