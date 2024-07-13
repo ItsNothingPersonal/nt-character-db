@@ -32,7 +32,7 @@ export function createDisciplineConfigSchema(
 		name: z.literal(disciplineNameValue),
 		characteristics: z.object({
 			type: disciplineAttributeType.or(
-				z.object({ type: disciplineAttributeType, hint: z.string() })
+				z.object({ text: disciplineAttributeType, hint: z.string() })
 			),
 			masqueradeThreat: masqueradeThreatSchema,
 			bloodResonance: z.enum([

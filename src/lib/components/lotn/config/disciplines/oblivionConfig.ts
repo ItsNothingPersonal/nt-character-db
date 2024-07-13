@@ -4,7 +4,7 @@ export const oblivionConfig: OblivionConfigSchema = {
 	name: 'Oblivion',
 	characteristics: {
 		type: {
-			type: 'Variable',
+			text: 'Variable',
 			hint: 'The Attribute used in the pool of the initiating player dictates whether the power is mental, social, or physical.'
 		},
 		masqueradeThreat: { type: 'Medium to High' },

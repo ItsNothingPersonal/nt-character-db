@@ -42,7 +42,12 @@
 			<svelte:fragment slot="helpText">
 				<p class="whitespace-pre-line">
 					<span class="font-bold">Typ:</span>
-					{disciplineConfig.characteristics.type}
+					{#if typeof disciplineConfig.characteristics.type === 'string'}
+						{disciplineConfig.characteristics.type}
+					{:else}
+						{disciplineConfig.characteristics.type.text}. {disciplineConfig.characteristics.type
+							.hint}
+					{/if}
 				</p>
 				<br />
 				<p class="whitespace-pre-line">
