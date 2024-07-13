@@ -6,6 +6,7 @@ import { celerity } from '../disciplines/celerity';
 import { dominate } from '../disciplines/dominate';
 import { fortitude } from '../disciplines/fortitude';
 import { obfuscate } from '../disciplines/obfuscate';
+import { oblivion } from '../disciplines/oblivion';
 import { potence } from '../disciplines/potence';
 import { presence } from '../disciplines/presence';
 import { protean } from '../disciplines/protean';
@@ -19,6 +20,7 @@ export const playerDiscipline = z.discriminatedUnion('name', [
 	dominate,
 	fortitude,
 	obfuscate,
+	oblivion,
 	potence,
 	presence,
 	protean,
