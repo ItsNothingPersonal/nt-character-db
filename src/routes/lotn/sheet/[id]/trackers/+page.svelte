@@ -141,90 +141,104 @@
 </script>
 
 <h1 class="h1">Trackers</h1>
-<h2 class="h2">Health</h2>
-<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-2">
-	<div class="grid auto-rows-auto grid-cols-2 sm:grid-cols-3">
-		<div class="row-start-2 sm:row-start-1">
-			<p class="text-center font-bold">Health Total</p>
-			<p class="my-auto pb-2 text-center text-8xl font-bold">
-				{get(characterStore).attributes.physical_stamina + 3}
-			</p>
-		</div>
+<div class="grid auto-rows-auto grid-cols-1 gap-4 sm:grid-cols-2">
+	<div>
+		<h2 class="h2">Health</h2>
+		<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-2">
+			<div class="grid auto-rows-auto grid-cols-2 sm:grid-cols-3">
+				<div class="row-start-2 sm:row-start-1">
+					<p class="text-center font-bold">Health Total</p>
+					<p class="my-auto pb-2 text-center text-8xl font-bold">
+						{get(characterStore).attributes.physical_stamina + 3}
+					</p>
+				</div>
 
-		<div class="row-start-2 sm:row-start-1">
-			<p class="text-center font-bold">Health Remaining</p>
-			<p class="my-auto pb-2 text-center text-8xl font-bold">
-				{healthRemaining}
-			</p>
-		</div>
-		<div class="col-span-2 sm:col-span-1">
-			<p class="text-center font-bold">Status</p>
-			{#key healthRemaining}
-				<p class="my-auto pb-2 text-center">
-					{getHealthStatus()}
-				</p>
-			{/key}
+				<div class="row-start-2 sm:row-start-1">
+					<p class="text-center font-bold">Health Remaining</p>
+					<p class="my-auto pb-2 text-center text-8xl font-bold">
+						{healthRemaining}
+					</p>
+				</div>
+				<div class="col-span-2 sm:col-span-1">
+					<p class="text-center font-bold">Status</p>
+					{#key healthRemaining}
+						<p class="my-auto pb-2 text-center">
+							{getHealthStatus()}
+						</p>
+					{/key}
+				</div>
+			</div>
+			<div class="row-start-2 grid grid-cols-2 gap-2">
+				<Tracker
+					buttonsConfig={{
+						addFunction: () => changeDamage(1, 'add', 'normal'),
+						substractFunction: () => changeDamage(1, 'substract', 'normal'),
+						updating,
+						max:
+							get(characterStore).attributes.physical_stamina +
+							3 -
+							$characterStore.health.aggrevated +
+							1
+					}}
+					title="Normal"
+					value={$characterStore.health.normal}
+				/>
+
+				<Tracker
+					buttonsConfig={{
+						addFunction: () => changeDamage(1, 'add', 'aggrevated'),
+						substractFunction: () => changeDamage(1, 'substract', 'aggrevated'),
+						updating,
+						max:
+							get(characterStore).attributes.physical_stamina +
+							3 -
+							$characterStore.health.normal +
+							1
+					}}
+					title="Aggrevated"
+					value={$characterStore.health.aggrevated}
+				/>
+			</div>
 		</div>
 	</div>
-	<div class="row-start-2 grid grid-cols-2 gap-2">
-		<Tracker
-			buttonsConfig={{
-				addFunction: () => changeDamage(1, 'add', 'normal'),
-				substractFunction: () => changeDamage(1, 'substract', 'normal'),
-				updating,
-				max:
-					get(characterStore).attributes.physical_stamina +
-					3 -
-					$characterStore.health.aggrevated +
-					1
-			}}
-			title="Normal"
-			value={$characterStore.health.normal}
-		/>
+	<div>
+		<h2 class="h2">Willpower</h2>
+		<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-4">
+			<div class="grid auto-rows-auto grid-cols-3 sm:grid-cols-3">
+				<div class="row-start-2 sm:row-start-1">
+					<p class="text-center font-bold">Willpower Total</p>
+					<p class="my-auto pb-2 text-center text-8xl font-bold">
+						{$characterStore.attributes.social_composure +
+							$characterStore.attributes.mental_resolve}
+					</p>
+				</div>
 
-		<Tracker
-			buttonsConfig={{
-				addFunction: () => changeDamage(1, 'add', 'aggrevated'),
-				substractFunction: () => changeDamage(1, 'substract', 'aggrevated'),
-				updating,
-				max: get(characterStore).attributes.physical_stamina + 3 - $characterStore.health.normal + 1
-			}}
-			title="Aggrevated"
-			value={$characterStore.health.aggrevated}
-		/>
+				<Tracker
+					buttonsConfig={{
+						addFunction: () => changeWillpower(1, 'add'),
+						substractFunction: () => changeWillpower(1, 'substract'),
+						updating,
+						max:
+							$characterStore.attributes.social_composure +
+							$characterStore.attributes.mental_resolve
+					}}
+					title="Willpower Remaining"
+					value={$characterStore.willpower.value}
+				/>
+
+				<div class="col-span-2 sm:col-span-1">
+					<p class="text-center font-bold">Status</p>
+					{#key $characterStore.willpower.value}
+						<p class="my-auto pb-2 text-center">
+							{getWillpowerStatus()}
+						</p>
+					{/key}
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
-<h2 class="h2">Willpower</h2>
-<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-2">
-	<div class="grid auto-rows-auto grid-cols-3 sm:grid-cols-3">
-		<div class="row-start-2 sm:row-start-1">
-			<p class="text-center font-bold">Willpower Total</p>
-			<p class="my-auto pb-2 text-center text-8xl font-bold">
-				{$characterStore.attributes.social_composure + $characterStore.attributes.mental_resolve}
-			</p>
-		</div>
 
-		<Tracker
-			buttonsConfig={{
-				addFunction: () => changeWillpower(1, 'add'),
-				substractFunction: () => changeWillpower(1, 'substract'),
-				updating,
-				max: $characterStore.attributes.social_composure + $characterStore.attributes.mental_resolve
-			}}
-			title="Willpower Remaining"
-			value={$characterStore.willpower.value}
-		/>
-
-		<div class="col-span-2 sm:col-span-1">
-			<p class="text-center font-bold">Status</p>
-			{#key $characterStore.willpower.value}
-				<p class="my-auto pb-2 text-center">
-					{getWillpowerStatus()}
-				</p>
-			{/key}
-		</div>
-	</div>
-</div>
 <h2 class="h2">Humanity & Stains</h2>
 <div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-2">
 	<div class="row-start-2 grid grid-cols-2 gap-2">
