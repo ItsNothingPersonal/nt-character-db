@@ -84,7 +84,7 @@
 
 <div class="mx-auto max-w-lg">
 	<h1
-		class="h1 mb-4 bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center font-comorantBold text-transparent dark:from-white dark:to-red-800"
+		class="h1 mb-4 bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center font-comorantBold font-bold text-transparent dark:from-white dark:to-red-800"
 	>
 		Character-Sheet
 	</h1>
@@ -102,12 +102,14 @@
 				{#each selectionValuesLotN as entry}
 					<tr>
 						<td>
-							<a href={`/lotn/sheet/${entry.id}`}>
+							<a class="text-lg" href={`/lotn/sheet/${entry.id}`}>
 								{entry.name}
 							</a>
 						</td>
-						<td><a href={`/lotn/sheet/${entry.id}`}>{entry.clan}</a></td>
-						<td class="capitalize"><a href={`/lotn/sheet/${entry.id}`}>{entry.status}</a></td>
+						<td><a class="text-lg" href={`/lotn/sheet/${entry.id}`}>{entry.clan}</a></td>
+						<td>
+							<a class="text-lg capitalize" href={`/lotn/sheet/${entry.id}`}>{entry.status}</a>
+						</td>
 					</tr>
 				{/each}
 			</tbody>
@@ -116,7 +118,7 @@
 
 	{#if selectionDraftValuesLotN.length > 0}
 		<h2
-			class="h2 mb-4 bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center font-comorantBold text-transparent dark:from-white dark:to-red-800"
+			class="h2 mb-4 bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center font-comorantBold font-bold text-transparent dark:from-white dark:to-red-800"
 		>
 			Entwürfe
 		</h2>
@@ -135,12 +137,14 @@
 					{#each selectionDraftValuesLotN as entry}
 						<tr>
 							<td>
-								<a href={`/lotn/sheet/${entry.id}`}>
+								<a class="text-lg" href={`/lotn/sheet/${entry.id}`}>
 									{entry.name}
 								</a>
 							</td>
-							<td><a href={`/lotn/sheet/${entry.id}`}>{entry.clan}</a></td>
-							<td class="capitalize"><a href={`/lotn/sheet/${entry.id}`}>{entry.status}</a></td>
+							<td><a class="text-lg" href={`/lotn/sheet/${entry.id}`}>{entry.clan}</a></td>
+							<td>
+								<a class="text-lg capitalize" href={`/lotn/sheet/${entry.id}`}>{entry.status}</a>
+							</td>
 						</tr>
 					{/each}
 				</tbody>

@@ -19,6 +19,10 @@ const config = {
 				'double-center': 'auto 2fr 1fr',
 				'title-content': 'auto 1fr',
 				tracker: '1fr 0.5fr'
+			},
+			fontSize: {
+				sm: '1rem',
+				base: '1.25rem'
 			}
 		}
 	},
