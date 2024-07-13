@@ -9,20 +9,19 @@
 	}
 </script>
 
-<div
-	class="grid auto-rows-auto grid-cols-1 gap-2 gap-y-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3"
->
-	<div class="flex flex-col gap-3">
+<div class="grid auto-rows-auto grid-cols-1 gap-2 lg:grid-cols-3">
+	<div class="flex flex-col gap-2">
 		<h3 class="h3">Physical</h3>
 		<ValueRating
+			fitContent={true}
 			helpText={attributeConfig.physical.strength.helptext}
 			label="Strength"
 			start={get(characterStore).attributes.physical_strength}
 			bind:value={$characterStore.attributes.physical_strength}
 			on:change={handleChange}
 		/>
-
 		<ValueRating
+			fitContent={true}
 			helpText={attributeConfig.physical.dexterity.helptext}
 			label="Dexterity"
 			start={get(characterStore).attributes.physical_dexterity}
@@ -30,6 +29,7 @@
 			on:change={handleChange}
 		/>
 		<ValueRating
+			fitContent={true}
 			helpText={attributeConfig.physical.stamina.helptext}
 			label="Stamina"
 			start={get(characterStore).attributes.physical_stamina}
@@ -40,6 +40,7 @@
 	<div class="flex flex-col gap-2">
 		<h3 class="h3">Social</h3>
 		<ValueRating
+			fitContent={true}
 			helpText={attributeConfig.social.charisma.helptext}
 			label="Charisma"
 			start={get(characterStore).attributes.social_charisma}
@@ -47,6 +48,7 @@
 			on:change={handleChange}
 		/>
 		<ValueRating
+			fitContent={true}
 			helpText={attributeConfig.social.manipulation.helptext}
 			label="Manipulation"
 			start={get(characterStore).attributes.social_manipulation}
@@ -54,6 +56,7 @@
 			on:change={handleChange}
 		/>
 		<ValueRating
+			fitContent={true}
 			helpText={attributeConfig.social.composure.helptext}
 			label="Composure"
 			start={get(characterStore).attributes.social_composure}
@@ -64,6 +67,7 @@
 	<div class="flex flex-col gap-2">
 		<h3 class="h3">Mental</h3>
 		<ValueRating
+			fitContent={true}
 			helpText={attributeConfig.mental.intelligence.helptext}
 			label="Intelligence"
 			start={get(characterStore).attributes.mental_intelligence}
@@ -71,6 +75,7 @@
 			on:change={handleChange}
 		/>
 		<ValueRating
+			fitContent={true}
 			helpText={attributeConfig.mental.wits.helptext}
 			label="Wits"
 			start={get(characterStore).attributes.mental_wits}
@@ -78,6 +83,7 @@
 			on:change={handleChange}
 		/>
 		<ValueRating
+			fitContent={true}
 			helpText={attributeConfig.mental.resolve.helptext}
 			label="Resolve"
 			start={get(characterStore).attributes.mental_resolve}

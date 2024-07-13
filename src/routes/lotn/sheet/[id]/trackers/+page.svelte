@@ -142,22 +142,19 @@
 
 <h1 class="h1">Trackers</h1>
 <div class="grid auto-rows-auto grid-cols-1 gap-4 sm:grid-cols-2">
-	<div>
+	<div class="card rounded-sm p-4">
 		<h2 class="h2">Health</h2>
-		<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-2">
-			<div class="grid auto-rows-auto grid-cols-2 sm:grid-cols-3">
+		<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-4">
+			<div class="grid auto-rows-auto grid-cols-2 gap-2 sm:grid-cols-3">
 				<div class="row-start-2 sm:row-start-1">
-					<p class="text-center font-bold">Health Total</p>
-					<p class="my-auto pb-2 text-center text-8xl font-bold">
-						{get(characterStore).attributes.physical_stamina + 3}
-					</p>
+					<Tracker
+						title="Health Total"
+						value={get(characterStore).attributes.physical_stamina + 3}
+					/>
 				</div>
 
 				<div class="row-start-2 sm:row-start-1">
-					<p class="text-center font-bold">Health Remaining</p>
-					<p class="my-auto pb-2 text-center text-8xl font-bold">
-						{healthRemaining}
-					</p>
+					<Tracker title="Health Remaining" value={healthRemaining} />
 				</div>
 				<div class="col-span-2 sm:col-span-1">
 					<p class="text-center font-bold">Status</p>
@@ -201,17 +198,15 @@
 			</div>
 		</div>
 	</div>
-	<div>
+	<div class="card rounded-sm p-4">
 		<h2 class="h2">Willpower</h2>
-		<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-4">
-			<div class="grid auto-rows-auto grid-cols-3 sm:grid-cols-3">
-				<div class="row-start-2 sm:row-start-1">
-					<p class="text-center font-bold">Willpower Total</p>
-					<p class="my-auto pb-2 text-center text-8xl font-bold">
-						{$characterStore.attributes.social_composure +
-							$characterStore.attributes.mental_resolve}
-					</p>
-				</div>
+		<div class="mb-4 mt-2 grid grid-cols-1 grid-rows-1 gap-4">
+			<div class="grid grid-cols-3 grid-rows-1 gap-2 sm:grid-cols-3">
+				<Tracker
+					title="Willpower Total"
+					value={$characterStore.attributes.social_composure +
+						$characterStore.attributes.mental_resolve}
+				/>
 
 				<Tracker
 					buttonsConfig={{
@@ -239,45 +234,47 @@
 	</div>
 </div>
 
-<h2 class="h2">Humanity & Stains</h2>
-<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-2">
-	<div class="row-start-2 grid grid-cols-2 gap-2">
-		<Tracker
-			buttonsConfig={{
-				addFunction: () =>
-					changeMorality({
-						value: $characterStore.humanity.value + 1,
-						stains: $characterStore.humanity.stains
-					}),
-				substractFunction: () =>
-					changeMorality({
-						value: $characterStore.humanity.value - 1,
-						stains: $characterStore.humanity.stains
-					}),
-				updating,
-				max: 10
-			}}
-			title="Humanity"
-			value={$characterStore.humanity.value}
-		/>
+<div class="card mt-4 rounded-sm p-4">
+	<h2 class="h2">Humanity & Stains</h2>
+	<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-2">
+		<div class="row-start-2 grid grid-cols-2 gap-2">
+			<Tracker
+				buttonsConfig={{
+					addFunction: () =>
+						changeMorality({
+							value: $characterStore.humanity.value + 1,
+							stains: $characterStore.humanity.stains
+						}),
+					substractFunction: () =>
+						changeMorality({
+							value: $characterStore.humanity.value - 1,
+							stains: $characterStore.humanity.stains
+						}),
+					updating,
+					max: 10
+				}}
+				title="Humanity"
+				value={$characterStore.humanity.value}
+			/>
 
-		<Tracker
-			buttonsConfig={{
-				addFunction: () =>
-					changeMorality({
-						value: $characterStore.humanity.value,
-						stains: $characterStore.humanity.stains + 1
-					}),
-				substractFunction: () =>
-					changeMorality({
-						value: $characterStore.humanity.value,
-						stains: $characterStore.humanity.stains - 1
-					}),
-				updating,
-				max: 10 - $characterStore.humanity.value
-			}}
-			title="Stains"
-			value={$characterStore.humanity.stains}
-		/>
+			<Tracker
+				buttonsConfig={{
+					addFunction: () =>
+						changeMorality({
+							value: $characterStore.humanity.value,
+							stains: $characterStore.humanity.stains + 1
+						}),
+					substractFunction: () =>
+						changeMorality({
+							value: $characterStore.humanity.value,
+							stains: $characterStore.humanity.stains - 1
+						}),
+					updating,
+					max: 10 - $characterStore.humanity.value
+				}}
+				title="Stains"
+				value={$characterStore.humanity.stains}
+			/>
+		</div>
 	</div>
 </div>

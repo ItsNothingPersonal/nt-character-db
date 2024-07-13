@@ -35,7 +35,7 @@
 	}
 </script>
 
-<div class="flex flex-col">
+<div class="card flex flex-col rounded-sm p-4">
 	<label class="label grid w-full grid-cols-2 grid-rows-1" for={discipline.name}>
 		<HelpText id={discipline.name}>
 			<span id={discipline.name} class="font-bold">{discipline.name}</span>

@@ -35,8 +35,8 @@
 	}
 </script>
 
-<div class="grid auto-rows-auto grid-cols-2 gap-4 sm:grid-cols-3">
-	<div class="flex flex-col gap-2">
+<div class="grid auto-rows-auto grid-cols-2 gap-2 sm:grid-cols-3">
+	<div class="flex min-h-28 flex-col gap-2">
 		{#each getPhysicalSkills() as skill}
 			<ValueRating
 				helpText={getSkillHelptext(skill.name)}
@@ -48,7 +48,7 @@
 			/>
 		{/each}
 	</div>
-	<div class="flex flex-col gap-2">
+	<div class="flex min-h-28 flex-col gap-2">
 		{#each getSocialSkills() as skill}
 			<ValueRating
 				helpText={getSkillHelptext(skill.name)}
@@ -60,7 +60,7 @@
 			/>
 		{/each}
 	</div>
-	<div class="flex flex-col gap-2">
+	<div class="flex min-h-28 flex-col gap-2">
 		{#each getMentalSkills() as skill}
 			<ValueRating
 				helpText={getSkillHelptext(skill.name)}

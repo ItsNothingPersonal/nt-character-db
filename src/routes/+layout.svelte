@@ -43,7 +43,7 @@
 		<AppBar>
 			<svelte:fragment slot="lead">
 				<div class="flex items-center">
-					<a href="/"><strong class="font-gothica text-xl uppercase">Elysium</strong></a>
+					<a href="/"><strong class="font-comorantBold text-4xl uppercase">Elysium</strong></a>
 				</div>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">

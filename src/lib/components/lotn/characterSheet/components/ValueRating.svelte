@@ -11,6 +11,7 @@
 	export let start = 0;
 	export let helpText: string | undefined = undefined;
 	export let labelBold: boolean = true;
+	export let fitContent: boolean = false;
 
 	const dispatch = createEventDispatcher<{
 		change: { label: string; old: number; new: number };
@@ -33,7 +34,7 @@
 	}
 </script>
 
-<div class="flex flex-col">
+<div class={`card flex ${fitContent ? undefined : 'min-h-32'} flex-col rounded-sm p-4`}>
 	<label
 		class="label grid grid-cols-1 grid-rows-2 [&>*]:pointer-events-none"
 		for={label}

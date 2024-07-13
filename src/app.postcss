@@ -4,17 +4,17 @@
 @tailwind utilities;
 @tailwind variants;
 
-@layer base {
-	@font-face {
-		font-family: 'Gothica Bold';
-		src: local('Gothica Bold'), local('Gothica-Bold'), local('gothica bold'), local('gothica-bold'),
-			url('/fonts/gothica_2/Gothica-Bold.ttf');
-		font-weight: normal;
-		font-display: swap;
-	}
-}
-
 html,
 body {
-	@apply h-full overflow-hidden;
+	@apply h-full overflow-hidden text-lg;
+}
+
+@font-face {
+	font-family: 'Cormorant Variable';
+	src: url('/fonts/cormorant/Cormorant-VariableFont_wght.ttf');
+}
+
+:root [data-theme='crimson'] {
+	--theme-font-family-base: 'Cormorant Variable', sans-serif;
+	--theme-font-family-heading: 'Cormorant Variable', sans-serif;
 }
