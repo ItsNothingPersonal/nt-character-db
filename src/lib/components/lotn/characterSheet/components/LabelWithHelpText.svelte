@@ -9,7 +9,7 @@
 </script>
 
 <label
-	class="label flex flex-col [&>*]:pointer-events-none"
+	class={`label flex flex-col [&>*]:pointer-events-none ${helpText === undefined ? 'cursor-default' : 'cursor-help'}`}
 	for={id}
 	use:popup={{ event: 'click', target: 'popupHover-' + id, placement: 'bottom' }}
 >

@@ -1,9 +1,11 @@
 <script lang="ts">
 	import P from '$lib/components/typography/p.svelte';
 	import { clanConfig } from '../../config/clanConfig';
-	import { predatorHuntingPool } from '../../config/predatorHuntingPoolConfig';
+	import { predatorTypeConfig } from '../../config/predatorTypeConfig';
 	import { characterStore } from '../characterStore';
 	import LabelWithHelpText from '../components/LabelWithHelpText.svelte';
+
+	const predatorType = predatorTypeConfig[$characterStore.predatorType];
 </script>
 
 <div class="grid grid-cols-3 grid-rows-1 gap-2">
@@ -21,14 +23,20 @@
 		<span>Blood Potency</span>
 		<P id="bloodPotency">{$characterStore.bloodPotency}</P>
 	</label>
-	<label class="label flex flex-col" for="predatorType">
-		<span>Predator Type</span>
-		<P id="predatorType">{$characterStore.predatorType}</P>
-	</label>
-	<label class="label flex flex-col" for="huntingPool">
-		<span>Hunting Pool</span>
-		<P id="huntingPool">{predatorHuntingPool[$characterStore.predatorType].join(' + ')}</P>
-	</label>
+	<LabelWithHelpText
+		id="predatorType"
+		helpText={predatorType.description}
+		label="Predator Type"
+		text={$characterStore.predatorType}
+	/>
+	<LabelWithHelpText
+		id="huntingPool"
+		helpText={'type' in predatorType.huntingPool ? predatorType.huntingPool.description : undefined}
+		label="Hunting Pool"
+		text={'type' in predatorType.huntingPool
+			? predatorType.huntingPool.type
+			: predatorType.huntingPool.join(' + ')}
+	/>
 	<label class="label flex flex-col" for="sect">
 		<span>Sect</span>
 		<P id="sect">{$characterStore.sect}</P>

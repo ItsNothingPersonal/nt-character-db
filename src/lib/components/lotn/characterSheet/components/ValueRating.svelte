@@ -34,9 +34,9 @@
 	}
 </script>
 
-<div class={`card flex ${fitContent ? undefined : 'min-h-32'} flex-col rounded-sm p-4`}>
+<div class={`card flex ${fitContent ? undefined : 'min-h-32'} } flex-col rounded-sm p-4`}>
 	<label
-		class="label grid grid-cols-1 grid-rows-2 [&>*]:pointer-events-none"
+		class={`label grid grid-cols-1 grid-rows-2 [&>*]:pointer-events-none ${helpText === undefined ? 'cursor-default' : 'cursor-help'}`}
 		for={label}
 		use:popup={{ event: 'click', target: 'popupHover-' + label, placement: 'bottom' }}
 	>
