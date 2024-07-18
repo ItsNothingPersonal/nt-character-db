@@ -41,8 +41,8 @@
 
 <label
 	class={flaw.value > 0
-		? 'label grid w-full auto-rows-auto grid-cols-2'
-		: 'label grid w-full auto-rows-auto grid-cols-1'}
+		? 'card label grid w-full auto-rows-auto grid-cols-2 rounded-sm p-4'
+		: 'card label grid w-full auto-rows-auto grid-cols-1 rounded-sm p-4'}
 	for={`${flaw.name}-${flaw.id}`}
 >
 	{#if config && 'prerequisite' in config && config.prerequisite}

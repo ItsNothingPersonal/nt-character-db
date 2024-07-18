@@ -10,7 +10,7 @@
 
 <div class="flex flex-col">
 	{#if ritualConfigEntry}
-		<label class="label grid w-full grid-cols-1 grid-rows-1" for={ritual}>
+		<label class="card label grid w-full grid-cols-1 grid-rows-1 rounded-sm p-4" for={ritual}>
 			<HelpText id={ritual}>
 				<span id={ritual} class="whitespace-pre-line text-nowrap">
 					{ritual} (Level {ritualConfigEntry.level})

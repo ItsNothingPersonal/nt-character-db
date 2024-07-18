@@ -26,7 +26,7 @@
 	}
 </script>
 
-<div class="flex flex-col">
+<div class="card flex flex-col rounded-sm p-4">
 	<label class="label grid w-full grid-cols-2 grid-rows-1" for={background.id}>
 		<HelpText id={background.id}>
 			<span id={background.name} class="font-bold">{background.name}</span>

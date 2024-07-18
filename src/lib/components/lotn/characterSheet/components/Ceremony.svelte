@@ -10,7 +10,7 @@
 
 <div class="flex flex-col">
 	{#if ceremonyConfigEntry}
-		<label class="label grid w-full grid-cols-1 grid-rows-1" for={ceremony}>
+		<label class="card label grid w-full grid-cols-1 grid-rows-1 rounded-sm p-4" for={ceremony}>
 			<HelpText id={ceremony}>
 				<span id={ceremony} class="whitespace-pre-line text-nowrap">
 					{ceremony} (Level {ceremonyConfigEntry.level})

@@ -50,10 +50,10 @@
 			</HelpText>
 
 			<div
-				class="grid auto-rows-auto grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-6"
+				class="grid auto-rows-auto grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5"
 			>
 				{#each $characterStore.loresheet.values as loreSheetLevel}
-					<div>
+					<div class="card rounded-sm p-4">
 						<HelpText id={`${$characterStore.loresheet.name}-${loreSheetLevel}`}>
 							<span id={`${$characterStore.loresheet.name}-${loreSheetLevel}`} class="font-bold">
 								{getValueDescription(loreSheetLevel)?.title}
