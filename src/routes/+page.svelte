@@ -84,7 +84,7 @@
 
 <div class="mx-auto max-w-lg">
 	<h1
-		class="h1 mb-4 bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center font-comorantBold font-bold text-transparent dark:from-white dark:to-red-800"
+		class="font-comorantBold h1 mb-4 bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center font-bold text-transparent dark:from-white dark:to-red-800"
 	>
 		Character-Sheet
 	</h1>
@@ -118,7 +118,7 @@
 
 	{#if selectionDraftValuesLotN.length > 0}
 		<h2
-			class="h2 mb-4 bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center font-comorantBold font-bold text-transparent dark:from-white dark:to-red-800"
+			class="font-comorantBold h2 mb-4 bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center font-bold text-transparent dark:from-white dark:to-red-800"
 		>
 			Entwürfe
 		</h2>

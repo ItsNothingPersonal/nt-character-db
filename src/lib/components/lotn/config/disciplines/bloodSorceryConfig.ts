@@ -3,7 +3,7 @@ import type { BloodsorceryConfigSchema } from '$lib/zod/lotn/disciplines/bloodSo
 export const bloodSorceryConfig: BloodsorceryConfigSchema = {
 	name: 'Blood Sorcery',
 	characteristics: {
-		type: { type: 'Mental', hint: 'except Scorpion’s Touch and Baal’s Caress, which are Physical' },
+		type: { text: 'Mental', hint: 'except Scorpion’s Touch and Baal’s Caress, which are Physical' },
 		masqueradeThreat: {
 			type: 'Low to High',
 			description:

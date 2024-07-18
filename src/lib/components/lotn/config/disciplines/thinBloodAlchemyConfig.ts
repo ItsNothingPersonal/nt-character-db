@@ -4,7 +4,7 @@ export const thinBloodAlchemyConfig: ThinBloodAlchemyConfigSchema = {
 	name: 'Thin-Blood Alchemy',
 	characteristics: {
 		type: {
-			type: 'Mental',
+			text: 'Mental',
 			hint: 'In the case of Counterfeit Power, the type is the same as the power being counterfeit. All other effects are Mental.'
 		},
 		masqueradeThreat: { type: 'Variable', description: 'Varies according to the effects' },

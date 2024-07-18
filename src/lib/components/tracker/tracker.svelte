@@ -17,7 +17,7 @@
 </script>
 
 <div
-	class="bg-light-100 grid-rows-tracker grid grid-cols-1 items-center gap-8 border-2 border-gray-500 dark:border-gray-50 dark:bg-slate-900"
+	class="bg-light-100 grid grid-cols-1 grid-rows-tracker items-center gap-8 border-2 border-gray-500 dark:border-gray-50 dark:bg-slate-900"
 >
 	<div class="row-start-2 sm:row-start-1">
 		<p class="text-center font-bold">{title}</p>

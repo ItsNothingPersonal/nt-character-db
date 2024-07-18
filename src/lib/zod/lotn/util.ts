@@ -31,9 +31,12 @@ export function createDisciplineConfigSchema(
 	return z.object({
 		name: z.literal(disciplineNameValue),
 		characteristics: z.object({
-			type: disciplineAttributeType.or(
-				z.object({ text: disciplineAttributeType, hint: z.string() })
-			),
+			type: disciplineAttributeType.or(extendedDisciplineType).refine((data) => {
+				if (typeof data === 'object' && 'hint' in data) {
+					return extendedDisciplineType.safeParse(data).success;
+				}
+				return disciplineAttributeType.safeParse(data).success;
+			}),
 			masqueradeThreat: masqueradeThreatSchema,
 			bloodResonance: z.enum([
 				'Sanguine',
@@ -51,6 +54,8 @@ export function createDisciplineConfigSchema(
 			: createNormalDisciplinePowerSchema(disciplineNameValue)
 	});
 }
+
+const extendedDisciplineType = z.object({ text: disciplineAttributeType, hint: z.string() });
 
 export const masqueradeThreatSchema = z.object({
 	type: masqueradeThreat,
