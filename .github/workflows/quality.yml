@@ -24,5 +24,12 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Check svelte check
         run: pnpm check
+        env:
+          PUBLIC_CHARACTER_DB_PB_URL: ${{ secrets.PUBLIC_CHARACTER_DB_PB_URL }}
+          IS_PRODUCTION: ${{ secrets.IS_PRODUCTION }}
+          COOKIE_NAME: ${{ secrets.COOKIE_NAME }}
+      - name: Svelte-Check PR Annotator
+        uses: prgm-dev/svelte-check-pr-annotator@v1
+
       - name: Check formatting with Prettier && ESLint
         run: pnpm lint
