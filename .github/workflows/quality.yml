@@ -21,7 +21,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm install -D
+        run: pnpm install --frozen-lockfile
       - name: Check svelte check
         run: pnpm check
       - name: Check formatting with Prettier && ESLint
