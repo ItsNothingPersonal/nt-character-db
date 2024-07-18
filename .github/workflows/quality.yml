@@ -7,7 +7,25 @@ concurrency:
   cancel-in-progress: true
 jobs:
   prettier:
-    name: Prettier
+    name: Prettier und ESLint
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        node-version: [20]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run Prettier && ESLint
+        run: pnpm lint
+  svelteCheck:
+    name: svelte check
     runs-on: ubuntu-22.04
     strategy:
       matrix:
@@ -30,6 +48,3 @@ jobs:
           COOKIE_NAME: ${{ secrets.COOKIE_NAME }}
       - name: Svelte-Check PR Annotator
         uses: prgm-dev/svelte-check-pr-annotator@v1
-
-      - name: Check formatting with Prettier && ESLint
-        run: pnpm lint
