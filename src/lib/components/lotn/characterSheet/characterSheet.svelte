@@ -9,6 +9,7 @@
 	import Backgrounds from './charactersheet-elements/backgrounds.svelte';
 	import Ceremonies from './charactersheet-elements/ceremonies.svelte';
 	import Disciplines from './charactersheet-elements/disciplines.svelte';
+	import Experience from './charactersheet-elements/experience.svelte';
 	import Flaws from './charactersheet-elements/flaws.svelte';
 	import Items from './charactersheet-elements/items.svelte';
 	import Merits from './charactersheet-elements/merits.svelte';
@@ -128,6 +129,16 @@
 			</svelte:fragment>
 			<svelte:fragment slot="content">
 				<Items items={$characterStore.items} />
+			</svelte:fragment>
+		</AccordionItem>
+	{/if}
+	{#if $characterStore.experience.length > 0}
+		<AccordionItem {autocollapse} {open}>
+			<svelte:fragment slot="summary">
+				<h2 class="h2">Experience</h2>
+			</svelte:fragment>
+			<svelte:fragment slot="content">
+				<Experience experience={$characterStore.experience} />
 			</svelte:fragment>
 		</AccordionItem>
 	{/if}
