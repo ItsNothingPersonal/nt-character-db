@@ -11,6 +11,7 @@ import { playerFlaw } from './playerFlaw';
 import { playerHealth } from './playerHealth';
 import { playerHumanity } from './playerHumanity';
 import { playerHunger } from './playerHunger';
+import { playerItem } from './playerItem';
 import { playerLoresheet } from './playerLoresheet';
 import { playerMerit } from './playerMerit';
 import { playerMorality } from './playerMorality';
@@ -34,6 +35,7 @@ export const playerCharacter = playerCharacterBase.extend({
 	willpower: playerWillpower,
 	experience: playerExperience.array().default([]),
 	humanity: playerHumanity,
+	items: playerItem.merge(idSchema).array().optional(),
 	characterStatus: playerStatus.array().optional()
 });
 export type PlayerCharacter = z.infer<typeof playerCharacter>;
@@ -54,6 +56,7 @@ export const playerCharacterCreate = playerCharacterBaseCreate.extend({
 	willpower: playerWillpower.default({ value: 0 }),
 	experience: playerExperience.array().default([]),
 	humanity: playerHumanity.default({ value: 7, stains: 0 }),
+	items: playerItem.array().optional(),
 	characterStatus: playerStatus.array().optional()
 });
 export type PlayerCharacterCreate = z.infer<typeof playerCharacterCreate>;

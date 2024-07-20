@@ -10,6 +10,7 @@
 	import Ceremonies from './charactersheet-elements/ceremonies.svelte';
 	import Disciplines from './charactersheet-elements/disciplines.svelte';
 	import Flaws from './charactersheet-elements/flaws.svelte';
+	import Items from './charactersheet-elements/items.svelte';
 	import Merits from './charactersheet-elements/merits.svelte';
 	import Rituals from './charactersheet-elements/rituals.svelte';
 	import Skills from './charactersheet-elements/skills.svelte';
@@ -117,6 +118,16 @@
 			</svelte:fragment>
 			<svelte:fragment slot="content">
 				<Ceremonies />
+			</svelte:fragment>
+		</AccordionItem>
+	{/if}
+	{#if $characterStore.items && $characterStore.items.length > 0}
+		<AccordionItem {autocollapse} {open}>
+			<svelte:fragment slot="summary">
+				<h2 class="h2">Items</h2>
+			</svelte:fragment>
+			<svelte:fragment slot="content">
+				<Items items={$characterStore.items} />
 			</svelte:fragment>
 		</AccordionItem>
 	{/if}

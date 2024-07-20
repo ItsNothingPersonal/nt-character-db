@@ -49,6 +49,7 @@ import {
 	playerHunger,
 	playerHungerRequestBodyDB
 } from '$lib/zod/lotn/playerCharacter/playerHunger';
+import { playerItem, playerItemRequestBodyDB } from '$lib/zod/lotn/playerCharacter/playerItem';
 import {
 	playerLoresheet,
 	playerLoresheetRequestBodyDB,
@@ -77,6 +78,12 @@ export async function GET({ url, fetch }) {
 
 	// Daten aus DB laden
 	const playerCharacterBaseDB = await fetch(`/api/lotn/character/base?id=${id}`);
+	if (playerCharacterBaseDB.status !== HttpStatusCode.OK) {
+		error(
+			HttpStatusCode.INTERNAL_SERVER_ERROR,
+			'LotN-Charakter konnte in Datenbank nicht gefunden werden'
+		);
+	}
 	const playerCharacterDB: Partial<PlayerCharacter> = playerCharacterBase.parse(
 		await playerCharacterBaseDB.json()
 	);
@@ -121,7 +128,6 @@ export async function GET({ url, fetch }) {
 	playerCharacterDB.loresheet = loresheet;
 
 	const playerMeritsDB = await fetch(`/api/lotn/character/merits?id=${id}`);
-
 	if (playerMeritsDB.status === 200) {
 		playerCharacterDB.merits = playerMerit
 			.merge(idSchema)
@@ -157,6 +163,17 @@ export async function GET({ url, fetch }) {
 
 	const playerHumanityDB = await fetch(`/api/lotn/character/humanity?id=${id}`);
 	playerCharacterDB.humanity = playerHumanity.parse(await playerHumanityDB.json());
+
+	const playerItemDB = await fetch(`/api/lotn/character/items?id=${id}`);
+	if (playerItemDB.status === 200) {
+		playerCharacterDB.items = playerItem
+			.merge(idSchema)
+			.array()
+			.optional()
+			.parse(await playerItemDB.json());
+	} else {
+		playerCharacterDB.items = undefined;
+	}
 
 	const playerStatusRes = await fetch(`/api/lotn/character/status?id=${id}`);
 	let status: PlayerStatus[] | undefined = undefined;
@@ -356,6 +373,16 @@ export async function POST({ locals, request, fetch }) {
 		loresheetResult = playerLoresheet.parse(await loresheetRequestBodyDB.json());
 	}
 
+	const itemRequestBody = playerItemRequestBodyDB.parse({
+		items: playerCharacterCreateBodyParsed.data.items,
+		character_id: baseResult.id
+	});
+	const itemRequestBodyDB = await fetch(`/api/lotn/character/items`, {
+		method: 'POST',
+		body: JSON.stringify(itemRequestBody)
+	});
+	const itemsResult = playerItem.array().parse(await itemRequestBodyDB.json());
+
 	const resultCharacter: PlayerCharacterCreate = playerCharacterCreate.parse({
 		...baseResult,
 		...{
@@ -373,7 +400,8 @@ export async function POST({ locals, request, fetch }) {
 			merits: meritsResult,
 			flaws: flawsResult,
 			experience: experienceResult,
-			loresheet: loresheetResult
+			loresheet: loresheetResult,
+			items: itemsResult
 		}
 	});
 
