@@ -17,8 +17,8 @@
 	<P {id}>{text}</P>
 </label>
 {#if helpText}
-	<div class="card variant-filled-secondary max-w-lg p-4" data-popup="popupHover-{id}">
+	<div class="card variant-filled max-w-lg p-4" data-popup="popupHover-{id}">
 		<p class="whitespace-pre-line">{helpText}</p>
-		<div class="variant-filled-secondary arrow" />
+		<div class="variant-filled arrow" />
 	</div>
 {/if}

@@ -1,4 +1,4 @@
-import HttpStatusCode from '$lib/server/httpStatusCode';
+import HttpStatusCode from '$lib/httpStatusCode';
 import { validateIdParameter } from '$lib/server/util';
 import { playerBloodServer, type PlayerBloodServer } from '$lib/server/zod/playerBloodServer';
 import { numberUpdateBody } from '$lib/zod/classic/updateBody/numberUpdateBody';

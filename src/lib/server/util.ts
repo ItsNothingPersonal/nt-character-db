@@ -1,6 +1,6 @@
 import type { DamageTypeName } from '$lib/zod/classic/enums/damageTypeName';
 import { error } from '@sveltejs/kit';
-import HttpStatusCode from './httpStatusCode';
+import HttpStatusCode from '../httpStatusCode';
 
 export function validateIdParameter(url: URL): string {
 	const id = url.searchParams.get('id');

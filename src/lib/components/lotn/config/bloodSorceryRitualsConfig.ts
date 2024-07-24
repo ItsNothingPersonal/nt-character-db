@@ -64,8 +64,8 @@ export const bloodSorceryRitualConfig: BloodSorceryRitualConfigSchema = {
 			process:
 				'The ritualist soaks the ribbon in her own Blood, then sets it on fire while envisioning a character she has met at least once or possesses a personal item from, such as their wedding ring or part of a vampire’s remains.',
 			challengePool: {
-				attacker: 'Wits + Occult',
-				defender: 'Composure + Resolve'
+				attacker: { attribute: 'Wits', skill: 'Occult' },
+				defender: { attribute: 'Composure', skillOrAttribute: 'Resolve' }
 			},
 			system:
 				"This Ritual must be cast at a location that the target character has spent at least five minutes at during the evening of the casting. Make a contested test vs. your target. If successful, the ash from the burning ribbon illuminates a set of ghostly footprints that only the ritualist can see. These footprints show the entire path traveled by the target character since the last sunset. As long as the target character remained on the ground, the ghostly footprints mimic her travels, even if she gets into a vehicle or uses Obfuscate. If the character took flight or entered a body of water, the trail ends; finding where the footprints begin again is impossible unless the point where her target's feet hit solid ground again is within line of sight. The use of this Ritual does not give the caster any ability to break any power used to supernaturally conceal her target. It only allows the caster to follow her path of travel.\nThis Ritual immediately ceases to work if the target character dies during its use or changes planes of existence. If the target died prior to the casting of this Ritual, the Ritual fails to activate.",
@@ -114,8 +114,8 @@ export const bloodSorceryRitualConfig: BloodSorceryRitualConfigSchema = {
 			process:
 				"Before enacting this Ritual, the intended target must be exposed to some of the caster’s Blood during the same night this Ritual is cast. This is easiest to accomplish by successfully affecting the intended target with the effects of either Scorpion’s Touch or Baal’s Caress. The caster may also unnoticeably touch the bare skin of their target by making a Dexterity + Larceny check vs. the target's Wits + Awareness. If successful, the target doesn’t notice being touched and the caster is able to smear a minuscule amount of Blood on her. The same check can be utilized to disguise the transfer of blood even if the touching was obvious such as from a handshake. If the caster fails this challenge, her target notices the attempt to transfer blood in time to prevent it. Once the target has been exposed to the caster’s Blood (even if the Blood is removed), the caster can cast this Ritual by plunging the ceremonial dagger into her own body and concentrating on her target for five minutes.",
 			challengePool: {
-				attacker: 'Resolve + Occult',
-				defender: 'Stamina + Resolve'
+				attacker: { attribute: 'Resolve', skill: 'Occult' },
+				defender: { attribute: 'Stamina', skillOrAttribute: 'Resolve' }
 			},
 			system:
 				'After five minutes of concentration, at any time during the remainder of the night that the Ritual was cast, the ritualist may spend a Standard action to make a contested challenge against his target. He may repeat this action once a turn for a number of turns equal to his dots in the Occult Skill. These turns do not have to happen immediately and consecutively. Each successful challenge inflicts one Normal Damage to a vampire and one Aggravated Damage to a mortal or ghoul. A character can only be affected by one casting of Dagon’s Call per night.',

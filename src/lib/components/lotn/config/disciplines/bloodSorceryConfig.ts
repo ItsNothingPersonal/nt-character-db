@@ -32,8 +32,8 @@ export const bloodSorceryConfig: BloodsorceryConfigSchema = {
 			level: 2,
 			cost: 'One Rouse check',
 			challengePool: {
-				attacker: 'Intelligence + Occult',
-				defender: 'Wits + Resolve'
+				attacker: { attribute: 'Intelligence', skill: 'Occult' },
+				defender: { attribute: 'Wits', skillOrAttribute: 'Resolve' }
 			},
 			system:
 				'Make one Rouse check, and expend a standard action as you gesture obviously at a target vampire. On a successful challenge, your target finds that Rousing the Blood brings her discomfort and physical irritation. For the next two turns, any time your target Rouses the Blood, her skin becomes unnaturally and noticeably flushed, and she gains the Distracted Condition.',
@@ -43,8 +43,8 @@ export const bloodSorceryConfig: BloodsorceryConfigSchema = {
 			level: 2,
 			cost: 'One Rouse check',
 			challengePool: {
-				attacker: 'Intelligence + Occult',
-				defender: 'Stamina + Composure'
+				attacker: { attribute: 'Intelligence', skill: 'Occult' },
+				defender: { attribute: 'Stamina', skillOrAttribute: 'Composure' }
 			},
 			system:
 				'Make one Rouse check and expend your standard action as you gesture obviously at a target vampire. On a successful challenge, your target finds it harder to mend damage by Rousing the Blood. If your target is Blood Potency 1 or less, she must make an additional Rouse check (two total) to mend damage. If your target is Blood Potency 2 or higher, she mends one less damage when she Rouses to mend damage. Extinguish Vitae lasts for two turns. Use of this power does not give you in-character knowledge of your target’s Blood Potency.',
@@ -54,7 +54,7 @@ export const bloodSorceryConfig: BloodsorceryConfigSchema = {
 			level: 3,
 			cost: 'One Rouse check',
 			challengePool: {
-				attacker: 'Resolve + Occult',
+				attacker: { attribute: 'Resolve', skill: 'Occult' },
 				defender: 'a Difficulty of 2 + your Blood Potency (Static Challenge)'
 			},
 			system:
@@ -65,8 +65,8 @@ export const bloodSorceryConfig: BloodsorceryConfigSchema = {
 			level: 3,
 			cost: 'One Rouse check',
 			challengePool: {
-				attacker: 'Dexterity + Marksmanship',
-				defender: 'Dexterity + Athletics'
+				attacker: { attribute: 'Dexterity', skill: 'Marksmanship' },
+				defender: { attribute: 'Dexterity', skillOrAttribute: 'Athletics' }
 			},
 			system:
 				'Make one Rouse check to transmute some of your Blood into a paralyzing poison. Each Rouse check produces enough poison to coat a bladed weapon or fill your mouth with enough poison to spit at a target.\nCoating a weapon costs a simple action and requires you to draw a bladed weapon across your skin (dealing no appreciable damage) or lick it with your tongue. Weapons remain coated for one scene before the poison becomes inert. Spitting your poison at a target requires a standard action and a successful contested challenge.\nIndividuals struck by your poison spit or a weapon coated with Scorpion’s Touch suffer the Weakened Condition for three turns, with additional successful strikes resetting this duration. Mortals struck by poison from Scorpion’s Touch suffer the Impaired Condition instead.\nFinally, anyone trying to feed directly from you (not including powers such as Theft of Vitae) during a scene in which you Scorpionated your Blood immediately gains the Weakened Condition for three turns.\nYou are immune to your own Scorpion’s Touch, but other individuals wielding weapons coated with your venom risk being poisoned. If someone else fails a Melee challenge to strike a target with a weapon coated by your Scorpion’s Touch, she gains the Weakened Condition (or Impaired if a mortal character). If the wielder repeatedly loses challenges in this way, she suffers the same extended penalty durations as someone who was struck multiple times.\nScorpion’s Touch may only be used on bladed weapons used with the Melee Skill. Throwing weapons with Scorpion’s Touch causes the poison to fall off of the weapon. Scorpion’s Touch cannot be used to modify bullets or other ranged equipment (including arrows), as the heat or speed of the projectile destroysthe Blood coating on any projectile fired.',
@@ -76,8 +76,8 @@ export const bloodSorceryConfig: BloodsorceryConfigSchema = {
 			level: 4,
 			cost: 'One Rouse check',
 			challengePool: {
-				attacker: 'Wits + Occult',
-				defender: 'Wits + Occult'
+				attacker: { attribute: 'Wits', skill: 'Occult' },
+				defender: { attribute: 'Wits', skillOrAttribute: 'Occult' }
 			},
 			system:
 				'Make one Rouse check, use your standard action to make a beckoning gesture toward a target character within 25 steps of you, and make an opposed challenge. If you succeed and your target is not a vampire, you can Slake two Hunger every turn you concentrate as if you were feeding with a Harmful Drink. While concentrating you may take no other actions other than movement and must keep your target in line of sight. This blood bursts from one of the major arteries of your victim, soaring through the air into your mouth and fangs. Blood stolen in this fashion has all of its normal properties such as Resonance and Dyscrasias. This rather unsettling power is obviously supernatural while in progress. However, the victim experiences the throes of the Kiss, and, once finished, the wound closes, leaving no evidence.\nWhen Theft of Vitae is used on a vampire, the user Slakes one Hunger and the target’s Hunger increases by one.',
@@ -87,8 +87,8 @@ export const bloodSorceryConfig: BloodsorceryConfigSchema = {
 			level: 4,
 			cost: 'One Rouse check',
 			challengePool: {
-				attacker: 'Resolve + Medicine',
-				defender: 'Stamina + Composure'
+				attacker: { attribute: 'Resolve', skill: 'Medicine' },
+				defender: { attribute: 'Stamina', skillOrAttribute: 'Composure' }
 			},
 			system:
 				'You have mastered the manipulation of blood to the point where you can rob lesser beings of wakefulness. Make one Rouse check and spend your standard action to make an opposed challenge against the highest Stamina + Composure score of any animal or non-supernatural mortal in the same room (no larger than 250 square feet) as you. If used outdoors, or in a larger room, test against the highest score from the 10 closest animals or non-supernatural mortals.\nIf successfully used in a room smaller than 250 square feet, all other animals and non-supernatural mortals have their blood flow slow, putting them in a temporary coma and gaining the Helpless Condition. If used outside or in a larger room, it affects the 10 closest animals or non-supernatural mortals. If undisturbed, they will remain this way for 10 minutes. After this time has passed, the Helpless Condition resolves, and the mortal awakens. If they suffer any damage, the Helpless Condition resolves, and the mortal may then act on their normal initiative score and defend themselves normally.\nVictims of this power have no recollection of any events that occurred around them while comatose. The moments before being affected by Slow the Beating Heart are foggy and hard to recall as if they were a dream. From the mortal’s perspective, they simply fell asleep inexplicably.',
@@ -98,8 +98,8 @@ export const bloodSorceryConfig: BloodsorceryConfigSchema = {
 			level: 5,
 			cost: 'Free when enhancing Scorpions touch or one Rouse check per ranged attack',
 			challengePool: {
-				attacker: 'Dexterity + Marksmanship',
-				defender: 'Dexterity + Athletics'
+				attacker: { attribute: 'Dexterity', skill: 'Marksmanship' },
+				defender: { attribute: 'Dexterity', skillOrAttribute: 'Athletics' }
 			},
 			prerequisite: "Scorpion's Touch",
 			system:
@@ -110,8 +110,8 @@ export const bloodSorceryConfig: BloodsorceryConfigSchema = {
 			level: 5,
 			cost: 'One Rouse check',
 			challengePool: {
-				attacker: 'Intelligence + Occult',
-				defender: 'Stamina + Resolve'
+				attacker: { attribute: 'Intelligence', skill: 'Occult' },
+				defender: { attribute: 'Stamina', skillOrAttribute: 'Resolve' }
 			},
 			system:
 				'Make one Rouse check and spend your standard action obviously concentrating on a target character within three steps of you. If you succeed in a contested challenge against your target, you boil their blood.\nVampires affected by Cauldron of Blood take two Aggravated Damage and gain one Hunger. This power gains no additional benefit from a critical win. Mortals affected by Cauldron of Blood suffer three Aggravated Damage and gain the Impaired Condition.',

@@ -61,8 +61,8 @@ export const oblivionConfig: OblivionConfigSchema = {
 			amalgam: { name: 'Dominate', value: 1 },
 			cost: 'One Rouse check',
 			challengePool: {
-				attacker: 'Manipulation + Occult',
-				defender: 'Resolve + Composure'
+				attacker: { attribute: 'Manipulation', skill: 'Occult' },
+				defender: { attribute: 'Resolve', skillOrAttribute: 'Composure' }
 			},
 			system:
 				'Make one Rouse check, and use your standard action to make an opposed challenge. If you succeed, your target experiences a fleeting glimpse of her death. The target gains the Frightened Condition until she wins a Resolve + Composure test vs. a difficulty of 6 at the beginning of her initiative. The source of her fear is the location she is standing when she is affected by this power. She believes staying in the location will bring about her demise. For the remainder of the night, if she is ever within six steps of this particular location, she gains the Distracted Condition. The Distracted Condition, when levied in this manner, does not resolve normally; instead, it resolves when she is no longer within six steps of the location.',
@@ -72,8 +72,8 @@ export const oblivionConfig: OblivionConfigSchema = {
 			level: 4,
 			cost: 'One Rouse check',
 			challengePool: {
-				attacker: 'Wits + Investigation',
-				defender: 'Oblivion user’s Resolve + Occult'
+				attacker: { attribute: 'Wits', skill: 'Investigation' },
+				defender: { attribute: 'Resolve', skillOrAttribute: 'Occult' }
 			},
 			system:
 				'Make one Rouse check, and spend your simple action to cause a naturally-occurring shadow in your line of sight to grow and cover all subjects in a six-step diameter. The shadow obscures all light and muffles all sounds within it, inflicting near-total blindness and deafness on all victims.\nAnyone standing within your Stygian Shroud gains the Blinded Condition. Powers such as Oblivion Sight, Eyes of the Beast, and Heightened Senses that would normally make you immune to the Blinded Condition do not automatically prevent this supernatural blindness. Instead, if a character has a power that would make them immune to or mitigate the Blinded Condition, they must activate that power, then attempt a contested challenge using their Wits + Investigation vs. Resolve + Occult. This challenge does not count as an attack and does not require an action. They may only make this challenge once per scene, per mitigating power. If successful, they may resolve the Blinded Condition from your Stygian Shroud for the remainder of the scene. You are able to see within your own Shroud, but you are not immune to the effects of other shrouds.\nWithin a Stygian Shroud, most living beings, such as animals, mortals, and ghouls (not thin-blooded vampires), suffer one point of Normal Damage on your initiative each turn, as Oblivion steals their breath and saps their will to live. This damage cannot be reduced or negated. If exposed to Stygian Shroud for three consecutive rounds, they suffocate and die. After creating a Stygian Shroud, you may use a simple action to move your Shroud three steps in any direction.',

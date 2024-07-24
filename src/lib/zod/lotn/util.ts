@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { attributeName } from './enums/attributeName';
 import { backgroundAdvantageName } from './enums/backgroundAdvantageName';
 import { backgroundDisadvantageName } from './enums/backgroundDisadvantageName';
 import { backgroundName, type BackgroundName } from './enums/backgroundName';
@@ -24,6 +25,7 @@ import { masqueradeThreat } from './enums/masqueradeThreat';
 import { meritName } from './enums/meritName';
 import { oblivionCeremonyName } from './enums/oblivionCeremonyName';
 import { sectName } from './enums/sectName';
+import { skillName } from './enums/skillName';
 
 export function createDisciplineConfigSchema(
 	disciplineNameValue: NormalDisciplines | RitualDisciplines
@@ -145,8 +147,10 @@ export function createRitualPowerSchema(disciplineNameValue: RitualDisciplines) 
 			]),
 			challengePool: z
 				.object({
-					attacker: z.string(),
-					defender: z.string(),
+					attacker: z.object({ attribute: attributeName, skill: skillName }),
+					defender: z
+						.object({ attribute: attributeName, skillOrAttribute: skillName.or(attributeName) })
+						.or(z.string()),
 					hint: z.string().optional()
 				})
 				.optional(),
@@ -176,8 +180,10 @@ export function createNormalDisciplinePowerSchema(disciplineNameValue: NormalDis
 			duration: z.string(),
 			challengePool: z
 				.object({
-					attacker: z.string(),
-					defender: z.string(),
+					attacker: z.object({ attribute: attributeName, skill: skillName }),
+					defender: z
+						.object({ attribute: attributeName, skillOrAttribute: skillName.or(attributeName) })
+						.or(z.string()),
 					hint: z.string().optional()
 				})
 				.optional(),
@@ -203,8 +209,10 @@ export function createRitualSchema() {
 				process: z.string().optional(),
 				challengePool: z
 					.object({
-						attacker: z.string(),
-						defender: z.string(),
+						attacker: z.object({ attribute: attributeName, skill: skillName }),
+						defender: z
+							.object({ attribute: attributeName, skillOrAttribute: skillName.or(attributeName) })
+							.or(z.string()),
 						hint: z.string().optional()
 					})
 					.optional(),

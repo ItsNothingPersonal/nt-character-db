@@ -26,7 +26,7 @@ export const auspexConfig: AuspexConfigSchema = {
 			cost: 'One Rouse check',
 			duration: 'Passive',
 			challengePool: {
-				attacker: 'Wits + Awareness',
+				attacker: { attribute: 'Wits', skill: 'Awareness' }, //'Wits + Awareness',
 				defender: 'variable',
 				hint: 'see below'
 			},
@@ -39,7 +39,7 @@ export const auspexConfig: AuspexConfigSchema = {
 			cost: 'One Rouse check',
 			duration: 'N/A',
 			challengePool: {
-				attacker: 'Composure + Medicine',
+				attacker: { attribute: 'Composure', skill: 'Medicine' }, //'Composure + Medicine',
 				defender: 'difficulty of 2'
 			},
 			system:
@@ -57,8 +57,8 @@ export const auspexConfig: AuspexConfigSchema = {
 			cost: 'One Rouse check',
 			duration: 'N/A',
 			challengePool: {
-				attacker: 'Intelligence + Insight',
-				defender: 'Composure + Subterfuge'
+				attacker: { attribute: 'Intelligence', skill: 'Insight' },
+				defender: { attribute: 'Composure', skillOrAttribute: 'Subterfuge' }
 			},
 			system:
 				"Target a character within your line of sight, spend a standard action, and make a contested challenge. If you succeed, your target must truthfully answer two of the following questions. In order to gain the answers to additional questions, you must utilize Scry the Soul again.\n▷ What is your emotional state?\n▷ What is the Resonance of your blood? (When used on a vampire, this will reveal the Resonance type of the last blood she fed on.)\n▷ What is your creature type? (Vampire, werewolf, ghoul, etc.)\n▷ Are you under the influence of supernatural powers? (This question does not reveal the specific powers influencing the character, only whether the character is under the effects of a supernatural power with a Duration that is not Passive or Immediate.)\n▷ Have you committed diablerie in the last year?\nIf used against a target that is currently possessed by another character's essence, such as an animal being affected by Subsume the Spirit, or a mortal under the effects of Possession, the answer to “what is your creature type” is the actual creature type of the physical entity  you see, not the controlling entity. However, if the second question asked is “Are you under the influence of supernatural powers?” this would reveal the influence of the controlling character, though not necessarily what power is being used, as described above.\nAlternatively, you may use this power to scan a room looking for either a mortal with a specific type of blood Resonance or a supernatural creature of a specific type. For example, you may wish to search for vampires in a crowd of people or a mortal possessing Choleric Blood Resonance. To scan the room, declare to the Storyteller what type of creature type or Blood Resonance you are looking for and perform a static challenge. The difficulty of the static challenge depends on how many people are in your search area. A group of up to 25 people would be difficulty 2. For each additional 25 people beyond the first 25, increase the difficulty by 2. If you succeed, you identify everyone in the room who meets your search criteria."
@@ -68,8 +68,8 @@ export const auspexConfig: AuspexConfigSchema = {
 			cost: 'Free',
 			duration: 'Passive',
 			challengePool: {
-				attacker: 'Wits + Awareness',
-				defender: 'Composure + Subterfuge',
+				attacker: { attribute: 'Wits', skill: 'Awareness' },
+				defender: { attribute: 'Composure', skillOrAttribute: 'Subterfuge' },
 				hint: 'You automatically notice failed mental and social attacks without a test (see Noticing Attacks, page 107).'
 			},
 			system:
@@ -80,8 +80,8 @@ export const auspexConfig: AuspexConfigSchema = {
 			cost: 'One Rouse check',
 			duration: 'One hour',
 			challengePool: {
-				attacker: 'Resolve + Awareness',
-				defender: 'Composure + Awareness'
+				attacker: { attribute: 'Resolve', skill: 'Awareness' },
+				defender: { attribute: 'Composure', skillOrAttribute: 'Awareness' }
 			},
 			system:
 				'Target a character within your line of sight, spend a standard action, and make a contested challenge. If you succeed, you can ‘ride’ the senses of your target for up to one hour. You see, hear, smell, and feel exactly what they do. Your target remains unaware of your intrusion, but others may notice through the use of Scry the Soul. If your target is alerted to your presence, they may attempt to push you out by making a contested challenge using their Resolve + Awareness vs. your Composure + Awareness. If you are successfully separated, you may not target that same character with Shared Senses for the remainder of the night. While Shared Senses is active, you may still move, act normally, and use your own senses as well.'
@@ -98,7 +98,7 @@ export const auspexConfig: AuspexConfigSchema = {
 			cost: 'One Rouse check',
 			duration: 'Passive',
 			challengePool: {
-				attacker: 'Intelligence + Investigation',
+				attacker: { attribute: 'Intelligence', skill: 'Investigation' },
 				defender: 'difficulty of 3'
 			},
 			system:
@@ -109,8 +109,8 @@ export const auspexConfig: AuspexConfigSchema = {
 			cost: 'One Rouse check',
 			duration: 'Thirty minutes plus 30 minutes per additional Rouse check',
 			challengePool: {
-				attacker: 'Intelligence + Investigation',
-				defender: 'Resolve + Composure'
+				attacker: { attribute: 'Intelligence', skill: 'Investigation' },
+				defender: { attribute: 'Resolve', skillOrAttribute: 'Composure' }
 			},
 			system:
 				"Your perceptions split, allowing you to focus on a single far away person, place, or object, without losing the ability to perceive your current surroundings. You may target a character, item, or location you have seen in person in the last 90 days with Clairvoyance, provided the target is within your game’s local area of play.\nSpend a standard action, and make a Rouse check. No challenge is required to observe a location or object. If you use Clairvoyance on a supernatural creature, or on an object in the possession of a supernatural creature, you must make an opposed challenge against your target or the individual controlling the object. If successful, you can see, hear, and otherwise sense the area around your target as though you are in their presence. This challenge does not alert the other character that she is being observed.\nIf you use Clairvoyance to spy on a character whose consciousness and physical body are in two different locations (such as when they are using the Possession power), you always perceive her consciousness.\nYou may only use Heightened Senses and Sense the Unseen through Clairvoyance. A character's Heightened Senses would allow her to smell a candle or see in a poorly-lit room through Clairvoyance. Sense the Unseen could detect the use of Obfuscated individuals or hallucinations.\nYou may maintain this power at the conclusion of its duration by making another Rouse check."
@@ -128,8 +128,8 @@ export const auspexConfig: AuspexConfigSchema = {
 			cost: 'One Rouse check',
 			duration: 'One hour (willing target) or one turn (unwilling target)',
 			challengePool: {
-				attacker: 'Resolve + Awareness',
-				defender: 'Wits + Subterfuge'
+				attacker: { attribute: 'Resolve', skill: 'Awareness' },
+				defender: { attribute: 'Wits', skillOrAttribute: 'Subterfuge' }
 			},
 			system:
 				'Telepathy provides two abilities: the ability to communicate telepathically and the ability to draw information from the mind of another. Either use requires a standard action and a Rouse check. If the target is mortal or willing, no challenge is required. If they are not mortal and are unwilling, make a contested challenge.\nCommunicating telepathically allows the character and her target to send and receive mental messages and simple images. You may use this mode of Telepathy on any character you have met who is within your local area of play. Line of sight is not required. When communicating with a willing target, a single use of Telepathy lasts for an hour and allows the characters to communicate freely. This mode of Telepathy may be extended by another hour for one Rouse check. A character can maintain Telepathic links to a number of willing characters equal to her dots in Composure. When communicating with an unwilling target, you may send one image or a brief message that would take less than ten seconds to say to the target.\nIf a willing character becomes unwilling during a telepathic session, the character using Telepathy must immediately succeed in an opposed challenge using the Telepathy test pool or be ejected from the now-unwilling character’s mind. A character may also choose to become willing at any point during the resolution of Telepathy.\nAlternatively, your character may pull one image or specific piece of information out of the mind of an unwilling target within line of sight. The information you gain in this way must truthfully answer one of the following questions (your choice):\n▷ What are you currently thinking about?\n▷ What does that person or thing you just described look like?\n▷ Where is the person or object you were just talking about located?\n▷ Do you like or dislike the person you’re currently talking to?\n▷ What are you planning to do in the next few minutes?\nIf you target a character who happens to be possessed by another character, such as through use of the powers Subsume the Spirit or Possession, your Telepathy links you to the controlling mind, while the possessed mind remains dormant and unreachable.'

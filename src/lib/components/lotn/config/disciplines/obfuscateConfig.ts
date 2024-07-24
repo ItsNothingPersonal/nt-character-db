@@ -36,8 +36,8 @@ export const obfuscateConfig: ObfuscateConfigSchema = {
 			},
 			cost: 'One Rouse check',
 			challengePool: {
-				attacker: 'Manipulation + Subterfuge',
-				defender: 'Composure + Wits'
+				attacker: { attribute: 'Manipulation', skill: 'Subterfuge' },
+				defender: { attribute: 'Composure', skillOrAttribute: 'Wits' }
 			},
 			system:
 				'Make one Rouse check and spend your simple action as you conjure a sudden hallucinatory distraction. Make an opposed challenge against everyone who can draw line of sight to the location of your distraction. Any characters that fail gain the Distracted Condition as they refocus their attention. You may choose to create a hallucinatory distraction centered on your own person. If you do so, in addition to the above effect, anyone who loses the opposed challenge to resist Chimerstry also gives you their Gaze and Focus.\nYour hallucinations can never be recorded or transmitted through electronics even with Ghost in the Machine active.',
@@ -65,8 +65,8 @@ export const obfuscateConfig: ObfuscateConfigSchema = {
 				value: 2
 			},
 			challengePool: {
-				attacker: 'Manipulation + Subterfuge',
-				defender: 'Intelligence + Awareness'
+				attacker: { attribute: 'Manipulation', skill: 'Subterfuge' },
+				defender: { attribute: 'Intelligence', skillOrAttribute: 'Awareness' }
 			},
 			cost: 'One Rouse check',
 			system:
@@ -91,8 +91,8 @@ export const obfuscateConfig: ObfuscateConfigSchema = {
 			level: 4,
 			cost: 'Free',
 			challengePool: {
-				attacker: 'Wits + Stealth',
-				defender: 'Wits + Awareness'
+				attacker: { attribute: 'Wits', skill: 'Stealth' },
+				defender: { attribute: 'Wits', skillOrAttribute: 'Awareness' }
 			},
 			prerequisite: ['Conceal', 'Unseen Passage'],
 			system:

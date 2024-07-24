@@ -1,4 +1,4 @@
-import HttpStatusCode from '$lib/server/httpStatusCode';
+import HttpStatusCode from '$lib/httpStatusCode';
 import { validateIdParameter } from '$lib/server/util';
 import { oblivionCeremonyName } from '$lib/zod/lotn/enums/oblivionCeremonyName.js';
 import {

@@ -17,8 +17,8 @@ export const dominateConfig: DominateConfigSchema = {
 		'Cloud Memory': {
 			level: 1,
 			challengePool: {
-				attacker: 'Charisma + Persuasion',
-				defender: 'Wits + Resolve'
+				attacker: { attribute: 'Charisma', skill: 'Persuasion' },
+				defender: { attribute: 'Wits', skillOrAttribute: 'Resolve' }
 			},
 			cost: 'One Rouse check',
 			system:
@@ -28,8 +28,8 @@ export const dominateConfig: DominateConfigSchema = {
 		Compel: {
 			level: 1,
 			challengePool: {
-				attacker: 'Charisma + Intimidation',
-				defender: 'Intelligence + Resolve'
+				attacker: { attribute: 'Charisma', skill: 'Intimidation' },
+				defender: { attribute: 'Intelligence', skillOrAttribute: 'Resolve' }
 			},
 			cost: 'Free',
 			system:
@@ -43,8 +43,8 @@ export const dominateConfig: DominateConfigSchema = {
 				value: 2
 			},
 			challengePool: {
-				attacker: 'Manipulation + Insight',
-				defender: 'Intelligence + Composure'
+				attacker: { attribute: 'Manipulation', skill: 'Insight' },
+				defender: { attribute: 'Intelligence', skillOrAttribute: 'Composure' }
 			},
 			cost: 'One Rouse check',
 			system:
@@ -54,8 +54,8 @@ export const dominateConfig: DominateConfigSchema = {
 		Mesmerize: {
 			level: 2,
 			challengePool: {
-				attacker: 'Manipulation + Persuasion',
-				defender: 'Intelligence + Resolve'
+				attacker: { attribute: 'Manipulation', skill: 'Persuasion' },
+				defender: { attribute: 'Intelligence', skillOrAttribute: 'Resolve' }
 			},
 			cost: 'One Rouse check',
 			system:
@@ -72,8 +72,8 @@ export const dominateConfig: DominateConfigSchema = {
 		'Forgetful Mind': {
 			level: 3,
 			challengePool: {
-				attacker: 'Manipulation + Subterfuge',
-				defender: 'Composure + Resolve'
+				attacker: { attribute: 'Manipulation', skill: 'Subterfuge' },
+				defender: { attribute: 'Composure', skillOrAttribute: 'Resolve' }
 			},
 			cost: 'One Rouse check per 10 minutes of memories altered',
 			system:
@@ -98,8 +98,8 @@ export const dominateConfig: DominateConfigSchema = {
 		Conditioning: {
 			level: 4,
 			challengePool: {
-				attacker: 'Manipulation + Persuasion',
-				defender: 'Intelligence + Resolve'
+				attacker: { attribute: 'Manipulation', skill: 'Persuasion' },
+				defender: { attribute: 'Intelligence', skillOrAttribute: 'Resolve' }
 			},
 			prerequisite: { main: 'Submerged Directive', or: ['Compel', 'Mesmerize'] },
 			cost: 'Two Rouse checks',

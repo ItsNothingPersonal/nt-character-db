@@ -1,45 +1,18 @@
 <script lang="ts">
 	import {
-		createNormalDisciplinePowerSchema,
-		createRitualPowerSchema,
-		isNormalDiscipline,
-		normalDisciplinePowerUnion,
-		ritualDisciplinePowerUnion,
 		type NormalDisciplinePowerUnion,
 		type NormalDisciplines,
 		type RitualDisciplinePowerUnion,
 		type RitualDisciplines
 	} from '$lib/zod/lotn/util';
-	import { getDisciplineConfig } from '../../util/disciplines';
+	import { getDisciplinePower } from '../../util/disciplines';
+	import { joinWithOr } from '../../util/generalUtils';
 	import HelpText from './HelpText.svelte';
 
 	export let discipline: NormalDisciplines | RitualDisciplines;
 	export let power: NormalDisciplinePowerUnion | RitualDisciplinePowerUnion;
 
 	const disciplinePower = getDisciplinePower(discipline, power);
-
-	function getDisciplinePower(
-		discipline: NormalDisciplines | RitualDisciplines,
-		power: NormalDisciplinePowerUnion | RitualDisciplinePowerUnion
-	) {
-		const config = getDisciplineConfig(discipline);
-		if (isNormalDiscipline(discipline)) {
-			const schema = createNormalDisciplinePowerSchema(discipline);
-			const result = schema.safeParse(config.powers);
-
-			if (result.success) {
-				const powerParsed = normalDisciplinePowerUnion.parse(power);
-				return result.data[powerParsed];
-			}
-		} else if (!isNormalDiscipline(discipline)) {
-			const schema = createRitualPowerSchema(discipline);
-			const result = schema.safeParse(config);
-			if (result.success) {
-				const powerParsed = ritualDisciplinePowerUnion.parse(power);
-				return result.data[powerParsed];
-			}
-		}
-	}
 </script>
 
 {#if disciplinePower && !('requiredIngredients' in disciplinePower)}
@@ -58,7 +31,14 @@
 			{#if disciplinePower.challengePool}
 				<p class="whitespace-pre-line">
 					<span class="font-bold">Challenge Pool:</span>
-					{disciplinePower.challengePool.attacker} vs {disciplinePower.challengePool.defender}
+					{#if typeof disciplinePower.challengePool.defender === 'string'}
+						{disciplinePower.challengePool.attacker.attribute} + {disciplinePower.challengePool
+							.attacker.skill} vs {disciplinePower.challengePool.defender}
+					{:else}
+						{disciplinePower.challengePool.attacker.attribute} + {disciplinePower.challengePool
+							.attacker.skill} vs {`${disciplinePower.challengePool.defender.attribute} + ${disciplinePower.challengePool.defender.skillOrAttribute}`}
+					{/if}
+
 					{#if disciplinePower.challengePool.hint}
 						{disciplinePower.challengePool.hint}
 					{/if}
@@ -68,6 +48,20 @@
 				<span class="font-bold">Cost:</span>
 				{disciplinePower.cost}
 			</p>
+			{#if disciplinePower.prerequisite}
+				<p class="whitespace-pre-line">
+					<span class="font-bold">Prerequisite:</span>
+					{#if Array.isArray(disciplinePower.prerequisite)}
+						{joinWithOr(disciplinePower.prerequisite)}
+					{:else if typeof disciplinePower.prerequisite !== 'string'}
+						{disciplinePower.prerequisite.main} and either {joinWithOr(
+							disciplinePower.prerequisite.or
+						)}
+					{:else}
+						{disciplinePower.prerequisite}
+					{/if}
+				</p>
+			{/if}
 			<p class="whitespace-pre-line">
 				<span class="font-bold">System:</span>
 				{disciplinePower.system}

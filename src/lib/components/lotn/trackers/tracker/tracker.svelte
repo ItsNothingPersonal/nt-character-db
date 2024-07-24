@@ -8,8 +8,8 @@
 
 <div
 	class="grid grid-flow-row-dense grid-cols-1 {buttonsConfig
-		? 'grid-rows-double-center'
-		: 'grid-rows-title-content'} bg-light-100 items-center border-2 border-gray-500 dark:border-gray-50 dark:bg-slate-900"
+		? 'grid-rows-[auto_2fr_1fr]'
+		: 'grid-rows-[auto_1fr]'} bg-light-100 items-center border-2 border-gray-500 dark:border-gray-50 dark:bg-slate-900"
 >
 	<p class="text-center font-bold">
 		{title}

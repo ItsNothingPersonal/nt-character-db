@@ -21,8 +21,8 @@ export const thinBloodAlchemyConfig: ThinBloodAlchemyConfigSchema = {
 			],
 			cost: 'One Rouse check',
 			challengePool: {
-				attacker: 'Resolve + Science',
-				defender: 'Strength + Athletics'
+				attacker: { attribute: 'Resolve', skill: 'Science' },
+				defender: { attribute: 'Strength', skillOrAttribute: 'Athletics' }
 			},
 			system:
 				'Use your standard action to telekinetically push, pull, or lift an object weighing up to 225 pounds that is within your line of sight and no farther than 12 steps. You can move or use the object in any fashion, as though you were using your hands, such as to push a button, turn a dial, fire a gun, or type on a keyboard. Knives and other dense, blunt objects can be wielded as weapons using your Resolve + Science vs. Dexterity + Athletics.\nAfter activating Far Reach, you can remotely control a targeted object for five minutes, until you lose line of sight, or it moves further than twelve steps from you. Objects moved with Far Reach move six steps per turn. Remotely using an object takes your full concentration and requires you to spend a standard action. In stressful situations that require fine control (such as typing a specific sequence of numbers and letters on a keyboard) at range your Storyteller may impose a -2 penalty to your test pool.\nYou may attempt to use Far Reach to move someone else. This requires a Resolve + Science challenge vs. your target’s Strength + Athletics. On a win, an invisible force pushes, pulls, or lifts your target three steps in any direction. Breaking free from someone using Far Reach to hold you in the air requires the expenditure of a simple action and a successful Strength + Athletics test vs. your Resolve + Science. Depending on your height this may incur damage or levy a Condition. (See Falling, page 108). You cannot use Far Reach on yourself or anything you are physically touching.',
@@ -61,8 +61,8 @@ export const thinBloodAlchemyConfig: ThinBloodAlchemyConfigSchema = {
 			],
 			cost: 'One Rouse check',
 			challengePool: {
-				attacker: 'Wits + Science',
-				defender: 'Stamina + Survival'
+				attacker: { attribute: 'Wits', skill: 'Science' },
+				defender: { attribute: 'Stamina', skillOrAttribute: 'Survival' }
 			},
 			system:
 				'Once the potion is imbibed, for the next 15 minutes the alchemist can gesture at a target within sight and make an opposed challenge by spending their standard action. If the alchemist is successful, a swirling mist envelops the target, causing the Blinded Condition. Powers that make you immune to the Blinded Condition from mundane or supernatural darkness do not make you immune to the Blinded Condition inflicted by Envelop. If the target is mortal, then they also can take no actions except movement as they cough and choke. Thin-blooded vampires are not considered mortals for the purposes of interacting with Envelop.\nThe mist lasts for two turns, at which point the effects of this power on the target end. An alchemist may only conjure one such mist at time.',

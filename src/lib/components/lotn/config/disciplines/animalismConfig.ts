@@ -40,7 +40,7 @@ export const animalismConfig: AnimalismConfigSchema = {
 			cost: 'One Rouse check',
 			duration: 'One Scene or one hour (if using the Patrol option)',
 			challengePool: {
-				attacker: 'Charisma + Animal Ken',
+				attacker: { attribute: 'Charisma', skill: 'Animal Ken' },
 				defender: 'variable',
 				hint: 'see below'
 			},
@@ -58,7 +58,10 @@ export const animalismConfig: AnimalismConfigSchema = {
 			level: 3,
 			cost: 'One Rouse check',
 			duration: 'Varies (see above)',
-			challengePool: { attacker: 'Charisma + Animal Ken', defender: 'Stamina + Resolve' },
+			challengePool: {
+				attacker: { attribute: 'Charisma', skill: 'Animal Ken' },
+				defender: { attribute: 'Stamina', skillOrAttribute: 'Resolve' }
+			},
 			system:
 				'Spend a standard action and make a contested challenge. If you are successful, and your target is a mortal, they become overcome with severe lethargy and are only capable of defending themselves. They may only take defensive actions or flee, moving at half their normal rate. This lasts for 30 minutes if you remain or for five minutes after you leave their presence.\nIf you are successful and your target is a vampire, instead of being Incapacitated, they may not perform Blood Surges for two turns starting on their next initiative.\nFinally, if your target was in a Frenzy when this power was successfully used, she immediately falls out of the Frenzy. A Frenzying vampire affected in this way does not lose the ability to Blood Surge. You may not target yourself with Quell the Beast.'
 		},
@@ -75,7 +78,7 @@ export const animalismConfig: AnimalismConfigSchema = {
 			cost: 'One Rouse check (free if used on a ghouled Familiar)',
 			duration: 'One hour plus one hour per additional Rouse check',
 			challengePool: {
-				attacker: 'Manipulation + Animal Ken',
+				attacker: { attribute: 'Manipulation', skill: 'Animal Ken' },
 				defender: 'variable',
 				hint: 'see below'
 			},
@@ -87,8 +90,8 @@ export const animalismConfig: AnimalismConfigSchema = {
 			cost: 'One Rouse check',
 			duration: 'Frenzy duration',
 			challengePool: {
-				attacker: 'Charisma + Animal Ken',
-				defender: 'Stamina + Resolve',
+				attacker: { attribute: 'Charisma', skill: 'Animal Ken' },
+				defender: { attribute: 'Stamina', skillOrAttribute: 'Resolve' },
 				hint: 'no bonus for being in Frenzy'
 			},
 			system:

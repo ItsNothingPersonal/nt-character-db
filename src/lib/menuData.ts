@@ -43,5 +43,11 @@ export const menuDataLotN: {
 		label: 'Trackers',
 		href: '/lotn/sheet/[id]/trackers',
 		icon: 'mdi:chart-line'
+	},
+	{
+		id: 2,
+		label: 'Battle',
+		href: '/lotn/sheet/[id]/battle',
+		icon: 'mdi:sword'
 	}
 ];

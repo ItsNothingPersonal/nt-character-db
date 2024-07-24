@@ -53,7 +53,7 @@ export const fortitudeConfig: FortitudeConfigSchema = {
 			amalgam: { name: 'Auspex', value: 1 },
 			cost: 'One Rouse check',
 			challengePool: {
-				attacker: 'Intelligence + Medicine',
+				attacker: { attribute: 'Intelligence', skill: 'Medicine' },
 				defender: 'difficulty of 2'
 			},
 			system:

@@ -82,8 +82,8 @@ export const proteanConfig: ProteanConfigSchema = {
 			cost: 'One Rouse check',
 			amalgam: { name: 'Auspex', value: 1 },
 			challengePool: {
-				attacker: 'Strength + Survival',
-				defender: 'Strength + Athletics'
+				attacker: { attribute: 'Strength', skill: 'Survival' },
+				defender: { attribute: 'Strength', skillOrAttribute: 'Athletics' }
 			},
 			system:
 				'Make one Rouse check and spend a standard action to target a character within your line of sight that is standing on any type of ground covering, including dirt, concrete, rock, metal, plastic, or wood. If you succeed in the opposed challenge, you cause your target to become Grappled, as she sinks into the ground to a depth reaching just below her knees. While your opponent suffers the Grappled Condition in this way, you can move and act normally without ending the effects of the Grapple; this is an exception to the rules limiting your ability to move farther than one step or target other characters while maintaining a Grapple. If an individual Grappled by this power attempts to escape, she must succeed in a static challenge using her Strength + Brawl or, if appropriately armed, Strength + Melee vs. your Strength + Survival.\nIn addition, you can target inanimate objects with Abrupt Internment, provided they do not contain living or undead creatures. Make one Rouse check and use a simple action to cause an object, or a cache of objects no larger than a small car, to sink completely into the earth. You may spend a simple action to return the melded objects to the surface. While melded, the objects exist in a semi-tangible state. If returned to the surface or manually unearthed, the objects show no ill effects for having been interred.\nIf Abrupt Internment is used on a target who possesses the Protean power Earth Meld, that character can activate Earth Meld (as long as she meets all the requirements to do so) normally on her initiative, effectively escaping the Grapple at the end of their turn. This is not a transformative power; characters using or successfully affected by Abrupt Internment who are also currently using transformative powers are not forced to assume their true forms to activate or when targeted by Abrupt Internment.',
@@ -117,8 +117,8 @@ export const proteanConfig: ProteanConfigSchema = {
 			amalgam: { name: 'Presence', value: 2 },
 			cost: 'Two Rouse checks',
 			challengePool: {
-				attacker: 'Strength + Survival',
-				defender: 'Composure + Resolve'
+				attacker: { attribute: 'Strength', skill: 'Survival' },
+				defender: { attribute: 'Composure', skillOrAttribute: 'Resolve' }
 			},
 			system:
 				'Make two Rouse checks, spend your standard action, roleplay a show of dominance (a roar, a vicious glare, or other predatory gesture) toward a target in your line of sight, and make an opposed challenge using your Strength + Survival vs. the target’s Composure + Resolve. If successful, you force your target to immediately return to her natural form. Further, she cannot use transformative powers for the next hour.\nShape Mastery ends the effects of a transformative power, such as Shape Change and Horrid Form. It also ends the natural shape-changing ability of other supernatural creatures such as werewolves. It cannot affect powers that alter only a small portion of the body, such as Feral Weapons, or powers that alter the body but are not transformative, such as Earth Meld.',

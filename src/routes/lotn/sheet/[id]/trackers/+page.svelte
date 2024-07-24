@@ -146,16 +146,8 @@
 		<h2 class="h2">Health</h2>
 		<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-4">
 			<div class="grid auto-rows-auto grid-cols-2 gap-2 sm:grid-cols-3">
-				<div class="row-start-2 sm:row-start-1">
-					<Tracker
-						title="Health Total"
-						value={get(characterStore).attributes.physical_stamina + 3}
-					/>
-				</div>
-
-				<div class="row-start-2 sm:row-start-1">
-					<Tracker title="Health Remaining" value={healthRemaining} />
-				</div>
+				<Tracker title="Health Total" value={get(characterStore).attributes.physical_stamina + 3} />
+				<Tracker title="Health Remaining" value={healthRemaining} />
 				<div class="col-span-2 sm:col-span-1">
 					<p class="text-center font-bold">Status</p>
 					{#key healthRemaining}

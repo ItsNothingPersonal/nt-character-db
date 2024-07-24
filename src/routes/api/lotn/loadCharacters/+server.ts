@@ -1,4 +1,4 @@
-import HttpStatusCode from '$lib/server/httpStatusCode';
+import HttpStatusCode from '$lib/httpStatusCode';
 import type { PlayerCharacterSelection } from '$lib/zod/classic/playerCharacterSelection/playerCharacterSelection';
 import { error, json } from '@sveltejs/kit';
 import { ClientResponseError } from 'pocketbase';

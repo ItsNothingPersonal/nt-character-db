@@ -1,4 +1,4 @@
-import HttpStatusCode from '$lib/server/httpStatusCode';
+import HttpStatusCode from '$lib/httpStatusCode';
 import { validateIdParameter } from '$lib/server/util';
 import { playerAttribute } from '$lib/zod/classic/playerCharacter/playerAttribute';
 import { playerBackground } from '$lib/zod/classic/playerCharacter/playerBackground';
