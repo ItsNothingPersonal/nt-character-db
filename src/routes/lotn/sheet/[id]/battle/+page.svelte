@@ -29,8 +29,6 @@
 	} from '$lib/testPools/testPools';
 	import type { PlayerItem } from '$lib/zod/lotn/playerCharacter/playerItem';
 
-	export let data;
-
 	let selectedWeapon: PlayerItem | undefined;
 	let selectedDefenseItem: PlayerItem | undefined;
 	$: selectedWeaponItemQualityDescription = selectedWeapon
@@ -41,8 +39,9 @@
 		: undefined;
 	//let selectedAttackMode: { name: AttackMode } | undefined = undefined;
 
-	const weapons = data.items.filter((e) => e.type === 'melee' || e.type === 'ranged');
-	const defenseItems = data.items.filter((e) => e.type === 'protective');
+	const weapons =
+		$characterStore.items?.filter((e) => e.type === 'melee' || e.type === 'ranged') ?? [];
+	const defenseItems = $characterStore.items?.filter((e) => e.type === 'protective') ?? [];
 </script>
 
 <h1 class="h1">Battle-Sheet</h1>
