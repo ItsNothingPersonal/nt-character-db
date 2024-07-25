@@ -212,7 +212,7 @@
 			{#each discipline.powers.sort(sortStringAscending) as power}
 				{#if calculateDisciplinePowerChallengeTestPool(discipline.name, power) > 0}
 					{#key $characterConditionStore || $bloodSurgeStore}
-						<HelpText id={discipline.name}>
+						<HelpText id={`${discipline.name}-${power}`}>
 							<Tracker
 								title={power}
 								value={calculateDisciplinePowerChallengeTestPool(discipline.name, power)}
