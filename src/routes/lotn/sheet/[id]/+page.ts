@@ -4,7 +4,7 @@ import { playerCharacter } from '$lib/zod/lotn/playerCharacter/playerCharacter';
 import { get } from 'svelte/store';
 
 export async function load({ params, fetch }) {
-	if (!get(characterStore)) {
+	if (!get(characterStore) || get(characterStore).id !== params.id) {
 		const response = await fetch(`/api/lotn/character?id=${params.id}`);
 
 		if (response.status === HttpStatusCode.OK) {
