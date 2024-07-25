@@ -5,6 +5,7 @@ import { attackerPositionStore } from '$lib/stores/attackerPositionStore';
 import { bloodSurgeStore } from '$lib/stores/bloodSurgeStore';
 import { characterConditionStore } from '$lib/stores/characterConditionStore';
 import { isNullOrUndefined } from '$lib/util';
+import type { PlayerItem } from '$lib/zod/lotn/playerCharacter/playerItem';
 import type {
 	NormalDisciplinePowerUnion,
 	NormalDisciplines,
@@ -33,7 +34,7 @@ export function getBrawlTestPool() {
 	);
 }
 
-export function getMeleeTestPool() {
+export function getMeleeTestPool(weapon: PlayerItem | undefined) {
 	const characterStoreLocal = get(characterStore);
 	const conditionStore = get(characterConditionStore);
 	const negativeModifiers =
@@ -41,9 +42,10 @@ export function getMeleeTestPool() {
 		(conditionStore.blinded ? -5 : 0) -
 		(conditionStore.impaired ? -2 : 0) -
 		(conditionStore.weakened ? -1 : 0);
-	const positiveModifiers = get(bloodSurgeStore)
-		? bloodPotencyConfig[get(characterStore).bloodPotency].bloodSurgeBonus
-		: 0;
+	const positiveModifiers =
+		(get(bloodSurgeStore)
+			? bloodPotencyConfig[get(characterStore).bloodPotency].bloodSurgeBonus
+			: 0) + +(weapon?.quality === 'Devastating' ? 1 : 0);
 
 	return Math.max(
 		0,
@@ -75,7 +77,7 @@ export function getRangedTestPool() {
 	);
 }
 
-export function getDodgeTestPool() {
+function getDodgeTestPool() {
 	const characterStoreLocal = get(characterStore);
 	const conditionStore = get(characterConditionStore);
 	const negativeModifiers =
@@ -98,6 +100,26 @@ export function getDodgeTestPool() {
 	);
 }
 
+export function getCloseCombatDodgeTestPool(defenseItem: PlayerItem | undefined = undefined) {
+	let baseDodgePool = getDodgeTestPool();
+
+	if (defenseItem?.quality === 'Deflecting') {
+		baseDodgePool += 1;
+	}
+
+	return baseDodgePool;
+}
+
+export function getRangedDodgeTestPool(defenseItem: PlayerItem | undefined = undefined) {
+	let baseDodgePool = getDodgeTestPool();
+
+	if (defenseItem?.quality === 'Ballistic') {
+		baseDodgePool += 1;
+	}
+
+	return baseDodgePool;
+}
+
 export function getDefenderTestPool(
 	discipline: NormalDisciplines | RitualDisciplines,
 	power: NormalDisciplinePowerUnion | RitualDisciplinePowerUnion
@@ -111,4 +133,12 @@ export function getDefenderTestPool(
 	{
 		return `${challengePool.defender.attribute} + ${challengePool.defender.skillOrAttribute}`;
 	}
+}
+
+export function getInitiativePool(weapon: PlayerItem | undefined) {
+	return (
+		get(characterStore).attributes.social_composure +
+		(get(characterStore).skills.find((e) => e.name === 'Awareness')?.value ?? 0) +
+		(weapon?.quality === 'Concealable' ? 1 : 0)
+	);
 }

@@ -9,6 +9,7 @@
 		hasDisciplinePowerChallengePool
 	} from '$lib/components/lotn/util/disciplines';
 	import { sortStringAscending } from '$lib/components/lotn/util/generalUtils.js';
+	import { getItemQualityDescription } from '$lib/components/lotn/util/itemUtil.js';
 	import Tracker from '$lib/components/tracker/tracker.svelte';
 	import Checkbox from '$lib/components/typography/checkbox.svelte';
 	import CheckBoxWithHelpText from '$lib/components/typography/checkBoxWithHelpText.svelte';
@@ -19,9 +20,11 @@
 	import { frenzyStore } from '$lib/stores/frenzyStore';
 	import {
 		getBrawlTestPool,
+		getCloseCombatDodgeTestPool,
 		getDefenderTestPool,
-		getDodgeTestPool,
+		getInitiativePool,
 		getMeleeTestPool,
+		getRangedDodgeTestPool,
 		getRangedTestPool
 	} from '$lib/testPools/testPools';
 	import type { PlayerItem } from '$lib/zod/lotn/playerCharacter/playerItem';
@@ -30,6 +33,12 @@
 
 	let selectedWeapon: PlayerItem | undefined;
 	let selectedDefenseItem: PlayerItem | undefined;
+	$: selectedWeaponItemQualityDescription = selectedWeapon
+		? getItemQualityDescription(selectedWeapon.quality, selectedWeapon.type)
+		: undefined;
+	$: selectedDefenseItemQualityDescription = selectedDefenseItem
+		? getItemQualityDescription(selectedDefenseItem.quality, selectedDefenseItem.type)
+		: undefined;
 	//let selectedAttackMode: { name: AttackMode } | undefined = undefined;
 
 	const weapons = data.items.filter((e) => e.type === 'melee' || e.type === 'ranged');
@@ -41,25 +50,47 @@
 <div class="mb-6 grid grid-cols-1 grid-rows-1 gap-2 sm:grid-cols-3">
 	<div class="flex flex-col">
 		<Select items={weapons} label="Weapons" bind:value={selectedWeapon} />
-		{#if selectedWeapon}
-			<p>{selectedWeapon.quality}</p>
-		{/if}
+		{#key selectedWeaponItemQualityDescription}
+			{#if selectedWeapon}
+				{#if selectedWeaponItemQualityDescription}
+					<HelpText id={selectedWeapon.name}>
+						<p class="pl-2">{selectedWeapon.quality}</p>
+						<svelte:fragment slot="helpText">
+							<p class="whitespace-pre-line">
+								{selectedWeaponItemQualityDescription}
+							</p>
+						</svelte:fragment>
+					</HelpText>
+				{:else}
+					<p class="pl-2">{selectedWeapon.quality}</p>
+				{/if}
+			{/if}
+		{/key}
 	</div>
 	<div class="flex flex-col">
 		<Select items={defenseItems} label="Defense Items" bind:value={selectedDefenseItem} />
-		{#if selectedDefenseItem}
-			<p>{selectedDefenseItem.quality}</p>
-		{/if}
+		{#key selectedDefenseItemQualityDescription}
+			{#if selectedDefenseItem}
+				{#if selectedDefenseItemQualityDescription}
+					<HelpText id={selectedDefenseItem.name}>
+						<p class="pl-2">{selectedDefenseItem.quality}</p>
+						<svelte:fragment slot="helpText">
+							<p class="whitespace-pre-line">
+								{selectedDefenseItemQualityDescription}
+							</p>
+						</svelte:fragment>
+					</HelpText>
+				{:else}
+					<p class="pl-2">{selectedDefenseItem.quality}</p>
+				{/if}
+			{/if}
+		{/key}
 	</div>
 </div>
 
 <h2 class="h2 mt-6">Initiative</h2>
 <div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-6">
-	<Tracker
-		title="Initiative"
-		value={$characterStore.attributes.social_composure +
-			($characterStore.skills.find((e) => e.name === 'Awareness')?.value ?? 0)}
-	/>
+	<Tracker title="Initiative" value={getInitiativePool(selectedWeapon)} />
 </div>
 
 <h2 class="h2">Conditions</h2>
@@ -157,9 +188,18 @@
 <div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-6">
 	{#key $characterConditionStore || $attackerPositionStore || $bloodSurgeStore}
 		<Tracker title="Brawl" value={getBrawlTestPool()} />
-		<Tracker title="Melee" value={getMeleeTestPool()} />
+		<Tracker title="Melee" value={getMeleeTestPool(selectedWeapon)} />
 		<Tracker title="Ranged" value={getRangedTestPool()} />
-		<Tracker title="Dodge" value={getDodgeTestPool()} />
+		<Tracker
+			title="Dodge Close Combat"
+			value={getCloseCombatDodgeTestPool()}
+			value2={getCloseCombatDodgeTestPool(selectedDefenseItem)}
+		/>
+		<Tracker
+			title="Dodge Range"
+			value={getRangedDodgeTestPool()}
+			value2={getRangedDodgeTestPool(selectedDefenseItem)}
+		/>
 	{/key}
 </div>
 

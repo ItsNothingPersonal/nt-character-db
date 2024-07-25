@@ -1,6 +1,7 @@
 <script lang="ts">
 	export let title: string;
 	export let value: number | string;
+	export let value2: number | string | undefined = undefined;
 	export let buttonsConfig:
 		| {
 				addFunction: () => void;
@@ -21,7 +22,11 @@
 >
 	<p class="font-bold">{title}</p>
 	<p class="mb-4 w-full text-8xl">
-		{value}
+		{#if value2 && value2 !== value}
+			{value} | {value2}
+		{:else}
+			{value}
+		{/if}
 	</p>
 
 	{#if buttonsConfig}
