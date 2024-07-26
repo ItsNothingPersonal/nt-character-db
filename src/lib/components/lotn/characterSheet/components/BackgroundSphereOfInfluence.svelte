@@ -8,10 +8,11 @@
 	const config = spheresOfInfluenceConfig[sphereOfInfluence];
 </script>
 
-<div class="flex gap-2">
-	<span class="underline underline-offset-1">Sphere of Influence: </span>
+<div class="flex flex-col">
+	<span class="whitespace-nowrap underline underline-offset-1">Sphere of Influence</span>
+
 	<HelpText id={`sphere-of-influence-${sphereOfInfluence}`}>
-		<span>{sphereOfInfluence}</span>
+		<span class="whitespace-nowrap">{sphereOfInfluence}</span>
 		<svelte:fragment slot="helpText">
 			<p class="whitespace-pre-line">
 				{config.description}
