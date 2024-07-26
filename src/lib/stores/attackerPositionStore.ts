@@ -1,9 +1,4 @@
+import type { AttackerPosition } from '$lib/zod/lotn/enums/attackerPosition';
 import { writable } from 'svelte/store';
 
-export const attackerPositionStore = writable<{
-	attackerMoreThanThreeMetersAway: boolean;
-	attackerLessThanTwoMetersAway: boolean;
-}>({
-	attackerMoreThanThreeMetersAway: false,
-	attackerLessThanTwoMetersAway: false
-});
+export const attackerPositionStore = writable<AttackerPosition>('mediumRange');

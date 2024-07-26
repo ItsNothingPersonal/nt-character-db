@@ -83,10 +83,11 @@ function getDodgeTestPool() {
 	const negativeModifiers =
 		0 -
 		(conditionStore.blinded ? -5 : 0) -
-		(conditionStore.impaired ? -2 : 0) +
-		(get(attackerPositionStore).attackerLessThanTwoMetersAway ? -2 : 0);
+		(conditionStore.impaired ? -2 : 0) -
+		(get(attackerPositionStore) === 'attackerLessThanTwoMetersAway' ? -2 : 0);
 	const positiveModifiers =
-		(get(attackerPositionStore).attackerMoreThanThreeMetersAway ? +3 : 0) +
+		0 +
+		(get(attackerPositionStore) === 'attackerMoreThanThreeMetersAway' ? +3 : 0) +
 		(get(bloodSurgeStore)
 			? bloodPotencyConfig[get(characterStore).bloodPotency].bloodSurgeBonus
 			: 0);

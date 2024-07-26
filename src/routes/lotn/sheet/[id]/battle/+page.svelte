@@ -168,10 +168,25 @@
 			? 'grid-cols-3 [&>label]:text-base sm:[&>label]:text-4xl'
 			: 'grid-cols-2 [&>label]:text-4xl'} grid-rows-1 divide-x-2 border-2 border-gray-500 dark:border-gray-50 dark:bg-slate-900 [&>label>input]:h-10 [&>label>input]:w-10 [&>label]:p-2"
 	>
-		<Checkbox bind:checked={$attackerPositionStore.attackerMoreThanThreeMetersAway}>
-			&gt; 3m
-		</Checkbox>
-		<Checkbox bind:checked={$attackerPositionStore.attackerLessThanTwoMetersAway}>&lt; 2m</Checkbox>
+		{#if $attackerPositionStore}
+			<Checkbox
+				checked={$attackerPositionStore === 'attackerMoreThanThreeMetersAway'}
+				onChange={() =>
+					$attackerPositionStore !== 'attackerMoreThanThreeMetersAway'
+						? ($attackerPositionStore = 'attackerMoreThanThreeMetersAway')
+						: ($attackerPositionStore = 'mediumRange')}
+			>
+				&gt; 3m
+			</Checkbox>
+
+			<Checkbox
+				checked={$attackerPositionStore === 'attackerLessThanTwoMetersAway'}
+				onChange={() =>
+					$attackerPositionStore !== 'attackerLessThanTwoMetersAway'
+						? ($attackerPositionStore = 'attackerLessThanTwoMetersAway')
+						: ($attackerPositionStore = 'mediumRange')}>&lt; 2m</Checkbox
+			>
+		{/if}
 	</div>
 {/if}
 
