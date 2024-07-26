@@ -54,37 +54,46 @@
 			>
 				{#each $characterStore.loresheet.values as loreSheetLevel}
 					<div class="card rounded-sm p-4">
-						<HelpText id={`${$characterStore.loresheet.name}-${loreSheetLevel}`}>
-							<span id={`${$characterStore.loresheet.name}-${loreSheetLevel}`} class="font-bold">
-								{getValueDescription(loreSheetLevel)?.title}
-							</span>
-							<svelte:fragment slot="helpText">
-								<p class="whitespace-pre-line">
-									{getValueDescription(loreSheetLevel)?.description}
-								</p>
-							</svelte:fragment>
-						</HelpText>
+						<label
+							class="label grid w-full grid-cols-[3fr_1fr] grid-rows-1"
+							for={`${$characterStore.loresheet.name}-${loreSheetLevel}`}
+						>
+							<HelpText id={`${$characterStore.loresheet.name}-${loreSheetLevel}`}>
+								<span
+									id={`${$characterStore.loresheet.name}-${loreSheetLevel}`}
+									class="text-nowrap font-bold"
+								>
+									{getValueDescription(loreSheetLevel)?.title}
+								</span>
+								<svelte:fragment slot="helpText">
+									<p class="whitespace-pre-line">
+										{getValueDescription(loreSheetLevel)?.description}
+									</p>
+								</svelte:fragment>
+							</HelpText>
 
-						<HelpText id={`${$characterStore.loresheet.name}-${loreSheetLevel}-value`}>
-							<Ratings
-								id={`${$characterStore.loresheet.name}-${loreSheetLevel}-value`}
-								interactive={$interactiveModeStore}
-								justify="justify-left"
-								bind:value={loreSheetLevel}
-							>
-								<svelte:fragment slot="empty">
-									<iconify-icon icon="prime:circle" />
+							<HelpText id={`${$characterStore.loresheet.name}-${loreSheetLevel}-value`}>
+								<Ratings
+									id={`${$characterStore.loresheet.name}-${loreSheetLevel}-value`}
+									interactive={$interactiveModeStore}
+									justify="justify-left"
+									max={3}
+									bind:value={loreSheetLevel}
+								>
+									<svelte:fragment slot="empty">
+										<iconify-icon icon="prime:circle" />
+									</svelte:fragment>
+									<svelte:fragment slot="full">
+										<iconify-icon icon="prime:circle-fill" />
+									</svelte:fragment>
+								</Ratings>
+								<svelte:fragment slot="helpText">
+									<p class="whitespace-pre-line">
+										{getValueDescription(loreSheetLevel)?.description}
+									</p>
 								</svelte:fragment>
-								<svelte:fragment slot="full">
-									<iconify-icon icon="prime:circle-fill" />
-								</svelte:fragment>
-							</Ratings>
-							<svelte:fragment slot="helpText">
-								<p class="whitespace-pre-line">
-									{getValueDescription(loreSheetLevel)?.description}
-								</p>
-							</svelte:fragment>
-						</HelpText>
+							</HelpText>
+						</label>
 					</div>
 				{/each}
 			</div>
