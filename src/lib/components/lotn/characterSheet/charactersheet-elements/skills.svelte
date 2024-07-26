@@ -35,7 +35,7 @@
 	}
 </script>
 
-<div class="grid auto-rows-auto grid-cols-2 gap-2 sm:grid-cols-3">
+<div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-3">
 	<div class="flex min-h-28 flex-col gap-2">
 		{#each getPhysicalSkills() as skill}
 			<ValueRating
