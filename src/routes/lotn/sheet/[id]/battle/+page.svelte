@@ -141,6 +141,11 @@
 	<CheckBoxWithHelpText
 		helpText={conditionConfig['Prone']}
 		helpTextId="prone"
+		onChange={() => {
+			if ($attackerPositionStore !== 'mediumRange' && $characterConditionStore.prone === false) {
+				$attackerPositionStore = 'mediumRange';
+			}
+		}}
 		bind:checked={$characterConditionStore.prone}
 	>
 		Prone
