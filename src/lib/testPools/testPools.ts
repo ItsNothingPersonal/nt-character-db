@@ -1,10 +1,13 @@
 import { characterStore } from '$lib/components/lotn/characterSheet/characterStore';
 import { bloodPotencyConfig } from '$lib/components/lotn/config/bloodPotencyConfig';
 import { getDisciplinePowerChallengePool } from '$lib/components/lotn/util/disciplines';
+import { mapAttributeNameToProperty } from '$lib/components/lotn/util/generalUtils';
 import { attackerPositionStore } from '$lib/stores/attackerPositionStore';
 import { bloodSurgeStore } from '$lib/stores/bloodSurgeStore';
 import { characterConditionStore } from '$lib/stores/characterConditionStore';
 import { isNullOrUndefined } from '$lib/util';
+import type { AttributeName } from '$lib/zod/lotn/enums/attributeName';
+import type { SkillName } from '$lib/zod/lotn/enums/skillName';
 import type { PlayerItem } from '$lib/zod/lotn/playerCharacter/playerItem';
 import type {
 	NormalDisciplinePowerUnion,
@@ -142,4 +145,11 @@ export function getInitiativePool(weapon: PlayerItem | undefined) {
 		(get(characterStore).skills.find((e) => e.name === 'Awareness')?.value ?? 0) +
 		(weapon?.quality === 'Concealable' ? 1 : 0)
 	);
+}
+
+export function getHuntingTestPool(attribute: AttributeName, skill: SkillName) {
+	const attributeValue = get(characterStore).attributes[mapAttributeNameToProperty(attribute)];
+	const skillValue = get(characterStore).skills.find((e) => e.name === skill)?.value ?? 0;
+
+	return attributeValue + skillValue;
 }

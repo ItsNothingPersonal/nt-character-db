@@ -1,7 +1,6 @@
 import { bloodSurgeStore } from '$lib/stores/bloodSurgeStore';
 import { characterConditionStore } from '$lib/stores/characterConditionStore';
 import { isNotNullOrUndefined, isNullOrUndefined } from '$lib/util';
-import { type AttributeName } from '$lib/zod/lotn/enums/attributeName';
 import type { DisciplineName } from '$lib/zod/lotn/enums/disciplineName';
 import {
 	createNormalDisciplinePowerSchema,
@@ -29,6 +28,7 @@ import { potenceConfig } from '../config/disciplines/potenceConfig';
 import { presenceConfig } from '../config/disciplines/presenceConfig';
 import { proteanConfig } from '../config/disciplines/proteanConfig';
 import { thinBloodAlchemyConfig } from '../config/disciplines/thinBloodAlchemyConfig';
+import { mapAttributeNameToProperty } from './generalUtils';
 
 export function getDisciplineConfig(disciplineName: DisciplineName) {
 	switch (disciplineName) {
@@ -127,29 +127,6 @@ export function calculateDisciplinePowerChallengeTestPool(
 		: 0;
 
 	return playerAttributeValue + playerSkillValue - negativeModifiers + positiveModifiers;
-}
-
-export function mapAttributeNameToProperty(attribute: AttributeName) {
-	switch (attribute) {
-		case 'Strength':
-			return 'physical_strength';
-		case 'Dexterity':
-			return 'physical_dexterity';
-		case 'Stamina':
-			return 'physical_stamina';
-		case 'Charisma':
-			return 'social_charisma';
-		case 'Manipulation':
-			return 'social_manipulation';
-		case 'Composure':
-			return 'social_composure';
-		case 'Intelligence':
-			return 'mental_intelligence';
-		case 'Wits':
-			return 'mental_wits';
-		case 'Resolve':
-			return 'mental_resolve';
-	}
 }
 
 export function hasDisciplinePowerChallengePool(

@@ -1,10 +1,11 @@
+import type { AttributeName } from '$lib/zod/lotn/enums/attributeName';
 import type { PredatorType } from '$lib/zod/lotn/enums/predatorType';
 import { type SkillName } from '$lib/zod/lotn/enums/skillName';
 
 export type PredatorSkillMap = {
 	[K in PredatorType]: {
 		description: string;
-		huntingPool: [string, SkillName] | { type: 'Special'; description: string };
+		huntingPool: [AttributeName, SkillName] | { type: 'Special'; description: string };
 	};
 };
 

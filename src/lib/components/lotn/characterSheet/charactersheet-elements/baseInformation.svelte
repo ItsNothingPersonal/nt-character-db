@@ -1,11 +1,20 @@
 <script lang="ts">
 	import P from '$lib/components/typography/p.svelte';
+	import { getHuntingTestPool } from '$lib/testPools/testPools';
 	import { clanConfig } from '../../config/clanConfig';
 	import { predatorTypeConfig } from '../../config/predatorTypeConfig';
 	import { characterStore } from '../characterStore';
 	import LabelWithHelpText from '../components/LabelWithHelpText.svelte';
 
 	const predatorType = predatorTypeConfig[$characterStore.predatorType];
+
+	function getHuntingPoolText() {
+		if ('type' in predatorType.huntingPool) {
+			return undefined;
+		}
+
+		return getHuntingTestPool(predatorType.huntingPool[0], predatorType.huntingPool[1]);
+	}
 </script>
 
 <div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-3">
@@ -35,7 +44,7 @@
 		label="Hunting Pool"
 		text={'type' in predatorType.huntingPool
 			? predatorType.huntingPool.type
-			: predatorType.huntingPool.join(' + ')}
+			: predatorType.huntingPool.join(' + ') + ` (${getHuntingPoolText()})`}
 	/>
 	<label class="label flex flex-col" for="sect">
 		<span>Sect</span>
