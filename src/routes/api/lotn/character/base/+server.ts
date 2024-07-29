@@ -16,7 +16,7 @@ export async function GET({ url, locals }) {
 	const id = validateIdParameter(url);
 	// Daten aus DB laden
 	const playerCharacterBaseDB = await locals.pb
-		.collection('lotn_player_character')
+		.collection('lotn_player_character_base')
 		.getFirstListItem<PlayerCharacterBase>(`id='${id}'`);
 
 	// Daten-Schema validieren
@@ -51,7 +51,7 @@ export async function POST({ locals, request }) {
 		let result: PlayerCharacterBaseCreateRequestBody;
 		try {
 			result = await locals.pb
-				.collection('lotn_player_character')
+				.collection('lotn_player_character_base')
 				.create<PlayerCharacterBaseCreateRequestBody>(playerCharacterBaseCreateBodyParsedDB);
 		} catch (e) {
 			if (e instanceof ClientResponseError) {
@@ -88,7 +88,7 @@ export async function PUT({ locals, request }) {
 		let result: PlayerCharacterBaseCreateRequestBody;
 		try {
 			result = await locals.pb
-				.collection('lotn_player_character')
+				.collection('lotn_player_character_base')
 				.update<PlayerCharacterBaseCreateRequestBody>(
 					playerCharacterBaseCreateBodyParsed.data.id,
 					playerCharacterBaseCreateBodyParsedDB
@@ -124,7 +124,7 @@ export async function DELETE({ locals, request }) {
 		// Parsen insgesamt erfolgreich
 		try {
 			await locals.pb
-				.collection('lotn_player_character')
+				.collection('lotn_player_character_base')
 				.delete(playerCharacterBaseDeleteBodyParsed.data.id);
 		} catch (e) {
 			if (e instanceof ClientResponseError) {

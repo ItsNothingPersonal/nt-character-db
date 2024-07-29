@@ -6,7 +6,6 @@ import { sectName } from '../enums/sectName';
 
 export const playerCharacterBase = z.object({
 	id: z.string(),
-	name: z.string(),
 	clan: clanName,
 	generation: z.number().min(9).max(16),
 	predatorType: predatorType,
@@ -17,7 +16,6 @@ export const playerCharacterBase = z.object({
 export type PlayerCharacterBase = z.infer<typeof playerCharacterBase>;
 
 export const playerCharacterBaseCreate = z.object({
-	name: z.string().optional(),
 	clan: clanName.optional(),
 	generation: z.number().min(9).max(16).default(13),
 	predatorType: predatorType.optional(),
@@ -28,7 +26,6 @@ export const playerCharacterBaseCreate = z.object({
 export type PlayerCharacterBaseCreate = z.infer<typeof playerCharacterBaseCreate>;
 
 export const playerCharacterBaseCreateRequestBody = z.object({
-	name: z.string(),
 	clan: clanName,
 	generation: z.number().min(9).max(16),
 	predatorType: predatorType,

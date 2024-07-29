@@ -1,10 +1,6 @@
 <script lang="ts">
 	import { selectedCharacterIdStoreLotN } from '$lib/stores/selectedCharacterIdStore';
 	import {
-		playerCharacterBase as playerCharacterBaseLotN,
-		type PlayerCharacterBase as PlayerCharacterBaseLotN
-	} from '$lib/zod/lotn/playerCharacter/playerCharacterBase';
-	import {
 		playerCharacterSelection,
 		type PlayerCharacterSelection
 	} from '$lib/zod/lotn/types/playerCharacterSelection';
@@ -23,27 +19,11 @@
 			method: 'POST'
 		});
 
-		const loadCharacterResponseParsed = playerCharacterSelection
+		selectionValuesLotN = playerCharacterSelection
 			.array()
 			.parse(await loadCharacterResponse.json());
 
-		loadCharacterResponseParsed.forEach(async (value) => {
-			const playerCharacter = await getLotNCharacterNameById(value.id);
-
-			// kein push, da svelte sonst updates nicht mitbekommt
-			// siehe https://learn.svelte.dev/tutorial/updating-arrays-and-objects
-			selectionValuesLotN = [
-				...selectionValuesLotN,
-				{
-					id: playerCharacter.id,
-					name: playerCharacter.name,
-					clan: playerCharacter.clan,
-					status: playerCharacter.status
-				}
-			];
-
-			$selectedCharacterIdStoreLotN = selectionValuesLotN[0].id;
-		});
+		$selectedCharacterIdStoreLotN = selectionValuesLotN[0].id;
 	}
 
 	async function loadLotNDrafts() {
@@ -51,34 +31,9 @@
 			method: 'POST'
 		});
 
-		const loadCharacterResponseParsed = playerCharacterSelection
+		selectionDraftValuesLotN = playerCharacterSelection
 			.array()
 			.parse(await loadCharacterResponse.json());
-
-		loadCharacterResponseParsed.forEach(async (value) => {
-			const playerCharacter = await getLotNCharacterNameById(value.id);
-
-			// kein push, da svelte sonst updates nicht mitbekommt
-			// siehe https://learn.svelte.dev/tutorial/updating-arrays-and-objects
-			selectionDraftValuesLotN = [
-				...selectionDraftValuesLotN,
-				{
-					id: playerCharacter.id,
-					name: playerCharacter.name,
-					clan: playerCharacter.clan,
-					status: playerCharacter.status
-				}
-			];
-
-			$selectedCharacterIdStoreLotN = selectionValuesLotN[0].id;
-		});
-	}
-
-	async function getLotNCharacterNameById(characterId: string): Promise<PlayerCharacterBaseLotN> {
-		const apiKeyResponse = await fetch(`/api/lotn/character/base?id=${characterId}`);
-		const playerCharacterBaseParsed = playerCharacterBaseLotN.parse(await apiKeyResponse.json());
-
-		return playerCharacterBaseParsed;
 	}
 </script>
 

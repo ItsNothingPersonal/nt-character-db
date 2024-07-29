@@ -1,15 +1,34 @@
 import HttpStatusCode from '$lib/httpStatusCode';
-import type { PlayerCharacterSelection } from '$lib/zod/classic/playerCharacterSelection/playerCharacterSelection';
+import type { PlayerCharacterName } from '$lib/zod/lotn/playerCharacter/playerCharacterName.js';
+import {
+	playerCharacterSelection,
+	type PlayerCharacterSelection
+} from '$lib/zod/lotn/types/playerCharacterSelection';
 import { error, json } from '@sveltejs/kit';
 import { ClientResponseError } from 'pocketbase';
 
 export async function POST({ locals }) {
 	let characters: PlayerCharacterSelection[] = [];
-
 	try {
-		characters = await locals.pb
-			.collection<PlayerCharacterSelection>('lotn_player_character')
-			.getFullList({ fields: 'id, name, clan, status', filter: "status='accepted'" });
+		const test = await locals.pb
+			.collection<
+				PlayerCharacterSelection & {
+					expand: { lotn_player_character_name_via_character_id: PlayerCharacterName };
+				}
+			>('lotn_player_character_base')
+			.getFullList({
+				fields: 'id, clan, status, expand.lotn_player_character_name_via_character_id.name',
+				filter: "status='accepted'",
+				expand: 'lotn_player_character_name_via_character_id'
+			});
+		characters = test.map((e) => {
+			return {
+				id: e.id,
+				name: e.expand.lotn_player_character_name_via_character_id.name,
+				clan: e.clan,
+				status: e.status
+			};
+		});
 	} catch (e) {
 		if (e instanceof ClientResponseError) {
 			error(HttpStatusCode.NOT_FOUND, `Charaktere konnten nicht geladen werden: ${e.message}`);
@@ -20,5 +39,5 @@ export async function POST({ locals }) {
 		);
 	}
 
-	return json(characters);
+	return json(playerCharacterSelection.array().parse(characters));
 }

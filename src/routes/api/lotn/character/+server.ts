@@ -28,6 +28,7 @@ import {
 	playerCharacterBaseCreateRequestBody,
 	playerCharacterBaseDeleteRequestBody
 } from '$lib/zod/lotn/playerCharacter/playerCharacterBase';
+import { playerCharacterName } from '$lib/zod/lotn/playerCharacter/playerCharacterName.js';
 import {
 	playerDiscipline,
 	playerDisciplineRequestBodyDB
@@ -87,6 +88,9 @@ export async function GET({ url, fetch }) {
 	const playerCharacterDB: Partial<PlayerCharacter> = playerCharacterBase.parse(
 		await playerCharacterBaseDB.json()
 	);
+
+	const playerCharacterNameDB = await fetch(`/api/lotn/character/name?id=${id}`);
+	playerCharacterDB.name = playerCharacterName.parse(await playerCharacterNameDB.json()).name;
 
 	const playerAttributeDB = await fetch(`/api/lotn/character/attributes?id=${id}`);
 	playerCharacterDB.attributes = playerAttribute.parse(await playerAttributeDB.json());

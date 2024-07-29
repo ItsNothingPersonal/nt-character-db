@@ -20,6 +20,7 @@ import { playerStatus } from './playerStatus';
 import { playerWillpower } from './playerWillpower';
 
 export const playerCharacter = playerCharacterBase.extend({
+	name: z.string(),
 	attributes: playerAttribute,
 	skills: playerSkill.array(),
 	disciplines: playerDiscipline.array(),
@@ -41,6 +42,7 @@ export const playerCharacter = playerCharacterBase.extend({
 export type PlayerCharacter = z.infer<typeof playerCharacter>;
 
 export const playerCharacterCreate = playerCharacterBaseCreate.extend({
+	name: z.string().optional(),
 	attributes: playerAttributeCreate.optional(),
 	skills: playerSkill.array().default([]),
 	disciplines: playerDiscipline.array().default([]),
