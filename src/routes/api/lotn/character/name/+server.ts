@@ -1,5 +1,5 @@
 import HttpStatusCode from '$lib/httpStatusCode';
-import { validateIdParameter } from '$lib/server/util';
+import { validateIdParameter } from '$lib/server/util.js';
 import {
 	playerCharacterName,
 	playerCharacterNameRequestBodyDB,
@@ -12,6 +12,7 @@ import { ClientResponseError } from 'pocketbase';
 
 export async function GET({ url, locals }) {
 	const id = validateIdParameter(url);
+
 	// Daten aus DB laden
 	const playerCharacterNameDB = await locals.pb
 		.collection('lotn_player_character_name')
@@ -25,7 +26,7 @@ export async function GET({ url, locals }) {
 	} else {
 		error(
 			HttpStatusCode.INTERNAL_SERVER_ERROR,
-			'LoTN-Charakter-Name in Datenbank entspricht nicht dem korrekten Schema'
+			'LotN-Charakter-Name in Datenbank entspricht nicht dem korrekten Schema'
 		);
 	}
 }
@@ -42,10 +43,6 @@ export async function POST({ locals, request }) {
 		// Parsen insgesamt erfolgreich
 		let result: PlayerCharacterNameRequestBodyDB;
 		try {
-			console.warn({
-				name: playerCharacterNameCreateBodyParsed.data.name,
-				character_id: playerCharacterNameCreateBodyParsed.data.character_id
-			});
 			result = await locals.pb
 				.collection('lotn_player_character_name')
 				.create<PlayerCharacterNameRequestBodyDB>({

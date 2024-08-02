@@ -8,6 +8,7 @@ import {
 	type PlayerStatusDB,
 	type PlayerStatusRequestBodyDB
 } from '$lib/zod/lotn/playerCharacter/playerStatus';
+import { idSchema } from '$lib/zod/lotn/util.js';
 import { error, json } from '@sveltejs/kit';
 import { ClientResponseError } from 'pocketbase';
 
@@ -20,7 +21,11 @@ export async function GET({ url, locals }) {
 		.getFullList<PlayerStatus>({ filter: `character_id='${id}'` });
 
 	// Daten-Schema validieren
-	const playerStatusParsed = playerStatus.array().optional().safeParse(playerStatusDBRaw);
+	const playerStatusParsed = playerStatus
+		.merge(idSchema)
+		.array()
+		.optional()
+		.safeParse(playerStatusDBRaw);
 
 	if (playerStatusParsed.success) {
 		return playerStatusParsed.data && playerStatusParsed.data.length > 0

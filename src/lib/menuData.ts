@@ -49,5 +49,11 @@ export const menuDataLotN: {
 		label: 'Battle',
 		href: '/lotn/sheet/[id]/battle',
 		icon: 'mdi:sword'
+	},
+	{
+		id: 3,
+		label: 'Status',
+		href: '/lotn/sheet/[id]/status',
+		icon: 'mdi:person-multiple'
 	}
 ];

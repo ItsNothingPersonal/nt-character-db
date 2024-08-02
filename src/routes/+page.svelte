@@ -1,40 +1,5 @@
 <script lang="ts">
-	import { selectedCharacterIdStoreLotN } from '$lib/stores/selectedCharacterIdStore';
-	import {
-		playerCharacterSelection,
-		type PlayerCharacterSelection
-	} from '$lib/zod/lotn/types/playerCharacterSelection';
-	import { onMount } from 'svelte';
-
-	let selectionValuesLotN: PlayerCharacterSelection[] = [];
-	let selectionDraftValuesLotN: PlayerCharacterSelection[] = [];
-
-	onMount(async () => {
-		await loadLotNCharacters();
-		await loadLotNDrafts();
-	});
-
-	async function loadLotNCharacters() {
-		const loadCharacterResponse = await fetch(`/api/lotn/loadCharacters`, {
-			method: 'POST'
-		});
-
-		selectionValuesLotN = playerCharacterSelection
-			.array()
-			.parse(await loadCharacterResponse.json());
-
-		$selectedCharacterIdStoreLotN = selectionValuesLotN[0].id;
-	}
-
-	async function loadLotNDrafts() {
-		const loadCharacterResponse = await fetch(`/api/lotn/loadDrafts`, {
-			method: 'POST'
-		});
-
-		selectionDraftValuesLotN = playerCharacterSelection
-			.array()
-			.parse(await loadCharacterResponse.json());
-	}
+	import { playerCharacterSelectionStore } from '$lib/stores/selectionStore';
 </script>
 
 <div class="mx-auto max-w-lg">
@@ -44,7 +9,6 @@
 		Character-Sheet
 	</h1>
 	<div class="table-container mb-6 rounded-lg">
-		<!-- Native Table Element -->
 		<table class="table table-hover rounded-lg">
 			<thead>
 				<tr>
@@ -54,7 +18,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each selectionValuesLotN as entry}
+				{#each $playerCharacterSelectionStore.characters ?? [] as entry}
 					<tr>
 						<td>
 							<a class="text-lg" href={`/lotn/sheet/${entry.id}`}>
@@ -71,7 +35,7 @@
 		</table>
 	</div>
 
-	{#if selectionDraftValuesLotN.length > 0}
+	{#if ($playerCharacterSelectionStore.drafts ?? []).length > 0}
 		<h2
 			class="font-comorantBold h2 mb-4 bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center font-bold text-transparent dark:from-white dark:to-red-800"
 		>
@@ -79,7 +43,6 @@
 		</h2>
 
 		<div class="table-container rounded-lg">
-			<!-- Native Table Element -->
 			<table class="table table-hover rounded-lg">
 				<thead>
 					<tr>
@@ -89,7 +52,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each selectionDraftValuesLotN as entry}
+					{#each $playerCharacterSelectionStore.drafts ?? [] as entry}
 						<tr>
 							<td>
 								<a class="text-lg" href={`/lotn/sheet/${entry.id}`}>

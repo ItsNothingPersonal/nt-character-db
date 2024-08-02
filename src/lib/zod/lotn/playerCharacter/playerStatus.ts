@@ -1,4 +1,3 @@
-import { transformStringToArray } from '$lib/util';
 import { z } from 'zod';
 import { sectName } from '../enums/sectName';
 
@@ -7,7 +6,7 @@ export const playerStatus = z.object({
 	value: z.number().int().min(0).max(5),
 	monikers: z
 		.union([z.string(), z.array(z.string())])
-		.transform((val) => (typeof val === 'string' ? transformStringToArray(val) : val))
+		.transform((val) => (Array.isArray(val) ? val.join(', ') : val))
 		.optional(),
 	support: z.string().array().optional(),
 	opposition: z.string().array().optional()

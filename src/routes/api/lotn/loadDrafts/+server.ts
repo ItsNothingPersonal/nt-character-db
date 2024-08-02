@@ -10,7 +10,7 @@ import { ClientResponseError } from 'pocketbase';
 export async function POST({ locals }) {
 	let characters: PlayerCharacterSelection[] = [];
 	try {
-		const test = await locals.pb
+		const characterBaseResponse = await locals.pb
 			.collection<
 				PlayerCharacterSelection & {
 					expand: { lotn_player_character_name_via_character_id: PlayerCharacterName };
@@ -21,7 +21,7 @@ export async function POST({ locals }) {
 				filter: "status!='accepted'",
 				expand: 'lotn_player_character_name_via_character_id'
 			});
-		characters = test.map((e) => {
+		characters = characterBaseResponse.map((e) => {
 			return {
 				id: e.id,
 				name: e.expand.lotn_player_character_name_via_character_id.name,
