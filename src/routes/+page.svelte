@@ -1,85 +1,82 @@
 <script lang="ts">
-	import { selectedCharacterIdStore } from '$lib/stores/selectedCharacterIdStore';
-	import {
-		playerCharacterBase,
-		type PlayerCharacterBase
-	} from '$lib/zod/playerCharacter/playerCharacterBase';
-	import { playerCharacterSelection } from '$lib/zod/playerCharacterSelection/playerCharacterSelection';
-	import { onMount } from 'svelte';
-
-	let selectedCharacter: string;
-	let selectionValues: { id: string; value: string; name: string }[] = [];
-
-	onMount(async () => {
-		await loadCharacters();
-	});
-
-	async function loadCharacters() {
-		const loadCharacterResponse = await fetch(`/api/loadCharacters`, {
-			method: 'POST'
-		});
-
-		const loadCharacterResponseParsed = playerCharacterSelection
-			.array()
-			.parse(await loadCharacterResponse.json());
-
-		loadCharacterResponseParsed.forEach(async (value) => {
-			const playerCharacter = await getCharacterNameById(value.id);
-
-			// kein push, da svelte sonst updates nicht mitbekommt
-			// siehe https://learn.svelte.dev/tutorial/updating-arrays-and-objects
-			selectionValues = [
-				...selectionValues,
-				{ id: playerCharacter.id, name: playerCharacter.name, value: value.id }
-			];
-
-			$selectedCharacterIdStore = selectionValues[0].id;
-		});
-	}
-
-	async function getCharacterNameById(characterId: string): Promise<PlayerCharacterBase> {
-		const apiKeyResponse = await fetch(`/api/character/base?id=${characterId}`);
-		const playerCharacterBaseParsed = playerCharacterBase.parse(await apiKeyResponse.json());
-
-		return playerCharacterBaseParsed;
-	}
-
-	function setSelectedCharacterStore(id: string) {
-		$selectedCharacterIdStore = id;
-	}
+	import { playerCharacterSelectionStore } from '$lib/stores/selectionStore';
 </script>
 
 <div class="mx-auto max-w-lg">
-	<h1 class="h1 text-center">
-		<span
-			class="bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center text-transparent dark:from-white dark:to-red-800"
-		>
-			Character-Sheet
-		</span>
+	<h1
+		class="font-comorantBold h1 mb-4 bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center font-bold text-transparent dark:from-white dark:to-red-800"
+	>
+		Character-Sheet
 	</h1>
-
-	{#if selectionValues.length > 0}
-		<hr class="mb-4 mt-4" />
-		<div class="grid grid-cols-1 grid-rows-2 gap-2">
-			<select
-				class="select rounded-none"
-				bind:value={selectedCharacter}
-				on:change={() => setSelectedCharacterStore(selectedCharacter)}
-			>
-				{#each selectionValues as entry (entry.id)}
-					<option value={entry.value}> {entry.name} </option>
+	<div class="table-container mb-6 rounded-lg">
+		<table class="table table-hover rounded-lg">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Clan</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+			<tbody>
+				{#each $playerCharacterSelectionStore.characters ?? [] as entry}
+					<tr>
+						<td>
+							<a class="text-lg" href={`/lotn/sheet/${entry.id}`}>
+								{entry.name}
+							</a>
+						</td>
+						<td><a class="text-lg" href={`/lotn/sheet/${entry.id}`}>{entry.clan}</a></td>
+						<td>
+							<a class="text-lg capitalize" href={`/lotn/sheet/${entry.id}`}>{entry.status}</a>
+						</td>
+					</tr>
 				{/each}
-			</select>
+			</tbody>
+		</table>
+	</div>
 
-			<button type="button" class="variant-filled-primary btn rounded-none">
-				<a href={`/sheet/${selectedCharacter}`} class="w-full"> Charakter-Sheet öffnen </a>
-			</button>
+	{#if ($playerCharacterSelectionStore.drafts ?? []).length > 0}
+		<h2
+			class="font-comorantBold h2 mb-4 bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center font-bold text-transparent dark:from-white dark:to-red-800"
+		>
+			Entwürfe
+		</h2>
+
+		<div class="table-container rounded-lg">
+			<table class="table table-hover rounded-lg">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Clan</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each $playerCharacterSelectionStore.drafts ?? [] as entry}
+						<tr>
+							<td>
+								<a class="text-lg" href={`/lotn/sheet/${entry.id}`}>
+									{entry.name}
+								</a>
+							</td>
+							<td><a class="text-lg" href={`/lotn/sheet/${entry.id}`}>{entry.clan}</a></td>
+							<td>
+								<a class="text-lg capitalize" href={`/lotn/sheet/${entry.id}`}>{entry.status}</a>
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
 		</div>
 	{/if}
 
 	<div class="grid grid-cols-1 grid-rows-1 gap-2">
-		<button type="button" class="variant-filled-secondary btn mt-2 rounded-none">
-			<a href="/sheet/create" class="w-full"> Charakter erstellen </a>
-		</button>
+		<a
+			class="variant-filled-secondary btn mt-2 rounded-lg"
+			href="/lotn/sheet/create/step_01"
+			type="button"
+		>
+			Charakter erstellen
+		</a>
 	</div>
 </div>

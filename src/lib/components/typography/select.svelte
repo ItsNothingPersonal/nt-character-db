@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PlayerItem } from '$lib/zod/playerCharacter/playerItem';
+	import type { PlayerItem } from '$lib/zod/lotn/playerCharacter/playerItem';
 
 	export let label: string;
 	export let items: { name: string }[];
@@ -9,7 +9,7 @@
 
 <label class="mt-2 flex flex-col gap-2">
 	<p class="whitespace-nowrap">{label}</p>
-	<select class="select rounded-none capitalize" bind:value disabled={items.length === 0}>
+	<select class="select rounded-none capitalize" disabled={items.length === 0} bind:value>
 		<option value={undefined}>None</option>
 		{#each items as item}
 			<option class="capitalize" value={item}>{item.name}</option>

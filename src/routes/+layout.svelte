@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Navigation from '$lib/components/Navigation/navigation.svelte';
+	import Navigation from '$lib/components/navigation/navigation.svelte';
 	import Footer from '$lib/components/typography/footer.svelte';
-	import { selectedCharacterIdStore } from '$lib/stores/selectedCharacterIdStore';
+	import { selectedCharacterIdStoreClassic } from '$lib/stores/selectedCharacterIdStore';
 	import { isNotNullOrUndefined } from '$lib/util';
 	import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 	import {
@@ -24,7 +24,7 @@
 
 	onMount(() => {
 		if (data.characterId) {
-			selectedCharacterIdStore.set(data.characterId);
+			selectedCharacterIdStoreClassic.set(data.characterId);
 		}
 	});
 </script>
@@ -34,16 +34,16 @@
 <!-- App Shell -->
 <AppShell
 	regionPage="relative"
-	slotSidebarLeft="bg-surface-500/5"
 	slotPageContent="container px-2 sm:mx-auto mt-4 lg:mt-8"
 	slotPageFooter="sticky bottom-0 z-10"
+	slotSidebarLeft="bg-surface-500/5"
 >
 	<svelte:fragment slot="header">
 		<!-- App Bar -->
 		<AppBar>
 			<svelte:fragment slot="lead">
 				<div class="flex items-center">
-					<a href="/"><strong class="text-xl uppercase">Elysium</strong></a>
+					<a href="/"><strong class="font-comorantBold text-4xl uppercase">Elysium</strong></a>
 				</div>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">

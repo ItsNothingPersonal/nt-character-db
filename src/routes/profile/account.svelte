@@ -31,9 +31,9 @@
 
 <h3 class="text-2xl font-medium">EMail ändern</h3>
 <form
+	class="mb-4 flex w-full flex-col gap-2 sm:max-w-screen-sm"
 	action="?/updateEMail"
 	method="post"
-	class="mb-4 flex w-full flex-col gap-2 sm:max-w-screen-sm"
 	use:enhance={submitUpdateForm}
 >
 	<label>
@@ -41,24 +41,24 @@
 		<input
 			id="email"
 			name="email"
-			type="email"
-			value={form?.data?.email ?? data.user?.email}
 			class="input variant-form-material"
 			disabled={loading}
 			placeholder={data.user?.email}
 			required
+			type="email"
+			value={form?.data?.email ?? data.user?.email}
 		/>
 	</label>
-	<button type="submit" class="variant-filled btn rounded-none" disabled={loading}>
+	<button class="variant-filled btn rounded-none" disabled={loading} type="submit">
 		E-Mail-Adresse ändern
 	</button>
 </form>
 
 <h3 class="text-2xl font-medium">Benutzernamen ändern</h3>
 <form
+	class="flex w-full flex-col gap-2 sm:max-w-screen-sm"
 	action="?/updateUsername"
 	method="post"
-	class="flex w-full flex-col gap-2 sm:max-w-screen-sm"
 	use:enhance={submitUpdateForm}
 >
 	<label>
@@ -66,15 +66,15 @@
 		<input
 			id="username"
 			name="username"
-			type="text"
-			value={data.user?.username}
 			class="input variant-form-material"
 			disabled={loading}
 			placeholder={data.user?.username}
 			required
+			type="text"
+			value={data.user?.username}
 		/>
 	</label>
-	<button type="submit" class="variant-filled btn rounded-none" disabled={loading}>
+	<button class="variant-filled btn rounded-none" disabled={loading} type="submit">
 		Benutzernamen ändern
 	</button>
 </form>

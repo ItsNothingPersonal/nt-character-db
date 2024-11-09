@@ -3,6 +3,7 @@ import forms from '@tailwindcss/forms';
 import typography from '@tailwindcss/typography';
 import { join } from 'path';
 import type { Config } from 'tailwindcss';
+import plugin from 'tailwindcss/plugin';
 
 const config = {
 	darkMode: 'class',
@@ -15,9 +16,9 @@ const config = {
 			gridTemplateColumns: {
 				'min-content-2': 'auto 1fr'
 			},
-			gridTemplateRows: {
-				'double-center': 'auto 2fr 1fr',
-				'title-content': 'auto 1fr'
+			fontSize: {
+				sm: '1rem',
+				base: '1.25rem'
 			}
 		}
 	},
@@ -28,6 +29,15 @@ const config = {
 			themes: {
 				preset: [{ name: 'crimson', enhancements: true }]
 			}
+		}),
+		plugin(function ({ addUtilities }) {
+			addUtilities({
+				'.divide-fix': {
+					'> :nth-child(3n+1)': {
+						borderLeftWidth: '0px'
+					}
+				}
+			});
 		})
 	]
 } satisfies Config;

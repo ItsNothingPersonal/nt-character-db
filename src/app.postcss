@@ -1,4 +1,3 @@
-/* Write your global styles here, in PostCSS syntax */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,5 +5,15 @@
 
 html,
 body {
-	@apply h-full overflow-hidden;
+	@apply h-full overflow-hidden text-lg;
+}
+
+@font-face {
+	font-family: 'Cormorant Variable';
+	src: url('/fonts/cormorant/Cormorant-VariableFont_wght.ttf');
+}
+
+:root [data-theme='crimson'] {
+	--theme-font-family-base: 'Times New Roman', sans-serif;
+	--theme-font-family-heading: 'Cormorant Variable', sans-serif;
 }

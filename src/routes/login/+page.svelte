@@ -43,39 +43,39 @@
 <div class="flex justify-center">
 	<div class="card mt-12 max-w-sm">
 		<header class="card-header flex flex-col items-center">
-			<Icon icon="material-symbols:code" width={16} height={16} />
+			<Icon height={16} icon="material-symbols:code" width={16} />
 			<h2 class="text-base-content mt-2 text-center text-3xl font-bold tracking-tight">
 				Logge dich ein
 			</h2>
 			<p class="mt-1 text-center">
 				Oder <a
-					href="/register"
 					class="font-medium underline decoration-dotted hover:cursor-pointer"
+					href="/register"
 				>
 					registrier dich
 				</a> falls du noch keinen Account hast.
 			</p>
 		</header>
 		<section class="flex flex-col items-center p-4">
-			<form method="POST" action="?/login" class="flex w-full flex-col items-center space-y-2">
+			<form class="flex w-full flex-col items-center space-y-2" action="?/login" method="POST">
 				<div class="form-control w-full max-w-xs">
-					<label for="email" class="label pb-1 font-medium">
+					<label class="label pb-1 font-medium" for="email">
 						<span class="label-text">Email</span>
 					</label>
 					<input
-						type="email"
 						name="email"
 						class="input-bordered input variant-form-material w-full max-w-xs"
+						type="email"
 					/>
 				</div>
 				<div class="form-control w-full max-w-xs">
-					<label for="password" class="label pb-1 font-medium">
+					<label class="label pb-1 font-medium" for="password">
 						<span class="label-text">Passwort</span>
 					</label>
 					<input
-						type="password"
 						name="password"
 						class="input-bordered input variant-form-material w-full max-w-xs"
+						type="password"
 					/>
 				</div>
 				<div class="w-full max-w-xs pt-3">
@@ -101,8 +101,8 @@
 					<div class="flex flex-col justify-center gap-2 text-center">
 						{#each data.authProviders as p}
 							<button
-								type="button"
 								class="variant-filled btn rounded-none"
+								type="button"
 								on:click={() => gotoAuthProvider(p)}
 							>
 								<span>

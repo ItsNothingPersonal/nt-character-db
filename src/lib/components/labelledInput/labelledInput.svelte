@@ -6,5 +6,5 @@
 
 <label>
 	{label}
-	<input type="number" class="input variant-form-material" bind:value on:change={onChange} />
+	<input class="input variant-form-material" type="number" bind:value on:change={onChange} />
 </label>

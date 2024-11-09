@@ -1,39 +1,49 @@
 <script lang="ts">
 	export let title: string;
-	export let value: number;
+	export let value: number | string;
+	export let value2: number | string | undefined = undefined;
 	export let buttonsConfig:
-		| { addFunction: () => void; substractFunction: () => void; updating: boolean }
+		| {
+				addFunction: () => void;
+				substractFunction: () => void;
+				updating: boolean;
+		  }
+		| {
+				addFunction: () => void;
+				substractFunction: () => void;
+				updating: boolean;
+				max: number;
+		  }
 		| undefined = undefined;
 </script>
 
 <div
-	class="grid grid-flow-row-dense grid-cols-1 {buttonsConfig
-		? 'grid-rows-double-center'
-		: 'grid-rows-title-content'} bg-light-100 items-center border-2 border-gray-500 dark:border-gray-50 dark:bg-slate-900"
+	class={`bg-light-100 grid ${buttonsConfig ? 'grid-rows-[auto_2fr_1fr]' : 'grid-rows-[auto_1fr]'} w-full border-2 border-gray-500 text-center dark:border-gray-50 dark:bg-slate-900`}
 >
-	<p class="text-center font-bold">
-		{title}
-	</p>
-
-	<p class="my-auto pb-2 text-center text-8xl font-bold">
-		{value}
+	<p class="font-bold">{title}</p>
+	<p class="mb-4 w-full text-8xl">
+		{#if value2 && value2 !== value}
+			{value} | {value2}
+		{:else}
+			{value}
+		{/if}
 	</p>
 
 	{#if buttonsConfig}
 		<div class="grid h-full w-full grid-cols-2 grid-rows-1 gap-x-1 pb-1 pl-1 pr-1">
 			<button
-				type="button"
 				class="variant-filled-primary btn rounded-none"
+				disabled={buttonsConfig.updating || ('max' in buttonsConfig && value === buttonsConfig.max)}
+				type="button"
 				on:click={buttonsConfig.addFunction}
-				disabled={buttonsConfig.updating}
 			>
 				<iconify-icon icon="ic:baseline-plus"></iconify-icon>
 			</button>
 			<button
-				type="button"
 				class="variant-filled-secondary btn rounded-none"
-				on:click={buttonsConfig.substractFunction}
 				disabled={buttonsConfig.updating || value === 0}
+				type="button"
+				on:click={buttonsConfig.substractFunction}
 			>
 				<iconify-icon icon="ic:baseline-minus"></iconify-icon>
 			</button>

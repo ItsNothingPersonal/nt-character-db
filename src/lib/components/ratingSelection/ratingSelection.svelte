@@ -1,4 +1,4 @@
-<script lang="ts" generics="T">
+<script generics="T" lang="ts">
 	import Selectionbox from '../selectionbox/selectionbox.svelte';
 
 	export let label: string;

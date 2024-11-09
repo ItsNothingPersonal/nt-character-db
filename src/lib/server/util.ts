@@ -1,6 +1,5 @@
-import type { DamageTypeName } from '$lib/zod/enums/damageTypeName';
 import { error } from '@sveltejs/kit';
-import HttpStatusCode from './httpStatusCode';
+import HttpStatusCode from '../httpStatusCode';
 
 export function validateIdParameter(url: URL): string {
 	const id = url.searchParams.get('id');
@@ -10,33 +9,4 @@ export function validateIdParameter(url: URL): string {
 	}
 
 	return id;
-}
-
-export async function updateDamage(
-	locals: App.Locals,
-	id: string,
-	type: 'add' | 'substract',
-	damageType: DamageTypeName,
-	normalDamageTaken: number,
-	aggrevatedDamageTaken: number,
-	valueNew: number
-) {
-	let updateString: { normal?: number; aggrevated?: number };
-
-	switch (damageType) {
-		case 'normal':
-			updateString = {
-				normal: type === 'add' ? normalDamageTaken + valueNew : normalDamageTaken - valueNew
-			};
-			break;
-		case 'aggrevated':
-			updateString = {
-				aggrevated:
-					type === 'add' ? aggrevatedDamageTaken + valueNew : aggrevatedDamageTaken - valueNew
-			};
-			break;
-		default:
-			updateString = {};
-	}
-	await locals.pb.collection('player_character_damage_taken').update(id, updateString);
 }
