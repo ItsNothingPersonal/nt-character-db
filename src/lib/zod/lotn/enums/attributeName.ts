@@ -12,3 +12,15 @@ export const attributeName = z.enum([
 	'Resolve'
 ]);
 export type AttributeName = z.infer<typeof attributeName>;
+
+export type AttributeKeyMap = {
+	Strength: 'strength';
+	Dexterity: 'dexterity';
+	Stamina: 'stamina';
+	Charisma: 'charisma';
+	Manipulation: 'manipulation';
+	Composure: 'composure';
+	Intelligence: 'intelligence';
+	Wits: 'wits';
+	Resolve: 'resolve';
+};

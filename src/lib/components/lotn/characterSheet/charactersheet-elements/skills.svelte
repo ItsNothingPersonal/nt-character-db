@@ -1,8 +1,11 @@
 <script lang="ts">
 	import ValueRating from '$lib/components/lotn/characterSheet/components/ValueRating.svelte';
-	import { type SkillName } from '$lib/zod/lotn/enums/skillName';
-	import { skillConfig } from '../../config/skillConfig';
-	import { isMentalSkill, isPhysicalSkill, isSocialSkill } from '../../util/skillUtil';
+	import {
+		getSkillHelptext,
+		isMentalSkill,
+		isPhysicalSkill,
+		isSocialSkill
+	} from '../../util/skillUtil';
 	import { characterStore } from '../characterStore';
 
 	const changedSkills = new Map<string, number>();
@@ -21,17 +24,6 @@
 
 	function getMentalSkills() {
 		return $characterStore.skills.filter((e) => isMentalSkill(e.name));
-	}
-
-	function getSkillHelptext(skill: SkillName): string | undefined {
-		if (isPhysicalSkill(skill)) {
-			return skillConfig.physical[skill].helptext;
-		} else if (isSocialSkill(skill)) {
-			return skillConfig.social[skill].helptext;
-		} else if (isMentalSkill(skill)) {
-			return skillConfig.mental[skill].helptext;
-		}
-		return undefined;
 	}
 </script>
 

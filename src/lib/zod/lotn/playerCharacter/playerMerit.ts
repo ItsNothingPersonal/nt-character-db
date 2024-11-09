@@ -1,13 +1,15 @@
 import { z } from 'zod';
 import { meritName } from '../enums/meritName';
+import { skillName } from '../enums/skillName';
 import { idSchema } from '../util';
 
 export const playerMerit = z.object({
 	name: meritName,
 	value: z.number().int().min(0).max(5),
+	description: z.string().max(50).optional(),
 	linkedSkill: z
 		.string()
-		.transform((e) => (e === '' ? undefined : e))
+		.transform((e) => (e === '' ? undefined : skillName.parse(e)))
 		.optional()
 });
 

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { backgroundName } from '../enums/backgroundName';
 import { spheresOfInfluenceName } from '../enums/spheresOfInfluenceName';
+import { idSchema } from '../util';
 import { playerBackgroundAdvantage } from './playerBackgroundAdvantage';
 import { playerBackgroundDisadvantage } from './playerBackgroundDisdvantage';
 
@@ -14,10 +15,10 @@ export const playerBackground = z.object({
 		.optional(),
 	description: z
 		.string()
-		.max(30)
+		.max(300)
 		.transform((e) => (e === '' ? undefined : e))
 		.optional(),
-	advantages: playerBackgroundAdvantage.array().optional(),
+	advantages: playerBackgroundAdvantage.merge(idSchema).array().optional(),
 	disadvantages: playerBackgroundDisadvantage.array().optional()
 });
 
@@ -32,13 +33,13 @@ export type PlayerBackgroundSingleRequestBodyDB = z.infer<
 
 export const playerBackgroundRequestBodyDB = z.object({
 	character_id: z.string(),
-	backgrounds: playerBackground.array().nonempty()
+	backgrounds: playerBackground.merge(idSchema).array().nonempty()
 });
 export type PlayerBackgroundRequestBodyDB = z.infer<typeof playerBackgroundRequestBodyDB>;
 
 export const playerBackgroundCreateRequestBodyDB = z.object({
 	character_id: z.string(),
-	backgrounds: playerBackground.array().nonempty()
+	backgrounds: playerBackground.merge(idSchema).array().nonempty()
 });
 export type PlayerBackgroundCreateRequestBodyDB = z.infer<
 	typeof playerBackgroundCreateRequestBodyDB

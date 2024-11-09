@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { interactiveModeStore } from '$lib/components/classic/characterSheet/interactiveModeStore';
 	import type { PlayerDiscipline } from '$lib/zod/lotn/playerCharacter/playerDiscipline';
 	import { Ratings } from '@skeletonlabs/skeleton';
 	import { createEventDispatcher } from 'svelte';
@@ -69,13 +68,7 @@
 			</svelte:fragment>
 		</HelpText>
 		<p id={discipline.name}>
-			<Ratings
-				interactive={$interactiveModeStore}
-				justify="justify-left"
-				{max}
-				bind:value={discipline.value}
-				on:icon={iconClick}
-			>
+			<Ratings justify="justify-left" {max} bind:value={discipline.value} on:icon={iconClick}>
 				<svelte:fragment slot="empty">
 					<iconify-icon icon="prime:circle" />
 				</svelte:fragment>

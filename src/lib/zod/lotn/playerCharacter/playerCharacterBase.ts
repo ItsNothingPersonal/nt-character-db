@@ -11,17 +11,19 @@ export const playerCharacterBase = z.object({
 	predatorType: predatorType,
 	bloodPotency: z.number().min(0).max(7),
 	sect: sectName,
-	status: characterStatus.readonly()
+	status: characterStatus.readonly(),
+	ghoul: z.boolean()
 });
 export type PlayerCharacterBase = z.infer<typeof playerCharacterBase>;
 
 export const playerCharacterBaseCreate = z.object({
 	clan: clanName.optional(),
-	generation: z.number().min(9).max(16).default(13),
+	generation: z.number().min(9).max(16).default(12),
 	predatorType: predatorType.optional(),
-	bloodPotency: z.number().min(0).max(7).default(0),
+	bloodPotency: z.number().min(0).max(7).default(1),
 	sect: sectName.optional(),
-	status: characterStatus.default('draft').readonly()
+	status: characterStatus.default('draft').readonly(),
+	ghoul: z.boolean().default(false)
 });
 export type PlayerCharacterBaseCreate = z.infer<typeof playerCharacterBaseCreate>;
 
@@ -30,7 +32,13 @@ export const playerCharacterBaseCreateRequestBody = z.object({
 	generation: z.number().min(9).max(16),
 	predatorType: predatorType,
 	bloodPotency: z.number().min(0).max(7),
-	sect: sectName
+	sect: sectName,
+	status: characterStatus.readonly(),
+	ghoul: z.boolean(),
+	name: z
+		.string()
+		.transform((e) => (e ? e : undefined))
+		.optional()
 });
 export type PlayerCharacterBaseCreateRequestBody = z.infer<
 	typeof playerCharacterBaseCreateRequestBody

@@ -77,6 +77,7 @@ export async function PUT({ locals, request }) {
 	}
 	const requestJson = await request.json();
 
+	console.warn(`requestJson: ${JSON.stringify(requestJson)}`);
 	const playerCharacterBaseCreateBodyParsed =
 		playerCharacterBaseUpdateRequestBody.safeParse(requestJson);
 

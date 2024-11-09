@@ -8,6 +8,7 @@ import { playerCharacterBase, playerCharacterBaseCreate } from './playerCharacte
 import { playerDiscipline } from './playerDiscipline';
 import { playerExperience } from './playerExperience';
 import { playerFlaw } from './playerFlaw';
+import { playerFormula } from './playerFormula';
 import { playerHealth } from './playerHealth';
 import { playerHumanity } from './playerHumanity';
 import { playerHunger } from './playerHunger';
@@ -25,6 +26,7 @@ export const playerCharacter = playerCharacterBase.extend({
 	skills: playerSkill.array(),
 	disciplines: playerDiscipline.array(),
 	morality: playerMorality.array(),
+	formulas: playerFormula.array().optional(),
 	rituals: bloodSorceryRitualName.array().optional(),
 	ceremonies: oblivionCeremonyName.array().optional(),
 	backgrounds: playerBackground.merge(idSchema).array(),
@@ -43,22 +45,33 @@ export type PlayerCharacter = z.infer<typeof playerCharacter>;
 
 export const playerCharacterCreate = playerCharacterBaseCreate.extend({
 	name: z.string().optional(),
-	attributes: playerAttributeCreate.optional(),
+	attributes: playerAttributeCreate.default({
+		physical_strength: 1,
+		physical_dexterity: 1,
+		physical_stamina: 1,
+		social_charisma: 1,
+		social_manipulation: 1,
+		social_composure: 1,
+		mental_intelligence: 1,
+		mental_wits: 1,
+		mental_resolve: 1
+	}),
 	skills: playerSkill.array().default([]),
 	disciplines: playerDiscipline.array().default([]),
 	morality: playerMorality.array().default([]),
+	formulas: playerFormula.array().default([]).optional(),
 	rituals: bloodSorceryRitualName.array().default([]),
 	ceremonies: oblivionCeremonyName.array().default([]),
-	backgrounds: playerBackground.array().default([]),
+	backgrounds: playerBackground.merge(idSchema).array().default([]),
 	loresheet: playerLoresheet.optional(),
-	merits: playerMerit.array().optional(),
-	flaws: playerFlaw.array().optional(),
+	merits: playerMerit.merge(idSchema).array().optional(),
+	flaws: playerFlaw.merge(idSchema).array().optional(),
 	hunger: playerHunger.default({ value: 1 }),
 	health: playerHealth.default({ normal: 0, aggrevated: 0 }),
 	willpower: playerWillpower.default({ value: 0 }),
 	experience: playerExperience.array().default([]),
 	humanity: playerHumanity.default({ value: 7, stains: 0 }),
-	items: playerItem.array().optional(),
+	items: playerItem.merge(idSchema).array().optional(),
 	characterStatus: playerStatus.array().optional()
 });
 export type PlayerCharacterCreate = z.infer<typeof playerCharacterCreate>;

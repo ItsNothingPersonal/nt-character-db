@@ -1,12 +1,11 @@
 import { browser } from '$app/environment';
 import { PUBLIC_CHARACTER_DB_PB_URL } from '$env/static/public';
-import { getDisciplineTestpool } from '$lib/validation/testpools';
-import type { AttributeName } from '$lib/zod/classic/enums/attributeName';
-import type { DisciplineName } from '$lib/zod/classic/enums/disciplineName';
-import type { SkillName } from '$lib/zod/classic/enums/skillName';
-import type { PlayerAttribute } from '$lib/zod/classic/playerCharacter/playerAttribute';
-import type { PlayerSkill } from '$lib/zod/classic/playerCharacter/playerSkill';
-import type { Testpool } from '$lib/zod/classic/validation/testpool';
+import { get } from 'svelte/store';
+import { characterStore } from './components/lotn/characterSheet/characterStore';
+import { hasDisciplinePower } from './components/lotn/util/disciplines';
+import { characterCreationStore } from './stores/characterCreationStore';
+import type { SkillName } from './zod/lotn/enums/skillName';
+import type { PlayerSkill } from './zod/lotn/playerCharacter/playerSkill';
 
 export function isNullOrUndefined<T>(obj: T | null | undefined): obj is null | undefined {
 	return typeof obj === 'undefined' || obj === null;
@@ -36,52 +35,8 @@ export function detectTouchscreen() {
 	return isTouchscreen;
 }
 
-export function getAllDisciplineTestpools(disciplineNames: DisciplineName[]) {
-	const result = new Map<DisciplineName, Testpool | undefined>();
-
-	for (const name of disciplineNames) {
-		result.set(name, getDisciplineTestpool(name));
-	}
-
-	return result;
-}
-
-export function getAttributeValueByName(
-	attributeName: AttributeName | undefined,
-	playerAttributes: PlayerAttribute
-) {
-	if (!attributeName) {
-		return 0;
-	}
-
-	let value: number;
-	if (attributeName === 'Physical') {
-		value = playerAttributes.physical_value;
-	} else if (attributeName === 'Social') {
-		value = playerAttributes.social_value;
-	} else {
-		value = playerAttributes.mental_value;
-	}
-
-	return value;
-}
-
 export function getSkillValueByName(skillName: SkillName | undefined, playerSkills: PlayerSkill[]) {
 	return playerSkills.find((e) => e.name === skillName)?.value ?? 0;
-}
-
-export function getAttributeForDisciplineName(
-	disciplineName: DisciplineName,
-	relevantTestpools: Map<DisciplineName, Testpool | undefined>
-) {
-	return relevantTestpools.get(disciplineName)?.attribute;
-}
-
-export function getSkillForDisciplineName(
-	disciplineName: DisciplineName,
-	relevantTestpools: Map<DisciplineName, Testpool | undefined>
-) {
-	return relevantTestpools.get(disciplineName)?.skillName;
 }
 
 export function typedObjectKeys<T extends object>(object: T) {
@@ -134,3 +89,43 @@ export const transformStringToArray = (str: string) => {
 	const result = str.split(',').map((s) => s.trim());
 	return result.length === 1 && result[0] === '' ? undefined : result;
 };
+
+export function transformBoldMarkedText(str: string): string {
+	return str.replaceAll(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+}
+
+export function generateId() {
+	return (
+		Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2)
+	).substring(0, 15);
+}
+
+export function getHealthTotal(isCharacterCreation: boolean = false) {
+	const hasToughness = hasDisciplinePower('Fortitude', 'Toughness', isCharacterCreation);
+	if (isCharacterCreation)
+		return get(characterCreationStore).attributes.physical_stamina + 3 + (hasToughness ? 1 : 0);
+	return get(characterStore).attributes.physical_stamina + 3 + (hasToughness ? 1 : 0);
+}
+
+export function getWillpowerTotal(isCharacterCreation: boolean = false) {
+	if (isCharacterCreation)
+		return (
+			get(characterCreationStore).attributes.mental_resolve +
+			get(characterCreationStore).attributes.social_composure
+		);
+	return (
+		get(characterStore).attributes.mental_resolve + get(characterStore).attributes.social_composure
+	);
+}
+
+export function getInitiative(isCharacterCreation: boolean = false) {
+	if (isCharacterCreation)
+		return (
+			get(characterCreationStore).attributes.social_composure +
+			getSkillValueByName('Awareness', get(characterCreationStore).skills)
+		);
+	return (
+		get(characterStore).attributes.social_composure +
+		getSkillValueByName('Awareness', get(characterStore).skills)
+	);
+}

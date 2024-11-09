@@ -7,9 +7,9 @@
 </script>
 
 <div
-	class="grid grid-flow-row-dense grid-cols-1 {buttonsConfig
+	class="card grid grid-flow-row-dense grid-cols-1 rounded-lg {buttonsConfig
 		? 'grid-rows-[auto_2fr_1fr]'
-		: 'grid-rows-[auto_1fr]'} bg-light-100 items-center border-2 border-gray-500 dark:border-gray-50 dark:bg-slate-900"
+		: 'grid-rows-[auto_1fr]'} items-center"
 >
 	<p class="text-center font-bold">
 		{title}

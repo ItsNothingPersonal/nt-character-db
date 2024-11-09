@@ -7,6 +7,7 @@ import {
 	type PlayerCharacterName,
 	type PlayerCharacterNameRequestBodyDB
 } from '$lib/zod/lotn/playerCharacter/playerCharacterName.js';
+import { idSchema } from '$lib/zod/lotn/util';
 import { error, json } from '@sveltejs/kit';
 import { ClientResponseError } from 'pocketbase';
 
@@ -60,7 +61,7 @@ export async function POST({ locals, request }) {
 			}
 		}
 
-		return new Response(JSON.stringify(playerCharacterName.parse(result)), {
+		return new Response(JSON.stringify(playerCharacterName.merge(idSchema).parse(result)), {
 			status: HttpStatusCode.OK
 		});
 	} else {

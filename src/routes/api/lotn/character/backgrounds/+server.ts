@@ -75,18 +75,19 @@ export async function POST({ locals, request, fetch }) {
 		error(HttpStatusCode.UNAUTHORIZED, 'Nicht eingeloggt');
 	}
 	const requestJson = await request.json();
-	const playerMoralityCreateBodyParsed = playerBackgroundCreateRequestBodyDB.safeParse(requestJson);
+	const playerBackgroundCreateBodyParsed =
+		playerBackgroundCreateRequestBodyDB.safeParse(requestJson);
 
-	if (playerMoralityCreateBodyParsed.success) {
+	if (playerBackgroundCreateBodyParsed.success) {
 		// Parsen insgesamt erfolgreich
-		const globalResult: PlayerBackgroundSingleRequestBodyDB[] = [];
-		for (const background of playerMoralityCreateBodyParsed.data.backgrounds) {
+		const globalResult: (PlayerBackgroundSingleRequestBodyDB & { id: string })[] = [];
+		for (const background of playerBackgroundCreateBodyParsed.data.backgrounds) {
 			try {
 				const result = await locals.pb
 					.collection('lotn_player_character_background')
 					.create<PlayerBackgroundSingleRequestBodyDB & { id: string }>({
 						...background,
-						character_id: playerMoralityCreateBodyParsed.data.character_id
+						character_id: playerBackgroundCreateBodyParsed.data.character_id
 					});
 
 				if (background.advantages && background.advantages.length > 0) {
@@ -144,6 +145,7 @@ export async function POST({ locals, request, fetch }) {
 		}
 		const returnResult: PlayerBackground[] = globalResult.map((result) => {
 			return {
+				id: result.id,
 				name: result.name,
 				value: result.value,
 				sphereOfInfluence: result.sphereOfInfluence,
@@ -152,11 +154,14 @@ export async function POST({ locals, request, fetch }) {
 			};
 		});
 
-		return new Response(JSON.stringify(playerBackground.array().parse(returnResult)), {
-			status: HttpStatusCode.OK
-		});
+		return new Response(
+			JSON.stringify(playerBackground.merge(idSchema).array().parse(returnResult)),
+			{
+				status: HttpStatusCode.OK
+			}
+		);
 	} else {
-		console.error(playerMoralityCreateBodyParsed.error.issues);
+		console.error(playerBackgroundCreateBodyParsed.error.issues);
 		error(HttpStatusCode.BAD_REQUEST, 'Der Requestbody ist nicht korrekt formatiert');
 	}
 }

@@ -1,11 +1,18 @@
 import { z } from 'zod';
 import { flawName } from '../enums/flawName';
+import { spheresOfInfluenceName } from '../enums/spheresOfInfluenceName';
 import { idSchema } from '../util';
 
 export const playerFlaw = z.object({
 	name: flawName,
 	value: z.number().int().min(0).max(5),
-	description: z.string().max(50).optional()
+	description: z.string().max(50).optional(),
+	sphereOfInfluence: spheresOfInfluenceName
+		.or(z.literal(''))
+		.default('')
+		.transform((e) => (e === '' ? undefined : e))
+		.nullable()
+		.optional()
 });
 
 export type PlayerFlaw = z.infer<typeof playerFlaw>;

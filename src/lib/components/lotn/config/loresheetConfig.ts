@@ -1,6 +1,6 @@
-import type { LoresheetConfigSchema } from '$lib/zod/lotn/loresheet/loresheet';
+import type { LoresheetConfigMap } from '$lib/zod/lotn/types/loresheetSchema';
 
-export const loresheetConfig: LoresheetConfigSchema = {
+export const loresheetConfig: LoresheetConfigMap = {
 	'Anarch Revolt': {
 		name: 'Anarch Revolt',
 		prerequisite: 'Anarchs',
@@ -9,7 +9,8 @@ export const loresheetConfig: LoresheetConfigSchema = {
 		level1: {
 			title: 'Hold the Line',
 			description:
-				'Like your progenitor, you are a source of inspiration to other Anarchs in tense situations. Once per night, when one of your gangmates is required to take a Frenzy test, you may call out to them with encouragement to keep it together. This allows them to automatically pass the Frenzy test. You also gain the first two dots of the Leadership and Politics Skills.'
+				'Like your progenitor, you are a source of inspiration to other Anarchs in tense situations. Once per night, when one of your gangmates is required to take a Frenzy test, you may call out to them with encouragement to keep it together. This allows them to automatically pass the Frenzy test. You also gain the first two dots of the Leadership and Politics Skills.',
+			changes: [{ kind: 'Skill', name: ['Leadership', 'Politics'], value: 2 }]
 		},
 		level2: {
 			title: 'Mutual Support',
@@ -51,7 +52,14 @@ export const loresheetConfig: LoresheetConfigSchema = {
 		level1: {
 			title: 'Congregation',
 			description:
-				'You have access to a flock of kine from a fringe religion or cult that you can manipulate and feed from. You may choose five dots from the Allies, Haven, Herd or Resources Backgrounds and their associated Advantages.'
+				'You have access to a flock of kine from a fringe religion or cult that you can manipulate and feed from. You may choose five dots from the Allies, Haven, Herd or Resources Backgrounds and their associated Advantages.',
+			changes: [
+				{
+					kind: 'Background',
+					name: ['Allies', 'Haven', 'Herd', 'Resources'],
+					value: 5
+				}
+			]
 		},
 		level2: {
 			title: 'Degenerative Process',
@@ -76,12 +84,26 @@ export const loresheetConfig: LoresheetConfigSchema = {
 		level2: {
 			title: 'Farm Upstate',
 			description:
-				'Through your connections to the Circulatory System, you have developed a farm of valuable vessels with blood potent enough to convey benefits to Kindred drinkers. You gain five dots to spend on Herd and/or Herd Advantages.'
+				'Through your connections to the Circulatory System, you have developed a farm of valuable vessels with blood potent enough to convey benefits to Kindred drinkers. You gain five dots to spend on Herd and/or Herd Advantages.',
+			changes: [
+				{
+					kind: 'Background',
+					name: 'Herd',
+					value: 5
+				}
+			]
 		},
 		level3: {
 			title: 'Blood Sommelier',
 			description:
-				'You know the Circulatory System’s secret methods for taste, analysis, and refinement, and you have parlayed your knowledge into significant gains and information from Circulatory System clients. You may select five dots of Contacts, Allies, or Resources Mortal Connections or Advantages. Once every three months, you may ask your Storyteller for an important secret about an NPC who is a client of the Circulatory System.'
+				'You know the Circulatory System’s secret methods for taste, analysis, and refinement, and you have parlayed your knowledge into significant gains and information from Circulatory System clients. You may select five dots of Contacts, Allies, or Resources Mortal Connections or Advantages. Once every three months, you may ask your Storyteller for an important secret about an NPC who is a client of the Circulatory System.',
+			changes: [
+				{
+					kind: 'Background',
+					name: ['Contacts', 'Allies', 'Resources'],
+					value: 5
+				}
+			]
 		}
 	},
 	'Convention of Thorns': {
@@ -91,12 +113,31 @@ export const loresheetConfig: LoresheetConfigSchema = {
 		level1: {
 			title: 'Thorns Historians',
 			description:
-				'Your knowledge has made you interesting to older members of the Camarilla who care about the past. In exchange for information you gleaned from your studies, they assist you by providing you three free dots from the Allies, Resources, or Contacts Backgrounds (or their associate Advantages).'
+				'Your knowledge has made you interesting to older members of the Camarilla who care about the past. In exchange for information you gleaned from your studies, they assist you by providing you three free dots from the Allies, Resources, or Contacts Backgrounds (or their associate Advantages).',
+			changes: [
+				{
+					kind: 'Background',
+					name: ['Allies', 'Resources', 'Contacts'],
+					value: 3
+				}
+			]
 		},
 		level2: {
 			title: 'Archivist',
 			description:
-				'You have access to an archive containing all manner of interesting lore about vampire history, including accounts of what occurred at the Convention of Thorns. The library counts as a two-dot Haven with two-dots in the Library and Location Advantage. Other vampires and Kindred historians with this Loresheet meet there as well.'
+				'You have access to an archive containing all manner of interesting lore about vampire history, including accounts of what occurred at the Convention of Thorns. The library counts as a two-dot Haven with two-dots in the Library and Location Advantage. Other vampires and Kindred historians with this Loresheet meet there as well.',
+			changes: [
+				{
+					kind: 'Background',
+					name: 'Haven',
+					value: 2,
+					fixed: true,
+					associatedAdvantages: [
+						{ name: 'Library', value: 2 },
+						{ name: 'Location', value: 2 }
+					]
+				}
+			]
 		},
 		level3: {
 			title: 'Lessons of the Convention',
@@ -112,12 +153,38 @@ export const loresheetConfig: LoresheetConfigSchema = {
 		level1: {
 			title: 'Wealth',
 			description:
-				'You descend from one of the greatest Ventrue ever to rule the night, and his lineage wants for nothing. You gain three dots of the Resources Background with the Liquidity Advantage. These dots can never be lost or blocked.'
+				'You descend from one of the greatest Ventrue ever to rule the night, and his lineage wants for nothing. You gain three dots of the Resources Background with the Liquidity Advantage. These dots can never be lost or blocked.',
+			changes: [
+				{
+					kind: 'Background',
+					name: 'Resources',
+					value: 3,
+					fixed: true,
+					associatedAdvantages: [{ name: 'Liquidity', value: 1 }]
+				}
+			]
 		},
 		level2: {
 			title: 'Pedigree',
 			description:
-				'You were Embraced to lead, and your Sire trained you in many ways that would assist your mobility in vampire society: smart reasoning, the ability to communicate, and training in controlling your Beast in stressful situations. You gain two dots of Linguistics along with the Common Sense and Calm Heart Merits.'
+				'You were Embraced to lead, and your Sire trained you in many ways that would assist your mobility in vampire society: smart reasoning, the ability to communicate, and training in controlling your Beast in stressful situations. You gain two dots of Linguistics along with the Common Sense and Calm Heart Merits.',
+			changes: [
+				{
+					kind: 'Merit',
+					name: 'Linguistics',
+					value: 2
+				},
+				{
+					kind: 'Merit',
+					name: 'Calm Heart',
+					value: 3
+				},
+				{
+					kind: 'Merit',
+					name: 'Common Sense',
+					value: 4
+				}
+			]
 		},
 		level3: {
 			title: 'Control',
@@ -133,7 +200,15 @@ export const loresheetConfig: LoresheetConfigSchema = {
 		level1: {
 			title: 'Real Talent',
 			description:
-				'Unlike other vapid Toreador relying on their beauty alone, you are a master artist and you were Embraced for your talent. You gain Crafts or Performance 5.'
+				'Unlike other vapid Toreador relying on their beauty alone, you are a master artist and you were Embraced for your talent. You gain Crafts or Performance 5.',
+			changes: [
+				{
+					kind: 'Skill',
+					name: ['Crafts', 'Performance'],
+					combination: 'or',
+					value: 5
+				}
+			]
 		},
 		level2: {
 			title: 'Popular',
@@ -143,7 +218,14 @@ export const loresheetConfig: LoresheetConfigSchema = {
 		level3: {
 			title: 'Succubus Club Franchise',
 			description:
-				'Helena succumbed to the Beckoning in recent years, leaving her famous Succubus Club in Chicago to a manager. However, you have license from your lineage to establish a franchised Succubus Club in your Domain. You gain four Background dots selected from Resources, Fame, and Mask Backgrounds and Advantages. So long as the club remains open, the Comfort level of your Domain gains a two-dot bonus (see page 294). Multiple Toreador in a Domain may benefit from this Lore’s mechanical benefits; however, if there is more than one Descendant of Helena in a Domain, they are involved in running the same Succubus Club.'
+				'Helena succumbed to the Beckoning in recent years, leaving her famous Succubus Club in Chicago to a manager. However, you have license from your lineage to establish a franchised Succubus Club in your Domain. You gain four Background dots selected from Resources, Fame, and Mask Backgrounds and Advantages. So long as the club remains open, the Comfort level of your Domain gains a two-dot bonus (see page 294). Multiple Toreador in a Domain may benefit from this Lore’s mechanical benefits; however, if there is more than one Descendant of Helena in a Domain, they are involved in running the same Succubus Club.',
+			changes: [
+				{
+					kind: 'Background',
+					name: ['Resources', 'Fame', 'Mask'],
+					value: 4
+				}
+			]
 		}
 	},
 	'Descendant of Karl Schrekt': {
@@ -159,7 +241,16 @@ export const loresheetConfig: LoresheetConfigSchema = {
 		level2: {
 			title: 'Know the World',
 			description:
-				'Your family knows that knowledge is power, and you have gathered an archive of literature about Kindred and all manner of other supernatural beings. Gain two dots of the Haven Background and three dots of the Library Advantage representing this archive. Once per month, you can ask the Storyteller to answer a general question about werewolves, magicians, wraiths, fae, or other supernatural entities and receive a truthful answer. This question cannot reveal current events (such as the current leader of the local Sabbat pack), only longstanding information.'
+				'Your family knows that knowledge is power, and you have gathered an archive of literature about Kindred and all manner of other supernatural beings. Gain two dots of the Haven Background and three dots of the Library Advantage representing this archive. Once per month, you can ask the Storyteller to answer a general question about werewolves, magicians, wraiths, fae, or other supernatural entities and receive a truthful answer. This question cannot reveal current events (such as the current leader of the local Sabbat pack), only longstanding information.',
+			changes: [
+				{
+					kind: 'Background',
+					name: 'Haven',
+					value: 2,
+					fixed: true,
+					associatedAdvantages: [{ name: 'Library', value: 3 }]
+				}
+			]
 		},
 		level3: {
 			title: 'Surveillance',
@@ -175,7 +266,14 @@ export const loresheetConfig: LoresheetConfigSchema = {
 		level1: {
 			title: 'Siblings in Darkness',
 			description:
-				'Montano’s honor runs throughout his lineage as an expected code of behavior, and you reap the benefits of this reputation within Clan Lasombra. Your clanmates have provided you aid and respect in the form of four dots selected from the Allies, Contacts, or Resources Backgrounds or their associated Advantages.'
+				'Montano’s honor runs throughout his lineage as an expected code of behavior, and you reap the benefits of this reputation within Clan Lasombra. Your clanmates have provided you aid and respect in the form of four dots selected from the Allies, Contacts, or Resources Backgrounds or their associated Advantages.',
+			changes: [
+				{
+					kind: 'Background',
+					name: ['Allies', 'Contacts', 'Resources'],
+					value: 4
+				}
+			]
 		},
 		level2: {
 			title: 'Purity of Remorse',
@@ -196,7 +294,14 @@ export const loresheetConfig: LoresheetConfigSchema = {
 		level1: {
 			title: 'Champion of the Cause',
 			description:
-				'When people want someone to lead a rebellion, they come to you for help. Gaining funding, weapons, and information comes far more easily with the help from those who hold you in high esteem. You gain three free dots to spend on the Contacts, Resources, or Haven Backgrounds or Advantages tied to those Backgrounds.'
+				'When people want someone to lead a rebellion, they come to you for help. Gaining funding, weapons, and information comes far more easily with the help from those who hold you in high esteem. You gain three free dots to spend on the Contacts, Resources, or Haven Backgrounds or Advantages tied to those Backgrounds.',
+			changes: [
+				{
+					kind: 'Background',
+					name: ['Contacts', 'Resources', 'Haven'],
+					value: 3
+				}
+			]
 		},
 		level2: {
 			title: 'Tyler’s Mercy',
@@ -285,7 +390,16 @@ export const loresheetConfig: LoresheetConfigSchema = {
 		level2: {
 			title: 'Sanctuary',
 			description:
-				'Your Haven is a wonder of modern design, with electronic security, escape routes, and lavish trappings. You gain a three-dot Haven that is exceptionally difficult to breach. It cannot be destroyed or breached by any physical means short of a military-grade attack. You also gain four bonus dots of Haven Advantages of your choosing.'
+				'Your Haven is a wonder of modern design, with electronic security, escape routes, and lavish trappings. You gain a three-dot Haven that is exceptionally difficult to breach. It cannot be destroyed or breached by any physical means short of a military-grade attack. You also gain four bonus dots of Haven Advantages of your choosing.',
+			changes: [
+				{
+					kind: 'Background',
+					name: 'Haven',
+					value: 3,
+					fixed: true,
+					associatedAdvantages: [{ name: 'Variabel', value: 4 }]
+				}
+			]
 		},
 		level3: {
 			title: 'The Labyrinth',
@@ -305,7 +419,17 @@ export const loresheetConfig: LoresheetConfigSchema = {
 		level2: {
 			title: 'The Second Act',
 			description:
-				'Forewarned is forearmed, so you developed a mole in the Society of St Leopold. You have developed a three-dot Contact within the Church Sphere of Influence with the At Arms Length Advantage. This person is connected to the Second Inquisition and may have information about their movements. You must be careful not to reveal yourself as a vampire to them; they will turn on you if they learn your true nature. This Loresheet Advantage is the exception to the rule normally preventing Contacts from being directly related to Hunter factions.'
+				'Forewarned is forearmed, so you developed a mole in the Society of St Leopold. You have developed a three-dot Contact within the Church Sphere of Influence with the At Arms Length Advantage. This person is connected to the Second Inquisition and may have information about their movements. You must be careful not to reveal yourself as a vampire to them; they will turn on you if they learn your true nature. This Loresheet Advantage is the exception to the rule normally preventing Contacts from being directly related to Hunter factions.',
+			changes: [
+				{
+					kind: 'Background',
+					name: 'Contacts',
+					value: 3,
+					sphereOfInfluence: 'Church',
+					fixed: true,
+					associatedAdvantages: [{ name: "At Arm's Length", value: 1 }]
+				}
+			]
 		},
 		level3: {
 			title: 'Black Spot',
@@ -320,7 +444,20 @@ export const loresheetConfig: LoresheetConfigSchema = {
 		level1: {
 			title: 'No Records Found',
 			description:
-				'You have managed to erase yourself from FIRSTLIGHT records entirely. You gain a free three-dot Mask and the Zeroed Merit.'
+				'You have managed to erase yourself from FIRSTLIGHT records entirely. You gain a free three-dot Mask and the Zeroed Merit.',
+			changes: [
+				{
+					kind: 'Background',
+					name: 'Mask',
+					value: 3,
+					fixed: true
+				},
+				{
+					kind: 'Merit',
+					name: 'Zeroed',
+					value: 2
+				}
+			]
 		},
 		level2: {
 			title: 'Evasion',
@@ -360,12 +497,31 @@ export const loresheetConfig: LoresheetConfigSchema = {
 		level1: {
 			title: 'Peacock',
 			description:
-				'You are proud of being part of a High Clan and have been trained in etiquette, politics, and courtly graces. Once per game session, you can automatically succeed on a Frenzy test caused by being insulted, embarrassed, or humiliated by a vampire publicly known to be a member of a Low Clan. You also gain the first two dots of the Etiquette and Politics Skills.'
+				'You are proud of being part of a High Clan and have been trained in etiquette, politics, and courtly graces. Once per game session, you can automatically succeed on a Frenzy test caused by being insulted, embarrassed, or humiliated by a vampire publicly known to be a member of a Low Clan. You also gain the first two dots of the Etiquette and Politics Skills.',
+			changes: [
+				{
+					kind: 'Skill',
+					name: 'Etiquette',
+					value: 2
+				},
+				{
+					kind: 'Skill',
+					name: 'Politics',
+					value: 2
+				}
+			]
 		},
 		level2: {
 			title: 'Friends in High Places',
 			description:
-				'You enjoy the benefits of a network of High Clan supporters. You may choose five free dots of the Contacts, Resources, or Allies Backgrounds or their associated Advantages, representing this support.'
+				'You enjoy the benefits of a network of High Clan supporters. You may choose five free dots of the Contacts, Resources, or Allies Backgrounds or their associated Advantages, representing this support.',
+			changes: [
+				{
+					kind: 'Background',
+					name: ['Contacts', 'Resources', 'Allies'],
+					value: 5
+				}
+			]
 		},
 		level3: {
 			title: 'Blessed, Not Cursed',
@@ -380,12 +536,31 @@ export const loresheetConfig: LoresheetConfigSchema = {
 		level1: {
 			title: 'Thick Hide',
 			description:
-				'You are used to being snubbed by people who think themselves better than you, and you do not respond easily to their provocations. Once per game session, you can automatically succeed on a Frenzy test caused by being insulted, embarrassed, or humiliated by a vampire who is publicly known to be a member of a High Clan. You also gain the first two dots of the Streetwise and Subterfuge Skills.'
+				'You are used to being snubbed by people who think themselves better than you, and you do not respond easily to their provocations. Once per game session, you can automatically succeed on a Frenzy test caused by being insulted, embarrassed, or humiliated by a vampire who is publicly known to be a member of a High Clan. You also gain the first two dots of the Streetwise and Subterfuge Skills.',
+			changes: [
+				{
+					kind: 'Skill',
+					name: 'Streetwise',
+					value: 2
+				},
+				{
+					kind: 'Skill',
+					name: 'Subterfuge',
+					value: 2
+				}
+			]
 		},
 		level2: {
 			title: 'Uncanny Kinship',
 			description:
-				'You have earned a reputation as someone who helps the Low Clans stick together. While this gains you no love from the High Clans, your friends among the Low Clans support you and help you make connections easily. You can select five dots from the Mask, Familiar, Haven, or Allies Backgrounds or their associated Advantages, representing their support.'
+				'You have earned a reputation as someone who helps the Low Clans stick together. While this gains you no love from the High Clans, your friends among the Low Clans support you and help you make connections easily. You can select five dots from the Mask, Familiar, Haven, or Allies Backgrounds or their associated Advantages, representing their support.',
+			changes: [
+				{
+					kind: 'Background',
+					name: ['Mask', 'Familiar', 'Haven', 'Allies'],
+					value: 5
+				}
+			]
 		},
 		level3: {
 			title: 'Critical Incident',
@@ -401,12 +576,31 @@ export const loresheetConfig: LoresheetConfigSchema = {
 		level1: {
 			title: 'Peacemaker',
 			description:
-				'Your ability to bring together Kindred of opposing ideals and have them peacefully discuss their differences is renowned. Once per night, when you or a vampire in your presence is required to take a Frenzy test resulting from a political disagreement, you can allow them to pass a failed test. You also gain the first two dots of the Etiquette and Politics Skills.'
+				'Your ability to bring together Kindred of opposing ideals and have them peacefully discuss their differences is renowned. Once per night, when you or a vampire in your presence is required to take a Frenzy test resulting from a political disagreement, you can allow them to pass a failed test. You also gain the first two dots of the Etiquette and Politics Skills.',
+			changes: [
+				{
+					kind: 'Skill',
+					name: 'Etiquette',
+					value: 2
+				},
+				{
+					kind: 'Skill',
+					name: 'Politics',
+					value: 2
+				}
+			]
 		},
 		level2: {
 			title: 'Revitalization',
 			description:
-				'Negotiating peace is the first step to rebuilding threatened Camarilla cities. Rebuilding is the second step. You are an expert at bringing resources to bear to help. You may choose six free dots of the Contacts, Resources, or Allies Backgrounds or their associated Advantages, representing the support of other allied Camarilla cities. You may only use these backgrounds in acity where a Camarilla Authority exists (see page 301).'
+				'Negotiating peace is the first step to rebuilding threatened Camarilla cities. Rebuilding is the second step. You are an expert at bringing resources to bear to help. You may choose six free dots of the Contacts, Resources, or Allies Backgrounds or their associated Advantages, representing the support of other allied Camarilla cities. You may only use these backgrounds in acity where a Camarilla Authority exists (see page 301).',
+			changes: [
+				{
+					kind: 'Background',
+					name: ['Contacts', 'Resources', 'Allies'],
+					value: 6
+				}
+			]
 		},
 		level3: {
 			title: 'Armistice',
@@ -426,12 +620,31 @@ export const loresheetConfig: LoresheetConfigSchema = {
 		level2: {
 			title: 'Soldier',
 			description:
-				'Vampires of all stripes were pulled into the war, whether as combatants or suppliers. You were there, and you have the scars to prove it. You may select three free dots from the Resources, Herd, or Contact Backgrounds or Advantages, representing your sect’s rewards for your heroic service. In addition, other soldiers of previous conflicts are willing to provide assistance directly. Once every three months, you may learn one dot of an out-of-clan discipline without instruction or the need to consume blood from another player character (though you still consume the blood of the NPC soldier). In addition, no downtimes need to be spent. The soldier who aids you will not require payment of any kind.'
+				'Vampires of all stripes were pulled into the war, whether as combatants or suppliers. You were there, and you have the scars to prove it. You may select three free dots from the Resources, Herd, or Contact Backgrounds or Advantages, representing your sect’s rewards for your heroic service. In addition, other soldiers of previous conflicts are willing to provide assistance directly. Once every three months, you may learn one dot of an out-of-clan discipline without instruction or the need to consume blood from another player character (though you still consume the blood of the NPC soldier). In addition, no downtimes need to be spent. The soldier who aids you will not require payment of any kind.',
+			changes: [
+				{
+					kind: 'Background',
+					name: ['Resources', 'Herd', 'Contacts'],
+					value: 3
+				}
+			]
 		},
 		level3: {
 			title: 'Strategist',
 			description:
-				'Vampire strike teams involved in the war moved from domain to domain, losing and capturing domains in rapid succession. The push-and-pull of this conflict led to some vampires obsessing over having defensive positions well established and prepared. Your Haven is a fortress. You gain a free two-dot Haven Background with two dots in the Security and Guards Advantages. If your Coterie has a Domain, add two dots to your coterie’s Domain’s Deterrents score (see page 295).'
+				'Vampire strike teams involved in the war moved from domain to domain, losing and capturing domains in rapid succession. The push-and-pull of this conflict led to some vampires obsessing over having defensive positions well established and prepared. Your Haven is a fortress. You gain a free two-dot Haven Background with two dots in the Security and Guards Advantages. If your Coterie has a Domain, add two dots to your coterie’s Domain’s Deterrents score (see page 295).',
+			changes: [
+				{
+					kind: 'Background',
+					name: 'Haven',
+					value: 2,
+					fixed: true,
+					associatedAdvantages: [
+						{ name: 'Security', value: 2 },
+						{ name: 'Guards', value: 2 }
+					]
+				}
+			]
 		}
 	},
 	'The Society of Heralds': {
@@ -462,7 +675,19 @@ export const loresheetConfig: LoresheetConfigSchema = {
 		level1: {
 			title: 'Constantinople',
 			description:
-				'You are one of the few Kindred who knows why Constantinople represented the best of vampire society, where ideas and philosophies were shared without violence, and you teach what you can of this philosophy to like-minded individuals. They believe in your cause and provide you material support. You may select two dots from the Resources, Haven, or Allies Backgrounds or Advantages. In addition, you gain three free points in the Politics Skill.'
+				'You are one of the few Kindred who knows why Constantinople represented the best of vampire society, where ideas and philosophies were shared without violence, and you teach what you can of this philosophy to like-minded individuals. They believe in your cause and provide you material support. You may select two dots from the Resources, Haven, or Allies Backgrounds or Advantages. In addition, you gain three free points in the Politics Skill.',
+			changes: [
+				{
+					kind: 'Background',
+					name: ['Resources', 'Haven', 'Allies'],
+					value: 2
+				},
+				{
+					kind: 'Skill',
+					name: 'Politics',
+					value: 3
+				}
+			]
 		},
 		level2: {
 			title: 'The Dream',
@@ -482,7 +707,20 @@ export const loresheetConfig: LoresheetConfigSchema = {
 		level1: {
 			title: 'The Night Network',
 			description:
-				'Your friends among the Ravnos (and other survivors of the Week of Nightmares) trust you to run a waypoint for their network of travelers. You gain a two- point Haven with one point in each of the Luxury, Security, and Guardsmen Advantages. Ravnos passing through will sometimes stay there at the Storyteller’s discretion. You can safely move goods and messages between cities through your facility. Sometimes other Ravnos bring news and warnings from outside your city.'
+				'Your friends among the Ravnos (and other survivors of the Week of Nightmares) trust you to run a waypoint for their network of travelers. You gain a two- point Haven with one point in each of the Luxury, Security, and Guardsmen Advantages. Ravnos passing through will sometimes stay there at the Storyteller’s discretion. You can safely move goods and messages between cities through your facility. Sometimes other Ravnos bring news and warnings from outside your city.',
+			changes: [
+				{
+					kind: 'Background',
+					name: 'Haven',
+					value: 2,
+					fixed: true,
+					associatedAdvantages: [
+						{ name: 'Luxury', value: 1 },
+						{ name: 'Security', value: 1 },
+						{ name: 'Guards', value: 1 }
+					]
+				}
+			]
 		},
 		level2: {
 			title: 'Survivor',

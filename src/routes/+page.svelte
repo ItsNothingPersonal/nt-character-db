@@ -71,8 +71,12 @@
 	{/if}
 
 	<div class="grid grid-cols-1 grid-rows-1 gap-2">
-		<button class="variant-filled-secondary btn mt-2 rounded-none" disabled type="button">
+		<a
+			class="variant-filled-secondary btn mt-2 rounded-lg"
+			href="/lotn/sheet/create/step_01"
+			type="button"
+		>
 			Charakter erstellen
-		</button>
+		</a>
 	</div>
 </div>

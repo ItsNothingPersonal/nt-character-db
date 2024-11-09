@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { mentalSkill, physicalSkill, socialSkill } from '../enums/skillName';
 
 export const playerSkill = z.object({
+	id: z.string(),
 	name: physicalSkill.or(socialSkill).or(mentalSkill),
 	value: z.number().min(1).max(5),
 	specialization: z

@@ -18,7 +18,7 @@
 	<slot />
 </label>
 <div
-	class="card variant-filled max-w-xl scroll-auto rounded-lg p-4"
+	class="card variant-filled z-10 max-w-xl scroll-auto rounded-lg p-4"
 	data-popup="popupHover-{id.replaceAll(' ', '_')}"
 >
 	<slot name="helpText" />

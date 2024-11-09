@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { characterStore as characterStoreClassic } from '$lib/components/classic/characterSheet/characterStore';
 	import { characterStore as characterStoreLotN } from '$lib/components/lotn/characterSheet/characterStore';
-	import { menuDataClassic, menuDataLotN } from '$lib/menuData';
+	import { menuDataLotN } from '$lib/menuData';
 	import { isNullOrUndefined } from '$lib/util';
 	import { AppRail, AppRailAnchor } from '@skeletonlabs/skeleton';
 
@@ -21,23 +20,8 @@
 		{/if}
 	</svelte:fragment>
 	<!-- --- -->
-	{#if loggedIn && $characterStoreClassic}
-		{#each menuDataClassic as menuEntry}
-			<AppRailAnchor
-				href={menuEntry.href?.replace('[id]', $characterStoreClassic.id)}
-				selected={!isNullOrUndefined(
-					$page.url.pathname.match(
-						`sheet/${$characterStoreClassic.id}${menuEntry.href?.replace('/sheet/[id]', '')}$`
-					)
-				)}
-			>
-				<svelte:fragment slot="lead">
-					<iconify-icon height="40" icon={menuEntry.icon} width="40" />
-				</svelte:fragment>
-				{menuEntry.label}
-			</AppRailAnchor>
-		{/each}
-	{:else if loggedIn && $characterStoreLotN}
+
+	{#if loggedIn && $characterStoreLotN}
 		{#each menuDataLotN as menuEntry}
 			<AppRailAnchor
 				href={menuEntry.href?.replace('[id]', $characterStoreLotN.id)}

@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { PlayerBackground } from '$lib/zod/lotn/playerCharacter/playerBackground';
 	import { Ratings } from '@skeletonlabs/skeleton';
-	import { getBackgroundConfig } from '../../util/backgrounds';
+	import { getBackgroundConfig } from '../../util/backgroundUtil';
 	import { interactiveModeStore } from '../interactiveModeStore';
-	import BackgroundAdvantage from './BackgroundAdvantage.svelte';
-	import BackgroundDisadvantage from './BackgroundDisadvantage.svelte';
+	import BackgroundAdvantage from './BackgroundAdvantage/BackgroundAdvantage.svelte';
+	import BackgroundDisadvantage from './BackgroundDisadvantage/BackgroundDisadvantage.svelte';
 	import BackgroundSphereOfInfluence from './BackgroundSphereOfInfluence.svelte';
 	import HelpText from './HelpText.svelte';
 

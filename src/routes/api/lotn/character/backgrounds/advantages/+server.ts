@@ -70,6 +70,7 @@ export async function POST({ locals, request }) {
 		}
 		const returnResult: PlayerBackgroundAdvantage[] = globalResult.map((result) => {
 			return {
+				id: result.id ?? '',
 				name: result.name,
 				value: result.value
 			};

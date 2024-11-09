@@ -5,7 +5,8 @@ export const playerExperience = z.object({
 	date: z.coerce.date(),
 	value: z.number().min(0).max(20),
 	type: changeTypeName,
-	reason: z.string().min(1).max(40)
+	reason: z.string().min(1).max(60),
+	element_id: z.string().optional()
 });
 
 export type PlayerExperience = z.infer<typeof playerExperience>;

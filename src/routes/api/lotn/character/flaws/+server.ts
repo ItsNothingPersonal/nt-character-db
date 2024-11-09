@@ -72,7 +72,7 @@ export async function POST({ locals, request }) {
 			}
 		}
 
-		return new Response(JSON.stringify(playerFlaw.array().parse(globalResult)), {
+		return new Response(JSON.stringify(playerFlaw.merge(idSchema).array().parse(globalResult)), {
 			status: HttpStatusCode.OK
 		});
 	} else {

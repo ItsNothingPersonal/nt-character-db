@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isInClan } from '../../util/clanUtil';
+	import { isInClan } from '../../util/disciplines';
 	import { characterStore } from '../characterStore';
 	import Discipline from '../components/Discipline.svelte';
 

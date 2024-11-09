@@ -2,6 +2,7 @@
 	import { characterStore } from '$lib/components/lotn/characterSheet/characterStore';
 	import { isMortal } from '$lib/components/lotn/util/mortalUtil';
 	import Tracker from '$lib/components/tracker/tracker.svelte';
+	import { getHealthTotal, getWillpowerTotal } from '$lib/util';
 	import type { PlayerHealthUpdateRequestBody } from '$lib/zod/lotn/playerCharacter/playerHealth';
 	import {
 		playerHumanity,
@@ -16,10 +17,7 @@
 	$: {
 		if ($characterStore) {
 			healthRemaining =
-				$characterStore.attributes.physical_stamina +
-				3 -
-				$characterStore.health.normal -
-				$characterStore.health.aggrevated;
+				getHealthTotal() - $characterStore.health.normal - $characterStore.health.aggrevated;
 		}
 	}
 
@@ -146,7 +144,7 @@
 		<h2 class="h2">Health</h2>
 		<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-4">
 			<div class="grid auto-rows-auto grid-cols-2 gap-2 sm:grid-cols-3">
-				<Tracker title="Health Total" value={get(characterStore).attributes.physical_stamina + 3} />
+				<Tracker title="Health Total" value={getHealthTotal()} />
 				<Tracker title="Health Remaining" value={healthRemaining} />
 				<div class="col-span-2 sm:col-span-1">
 					<p class="text-center font-bold">Status</p>
@@ -194,20 +192,14 @@
 		<h2 class="h2">Willpower</h2>
 		<div class="mb-4 mt-2 grid grid-cols-1 grid-rows-1 gap-4">
 			<div class="grid grid-cols-3 grid-rows-1 gap-2 sm:grid-cols-3">
-				<Tracker
-					title="Willpower Total"
-					value={$characterStore.attributes.social_composure +
-						$characterStore.attributes.mental_resolve}
-				/>
+				<Tracker title="Willpower Total" value={getWillpowerTotal()} />
 
 				<Tracker
 					buttonsConfig={{
 						addFunction: () => changeWillpower(1, 'add'),
 						substractFunction: () => changeWillpower(1, 'substract'),
 						updating,
-						max:
-							$characterStore.attributes.social_composure +
-							$characterStore.attributes.mental_resolve
+						max: getWillpowerTotal()
 					}}
 					title="Willpower Remaining"
 					value={$characterStore.willpower.value}

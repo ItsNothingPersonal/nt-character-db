@@ -6,7 +6,7 @@ import { backgroundName, type BackgroundName } from './enums/backgroundName';
 import { bloodSorceryRitualName } from './enums/bloodSorceryRitualName';
 import { clanName } from './enums/clanName';
 import { disciplineAttributeType } from './enums/disciplineAttributeType';
-import { disciplineName, type DisciplineName } from './enums/disciplineName';
+import { disciplineName } from './enums/disciplineName';
 import { animalismPowers } from './enums/disciplinePowers/animalismPowers';
 import { auspexPowers } from './enums/disciplinePowers/auspexPowers';
 import { bloodSorceryPowers } from './enums/disciplinePowers/bloodSorceryPowers';
@@ -20,12 +20,13 @@ import { presencePowers } from './enums/disciplinePowers/presencePowers';
 import { proteanPowers } from './enums/disciplinePowers/proteanPowers';
 import { thinBloodAlchemyPowers } from './enums/disciplinePowers/thinBloodAlchemyPowers';
 import { flawName } from './enums/flawName';
-import { loresheetName } from './enums/loresheetName';
 import { masqueradeThreat } from './enums/masqueradeThreat';
+import { meritFlawCategory } from './enums/meritFlawCategory';
 import { meritName } from './enums/meritName';
 import { oblivionCeremonyName } from './enums/oblivionCeremonyName';
-import { sectName } from './enums/sectName';
 import { skillName } from './enums/skillName';
+import { backgroundAvantageConfig } from './playerCharacter/playerBackgroundAdvantage';
+import { backgroundDisadvantageConfig } from './playerCharacter/playerBackgroundDisdvantage';
 
 export function createDisciplineConfigSchema(
 	disciplineNameValue: NormalDisciplines | RitualDisciplines
@@ -65,8 +66,10 @@ export const masqueradeThreatSchema = z.object({
 });
 export type MasqueradeThreatSchema = z.infer<typeof masqueradeThreatSchema>;
 
-export type NormalDisciplines = Exclude<DisciplineName, 'Thin-Blood Alchemy'>;
-export type RitualDisciplines = Extract<DisciplineName, 'Thin-Blood Alchemy'>;
+export const normalDisciplines = disciplineName.exclude(['Thin-Blood Alchemy']);
+export type NormalDisciplines = z.infer<typeof normalDisciplines>;
+export const ritualDisciplines = disciplineName.extract(['Thin-Blood Alchemy']);
+export type RitualDisciplines = z.infer<typeof ritualDisciplines>;
 
 export const normalDisciplineEnum = disciplineName.exclude(['Thin-Blood Alchemy']);
 export const ritualDisciplineEnum = disciplineName.extract(['Thin-Blood Alchemy']);
@@ -133,63 +136,69 @@ export function isNormalDisciplinePower(value: unknown): value is NormalDiscipli
 export const idSchema = z.object({ id: z.string() });
 
 export function createRitualPowerSchema(disciplineNameValue: RitualDisciplines) {
-	return z.record(
-		ritualsRecord[disciplineNameValue],
-		z.object({
-			level: z.number().min(1).max(5),
-			requiredIngredients: z.string().array(),
-			suggestedIngredients: z.string().array(),
-			cost: z.enum([
-				'One Rouse check',
-				'As per the counterfeited power',
-				'Free aside from the distillation costs',
-				'None'
-			]),
-			challengePool: z
-				.object({
-					attacker: z.object({ attribute: attributeName, skill: skillName }),
-					defender: z
-						.object({ attribute: attributeName, skillOrAttribute: skillName.or(attributeName) })
-						.or(z.string()),
-					hint: z.string().optional()
-				})
-				.optional(),
-			system: z.string(),
-			duration: z.string()
-		})
-	);
+	return z.record(ritualsRecord[disciplineNameValue], createRitualPowerEntrySchema());
+}
+
+export function createRitualPowerEntrySchema() {
+	return z.object({
+		level: z.number().min(1).max(5),
+		requiredIngredients: z.string().array(),
+		suggestedIngredients: z.string().array(),
+		cost: z.enum([
+			'One Rouse check',
+			'As per the counterfeited power',
+			'Free aside from the distillation costs',
+			'None'
+		]),
+		challengePool: z
+			.object({
+				attacker: z.object({ attribute: attributeName, skill: skillName }),
+				defender: z
+					.object({ attribute: attributeName, skillOrAttribute: skillName.or(attributeName) })
+					.or(z.string()),
+				hint: z.string().optional()
+			})
+			.optional(),
+		system: z.string(),
+		duration: z.string(),
+		amalgam: z.object({ name: disciplineName, value: z.number() }).optional()
+	});
 }
 
 export function createNormalDisciplinePowerSchema(disciplineNameValue: NormalDisciplines) {
 	return z.record(
 		disciplineRecord[disciplineNameValue],
-		z.object({
-			level: z.number().min(1).max(5),
-			prerequisite: disciplineRecord[disciplineNameValue]
-				.or(
-					disciplineRecord[disciplineNameValue].array().or(
-						z.object({
-							main: disciplineRecord[disciplineNameValue],
-							or: disciplineRecord[disciplineNameValue].array()
-						})
-					)
-				)
-				.optional(),
-			amalgam: z.object({ name: disciplineName, value: z.number() }).optional(),
-			cost: z.enum(['One Rouse check']).or(z.string()),
-			duration: z.string(),
-			challengePool: z
-				.object({
-					attacker: z.object({ attribute: attributeName, skill: skillName }),
-					defender: z
-						.object({ attribute: attributeName, skillOrAttribute: skillName.or(attributeName) })
-						.or(z.string()),
-					hint: z.string().optional()
-				})
-				.optional(),
-			system: z.string()
-		})
+		createNormalDisciplinePowerEntrySchema(disciplineNameValue)
 	);
+}
+
+export function createNormalDisciplinePowerEntrySchema(disciplineNameValue: NormalDisciplines) {
+	return z.object({
+		level: z.number().min(1).max(5),
+		prerequisite: disciplineRecord[disciplineNameValue]
+			.or(
+				disciplineRecord[disciplineNameValue].array().or(
+					z.object({
+						main: disciplineRecord[disciplineNameValue],
+						or: disciplineRecord[disciplineNameValue].array()
+					})
+				)
+			)
+			.optional(),
+		amalgam: z.object({ name: disciplineName, value: z.number() }).optional(),
+		cost: z.enum(['One Rouse check']).or(z.string()),
+		duration: z.string(),
+		challengePool: z
+			.object({
+				attacker: z.object({ attribute: attributeName, skill: skillName }),
+				defender: z
+					.object({ attribute: attributeName, skillOrAttribute: skillName.or(attributeName) })
+					.or(z.string()),
+				hint: z.string().optional()
+			})
+			.optional(),
+		system: z.string()
+	});
 }
 
 export function createRitualSchema() {
@@ -254,35 +263,8 @@ export function createBackgroundConfigSchema(background: BackgroundName) {
 		level1: z.string(),
 		level2: z.string(),
 		level3: z.string(),
-		advantages: z
-			.record(
-				backgroundAdvantageName,
-				z.object({
-					name: backgroundAdvantageName,
-					description: z.string().optional(),
-					level1: z.string().optional(),
-					level2: z.string().optional(),
-					levelVariable: z.string().optional()
-				})
-			)
-			.optional(),
-		disadvantages: z
-			.record(
-				backgroundDisadvantageName,
-				z.object({
-					name: backgroundDisadvantageName,
-					prerequisite: z
-						.object({
-							name: backgroundName,
-							value: z.number().min(1).max(3)
-						})
-						.optional(),
-					description: z.string().optional(),
-					level1: z.string().optional(),
-					level2: z.string().optional()
-				})
-			)
-			.optional()
+		advantages: z.record(backgroundAdvantageName, backgroundAvantageConfig).optional(),
+		disadvantages: z.record(backgroundDisadvantageName, backgroundDisadvantageConfig).optional()
 	});
 }
 
@@ -299,22 +281,46 @@ export function createMeritsSchema() {
 				level5: z.string().optional(),
 				prerequisite: z
 					.object({
-						name: backgroundName,
+						name: backgroundName.or(z.literal('Blood Potency')),
 						value: z.number().min(0).max(3)
 					})
-					.optional()
+					.or(clanName)
+					.array()
+					.or(
+						z
+							.object({
+								name: backgroundName.or(z.literal('Blood Potency')),
+								value: z.number().min(0).max(3)
+							})
+							.or(clanName)
+					)
+					.optional(),
+				ghoulAllowed: z.boolean().default(false).optional(),
+				category: meritFlawCategory,
+				linkedSkills: z.enum(['Academics', 'Crafts', 'Performance']).array().optional(),
+				hasSpecificDescription: z.boolean().default(false).optional(),
+				multiPurchase: z.boolean().default(false).optional(),
+				max: z.number().min(1).max(5).optional()
 			})
 			.or(
 				z.object({
 					name: meritName,
 					levelVariable: z.string(),
-					max: z.number().min(1).max(5),
+					min: z.number().min(1).max(5).optional(),
+					max: z.number().min(1).max(5).optional(),
 					prerequisite: z
 						.object({
 							name: backgroundName,
 							value: z.number().min(0).max(3)
 						})
-						.optional()
+						.or(clanName)
+						.array()
+						.optional(),
+					ghoulAllowed: z.boolean().default(false).optional(),
+					category: meritFlawCategory,
+					linkedSkills: z.enum(['Academics', 'Crafts', 'Performance']).array().optional(),
+					hasSpecificDescription: z.boolean().default(false).optional(),
+					multiPurchase: z.boolean().default(false).optional()
 				})
 			)
 	);
@@ -334,36 +340,32 @@ export function createFlawsSchema() {
 				level5: z.string().optional(),
 				prerequisite: z
 					.object({
-						name: backgroundName,
-						value: z.literal(0)
+						name: backgroundName.or(z.literal('Blood Potency')),
+						value: z.number().min(0).max(3).default(0)
 					})
-					.optional()
+					.optional(),
+				ghoulAllowed: z.boolean().default(false).optional(),
+				category: meritFlawCategory,
+				hasSpecificDescription: z.boolean().default(false).optional(),
+				multiPurchase: z.boolean().default(false).optional()
 			})
 			.or(
 				z.object({
 					name: flawName,
 					levelVariable: z.string(),
-					max: z.number().min(1).max(5)
+					min: z.number().min(1).max(5),
+					max: z.number().min(1).max(5),
+					prerequisite: z
+						.object({
+							name: backgroundName.or(z.literal('Blood Potency')),
+							value: z.number().min(0).max(3).default(0)
+						})
+						.optional(),
+					ghoulAllowed: z.boolean().default(false).optional(),
+					category: meritFlawCategory,
+					hasSpecificDescription: z.boolean().default(false).optional(),
+					multiPurchase: z.boolean().default(false).optional()
 				})
 			)
 	);
 }
-
-export function createLoresheetSchema() {
-	return z.record(
-		loresheetName,
-		z.object({
-			name: loresheetName,
-			description: z.string().min(1),
-			level1: loresheetAdvantageEntry,
-			level2: loresheetAdvantageEntry,
-			level3: loresheetAdvantageEntry,
-			prerequisite: clanName.or(sectName).optional()
-		})
-	);
-}
-
-const loresheetAdvantageEntry = z.object({
-	title: z.string().min(1),
-	description: z.string().min(1)
-});

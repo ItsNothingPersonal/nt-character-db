@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { backgroundDisadvantageName } from '../enums/backgroundDisadvantageName';
+import { backgroundName } from '../enums/backgroundName';
 
 export const playerBackgroundDisadvantage = z.object({
 	name: backgroundDisadvantageName,
@@ -32,3 +33,17 @@ export const playerBackgroundDisadvantageUpdateRequestBody = z.object({
 export type PlayerBackgroundDisadvantageUpdateRequestBody = z.infer<
 	typeof playerBackgroundDisadvantageUpdateRequestBody
 >;
+
+export const backgroundDisadvantageConfig = z.object({
+	name: backgroundDisadvantageName,
+	prerequisite: z
+		.object({
+			name: backgroundName,
+			value: z.number().min(1).max(3)
+		})
+		.optional(),
+	description: z.string().optional(),
+	level1: z.string().optional(),
+	level2: z.string().optional()
+});
+export type BackgroundDisadvantageConfig = z.infer<typeof backgroundDisadvantageConfig>;

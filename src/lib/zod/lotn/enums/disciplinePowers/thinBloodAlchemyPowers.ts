@@ -10,10 +10,6 @@ export const thinBloodAlchemyPowers = z.enum([
 	'Counterfeit (Level 3)',
 	'Airborne Momentum',
 	'Counterfeit (Level 4)',
-	'Awaken the Sleeper',
-	'Horrid Form',
-	'Heart of Darkness',
-	'Form of Mist',
-	'Shape Mastery'
+	'Awaken the Sleeper'
 ]);
 export type ThinBloodAlchemyPowers = z.infer<typeof thinBloodAlchemyPowers>;
