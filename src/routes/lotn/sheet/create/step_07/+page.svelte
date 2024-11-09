@@ -624,8 +624,8 @@
 												: backgroundPaymentStore.getPredatorAdvantagePointsByBackgroundNameArray(
 														pointsRecordEntry.name
 													)} / {pointsRecordEntry.associatedAdvantage.mayUseParentValue
-												? getPredatorConfigEntryByBackgroundNameArray(pointsRecordEntry.name)
-														?.value ?? 'Variabel'
+												? (getPredatorConfigEntryByBackgroundNameArray(pointsRecordEntry.name)
+														?.value ?? 'Variabel')
 												: pointsRecordEntry.associatedAdvantage.value})
 										{/if}
 									</span>
