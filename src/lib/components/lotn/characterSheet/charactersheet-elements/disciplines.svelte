@@ -4,18 +4,6 @@
 	import Discipline from '../components/Discipline.svelte';
 
 	const changedDisciplines = new Map<string, number>();
-
-	function handleChangeInClan(
-		event: CustomEvent<{ label: string; old: number; new: number }>
-	): void {
-		console.warn('tbd' + event.detail.label);
-	}
-
-	function handleChangeOutOfClan(
-		event: CustomEvent<{ label: string; old: number; new: number }>
-	): void {
-		console.warn('tbd' + event.detail.label);
-	}
 </script>
 
 <div class="flex flex-col gap-2">
@@ -27,7 +15,6 @@
 					{discipline}
 					start={changedDisciplines.get(discipline.name)}
 					bind:value={discipline.value}
-					on:change={handleChangeInClan}
 				/>
 			{/each}
 		</div>
@@ -44,7 +31,6 @@
 						{discipline}
 						start={changedDisciplines.get(discipline.name)}
 						bind:value={discipline.value}
-						on:change={handleChangeOutOfClan}
 					/>
 				{/each}
 			</div>

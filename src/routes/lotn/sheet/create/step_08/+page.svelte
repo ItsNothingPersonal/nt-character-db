@@ -29,7 +29,7 @@
 	import { type MeritName } from '$lib/zod/lotn/enums/meritName';
 	import type { PlayerFlaw } from '$lib/zod/lotn/playerCharacter/playerFlaw';
 	import type { PlayerMerit } from '$lib/zod/lotn/playerCharacter/playerMerit';
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 
 	let selectedMerit: MeritName;
@@ -42,14 +42,6 @@
 	let meritButtonDisabled = true;
 	let flawButtonDisabled = true;
 	let mythicalFlawButtonDisabled = true;
-
-	const debugSub = characterCreationStore.subscribe((value) =>
-		console.warn(JSON.stringify(value, undefined, 2))
-	);
-
-	onDestroy(() => {
-		debugSub();
-	});
 
 	onMount(() => {
 		selectMeritMinDotValue();

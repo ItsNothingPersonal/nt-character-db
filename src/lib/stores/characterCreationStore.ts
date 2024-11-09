@@ -944,8 +944,6 @@ export class BackgroundPaymentStore {
 			};
 		});
 
-		console.warn(JSON.stringify(get(this._paymentStoreInternal).backgrounds));
-
 		advantages.forEach((advantage) => {
 			this.paymentStore.update((store) => {
 				const advantages = store.associatedAdvantage;

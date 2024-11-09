@@ -72,6 +72,5 @@ export function isThinBloodFlaw(flawName: FlawName) {
 	const config = flawConfig[flawName];
 	if (!config) return false;
 
-	console.warn(JSON.stringify(config.category, undefined, 2));
 	return config.category === 'Thin-Blood';
 }

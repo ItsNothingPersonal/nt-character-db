@@ -6,16 +6,7 @@
 	import { flawName, type FlawName } from '$lib/zod/lotn/enums/flawName';
 	import { meritName, type MeritName } from '$lib/zod/lotn/enums/meritName';
 	import { predatorType, type PredatorType } from '$lib/zod/lotn/enums/predatorType';
-	import { onDestroy } from 'svelte';
 	import { get } from 'svelte/store';
-
-	const debugSub = characterCreationStore.subscribe((value) =>
-		console.warn(JSON.stringify(value, undefined, 2))
-	);
-
-	onDestroy(() => {
-		debugSub();
-	});
 
 	$: selectionForFlaws = getSelectionNeededFlaws();
 	let selectedRadio: 'Mythical' | 'Enemy' | undefined = undefined;

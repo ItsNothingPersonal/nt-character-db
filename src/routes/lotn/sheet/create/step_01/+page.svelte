@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
 	import { sectName, type SectName } from '$lib/zod/lotn/enums/sectName';
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 
 	onMount(() => {
 		convictionA = $characterCreationStore.morality[0]?.conviction || '';
@@ -11,14 +11,6 @@
 		convictionC = $characterCreationStore.morality[2]?.conviction || '';
 		touchstoneC = $characterCreationStore.morality[2]?.touchstone || '';
 		selectedSect = $characterCreationStore.sect;
-	});
-
-	const debugSub = characterCreationStore.subscribe((value) =>
-		console.warn(JSON.stringify(value, undefined, 2))
-	);
-
-	onDestroy(() => {
-		debugSub();
 	});
 
 	let convictionA = '';

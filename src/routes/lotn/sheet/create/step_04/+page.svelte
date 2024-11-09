@@ -10,11 +10,6 @@
 	import type { AttributeDotCategory } from '$lib/zod/lotn/enums/attributDotCategory';
 	import { attributeName, type AttributeName } from '$lib/zod/lotn/enums/attributeName';
 	import { Ratings } from '@skeletonlabs/skeleton';
-	import { onDestroy } from 'svelte';
-
-	const debugSub = characterCreationStore.subscribe((value) =>
-		console.warn(JSON.stringify(value, undefined, 2))
-	);
 
 	let selectedAttribute: AttributeName | undefined = undefined;
 	$: amount4Dots = attributesPaidWithDotsStore.amount4Dots;
@@ -25,10 +20,6 @@
 	$: max2Dots = attributesPaidWithDotsStore.max2Dots;
 	$: amount1Dots = attributesPaidWithDotsStore.amount1Dots;
 	$: max1Dots = attributesPaidWithDotsStore.max1Dots;
-
-	onDestroy(() => {
-		debugSub();
-	});
 
 	let spendingPoints: AttributeDotCategory = 4;
 

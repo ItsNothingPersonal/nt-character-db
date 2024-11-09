@@ -9,15 +9,7 @@
 		playerCharacter,
 		playerCharacterCreate
 	} from '$lib/zod/lotn/playerCharacter/playerCharacter';
-	import { onDestroy } from 'svelte';
 
-	const debugSub = characterCreationStore.subscribe((value) =>
-		console.warn(JSON.stringify(value, undefined, 2))
-	);
-
-	onDestroy(() => {
-		debugSub();
-	});
 	let responseMessage: string | undefined;
 
 	$: submitting = false;

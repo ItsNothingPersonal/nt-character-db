@@ -34,12 +34,7 @@
 	import { spheresOfInfluenceName } from '$lib/zod/lotn/enums/spheresOfInfluenceName';
 	import { playerLoresheet } from '$lib/zod/lotn/playerCharacter/playerLoresheet';
 	import type { LoresheetChangeEntry } from '$lib/zod/lotn/types/loresheetSchema';
-	import { onDestroy } from 'svelte';
 	import { get } from 'svelte/store';
-
-	const debugSub = characterCreationStore.subscribe((value) =>
-		console.warn(JSON.stringify(value, undefined, 2))
-	);
 
 	let { maxFreebiePoints, usedFreebiePoints, paymentStore } = backgroundPaymentStore;
 	let selectedBackground: BackgroundName;
@@ -47,10 +42,6 @@
 	$: loresheetConfigEntry = $characterCreationStore.loresheet?.name
 		? loresheetConfig[$characterCreationStore.loresheet.name]
 		: undefined;
-
-	onDestroy(() => {
-		debugSub();
-	});
 
 	function handleChange(event: CustomEvent<BackgroundChangeEvent>) {
 		const background = $characterCreationStore.backgrounds.find((e) => e.id === event.detail.id);
@@ -554,7 +545,7 @@
 
 	function handleLoresheetChange(event: CustomEvent<{ name: LoresheetName | undefined }>) {
 		const loresheet = $characterCreationStore.loresheet;
-		console.warn(loresheet);
+
 		if (loresheet) {
 			deletLoresheetBonusForLevel('level1');
 			deletLoresheetBonusForLevel('level2');

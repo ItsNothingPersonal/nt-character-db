@@ -79,15 +79,6 @@
 	import type { PlayerMerit } from '$lib/zod/lotn/playerCharacter/playerMerit';
 	import type { PlayerSkill } from '$lib/zod/lotn/playerCharacter/playerSkill';
 	import { type RitualDisciplinePowerUnion } from '$lib/zod/lotn/util';
-	import { onDestroy } from 'svelte';
-
-	const debugSub = characterCreationStore.subscribe((value) =>
-		console.warn(JSON.stringify(value, undefined, 2))
-	);
-
-	onDestroy(() => {
-		debugSub();
-	});
 
 	let selectedKindIncreaseOption: CharacterElementTypeName | undefined = undefined;
 	let selectedWhatIncreaseOption:
@@ -1189,7 +1180,6 @@
 			}
 		});
 
-		console.warn(totalIncreases);
 		return totalIncreases;
 	}
 
@@ -1214,7 +1204,7 @@
 		kind: 'Skill' | 'Attribute' | 'Discipline' | 'Humanity'
 	) {
 		let spentPoints = 0;
-		console.warn(JSON.stringify($characterCreationStore.experience, null, 2));
+
 		const parsedExpLog = $characterCreationStore.experience
 			.filter(
 				(e) =>
@@ -1232,7 +1222,6 @@
 			});
 
 		for (const expEntry of parsedExpLog) {
-			console.warn(expEntry);
 			spentPoints = expEntry.spentPoints;
 			const reduction = createNumberList(oldValue, newValue + 1).reduce((acc, curr) => {
 				acc += curr * factor;

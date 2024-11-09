@@ -2,20 +2,12 @@
 	import { clanConfig } from '$lib/components/lotn/config/clanConfig';
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
 	import { clanName, type ClanName } from '$lib/zod/lotn/enums/clanName';
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 
 	onMount(() => {
 		if (!$characterCreationStore.clan) {
 			$characterCreationStore.clan = 'Banu Haqim';
 		}
-	});
-
-	const debugSub = characterCreationStore.subscribe((value) =>
-		console.warn(JSON.stringify(value, undefined, 2))
-	);
-
-	onDestroy(() => {
-		debugSub();
 	});
 
 	function updateClan(clanName: ClanName) {

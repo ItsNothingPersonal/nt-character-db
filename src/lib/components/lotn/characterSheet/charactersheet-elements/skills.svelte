@@ -10,10 +10,6 @@
 
 	const changedSkills = new Map<string, number>();
 
-	function handleChange(event: CustomEvent<{ label: string; old: number; new: number }>): void {
-		console.warn('tbd' + event.detail.label);
-	}
-
 	function getPhysicalSkills() {
 		return $characterStore.skills.filter((e) => isPhysicalSkill(e.name));
 	}
@@ -36,7 +32,6 @@
 				specialization={skill.specialization}
 				start={changedSkills.get(skill.name)}
 				bind:value={skill.value}
-				on:change={handleChange}
 			/>
 		{/each}
 	</div>
@@ -48,7 +43,6 @@
 				specialization={skill.specialization}
 				start={changedSkills.get(skill.name)}
 				bind:value={skill.value}
-				on:change={handleChange}
 			/>
 		{/each}
 	</div>
@@ -60,7 +54,6 @@
 				specialization={skill.specialization}
 				start={changedSkills.get(skill.name)}
 				bind:value={skill.value}
-				on:change={handleChange}
 			/>
 		{/each}
 	</div>

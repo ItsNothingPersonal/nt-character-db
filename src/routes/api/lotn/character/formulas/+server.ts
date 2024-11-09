@@ -76,7 +76,6 @@ export async function PUT({ locals, request }) {
 	const requestJson = await request.json();
 	const updateBodyParsed = playerFormulaUpdateRequestBody.safeParse(requestJson);
 
-	console.warn(JSON.stringify(updateBodyParsed, null, 2));
 	if (updateBodyParsed.success) {
 		// Parsen insgesamt erfolgreich
 		let result: PlayerFormula;

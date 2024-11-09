@@ -255,12 +255,10 @@ export async function POST({ locals, request, fetch }) {
 			name: nameResult.id
 		}
 	};
-	console.warn(JSON.stringify(baseUpdateRequestBody, undefined, 2));
-	const res = await fetch('/api/lotn/character/base', {
+	await fetch('/api/lotn/character/base', {
 		method: 'PUT',
 		body: JSON.stringify(baseUpdateRequestBody)
 	});
-	console.warn(res.status);
 
 	const attributesRequestBody = playerAttributeRequestBodyDB.parse({
 		...playerCharacterCreateBodyParsed.data.attributes,

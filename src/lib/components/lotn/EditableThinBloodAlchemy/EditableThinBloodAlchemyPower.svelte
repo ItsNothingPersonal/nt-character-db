@@ -212,12 +212,9 @@
 				addDisciplinePower(selectedDiscipline, selectedDisciplinePower, previousDisciplinePower);
 				dispatchChange('disciplinePowerChange', { name: selectedDisciplinePower });
 			} else if (attachFormulaMode === 'AdditionalFormulas') {
-				console.warn(`previousDisciplinePower: ${previousDisciplinePower}`);
-				console.warn(`counterfeitPowerId: ${counterfeitPowerId}`);
 				if (previousDisciplinePower && counterfeitPowerId) {
 					removeFormula(counterfeitPowerId);
 
-					console.warn(counterfeitPowerId);
 					dispatchChange('removeFormula', {
 						id: counterfeitPowerId,
 						name: previousDisciplinePower
@@ -363,14 +360,12 @@
 			class="select rounded-lg"
 			bind:value={counterfeitPower}
 			on:change={() => {
-				console.warn(counterfeitPower);
 				if (counterfeitPower) {
 					addCounterfeitPower(counterfeitPower);
 					if (previousCounterfeitPower) {
 						removeCounterfeitPower(previousCounterfeitPower);
 					}
 					previousCounterfeitPower = counterfeitPower;
-					//dispatchChange('disciplinePowerChange', { name: selectedDisciplinePower });
 				}
 			}}
 		>

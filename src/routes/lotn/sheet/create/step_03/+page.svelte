@@ -5,7 +5,7 @@
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
 	import { flawPaymentStore } from '$lib/stores/flawPaymentStore';
 	import { meritPaymentStore } from '$lib/stores/meritPaymentStore';
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 
 	const validGenerations = [9, 10, 11, 12, 13, 14, 15, 16];
@@ -36,10 +36,6 @@
 		selectedBloodPotency = $characterCreationStore.bloodPotency;
 		selectedGeneration = $characterCreationStore.generation;
 	});
-
-	const debugSub = characterCreationStore.subscribe((value) =>
-		console.warn(JSON.stringify(value, undefined, 2))
-	);
 
 	function updateGeneration() {
 		characterCreationStore.update((store) => {
@@ -78,10 +74,6 @@
 			updateBloodPotency();
 		}
 	}
-
-	onDestroy(() => {
-		debugSub();
-	});
 </script>
 
 {#if !$characterCreationStore.ghoul}

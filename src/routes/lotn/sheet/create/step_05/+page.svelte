@@ -7,19 +7,10 @@
 	import { skillDotCategory, type SkillDotCategory } from '$lib/zod/lotn/enums/skillDotsCategory';
 	import { skillName, type SkillName } from '$lib/zod/lotn/enums/skillName';
 	import { Ratings } from '@skeletonlabs/skeleton';
-	import { onDestroy } from 'svelte';
 	import { get } from 'svelte/store';
-
-	const debugSub = characterCreationStore.subscribe((value) =>
-		console.warn(JSON.stringify(value, undefined, 2))
-	);
 
 	let selectedSkill: SkillName | undefined = undefined;
 	let selectedSkillSpecialization: string | undefined = undefined;
-
-	onDestroy(() => {
-		debugSub();
-	});
 
 	let spendingPoints: SkillDotCategory = 3;
 	const amount3Dots = skillsPaidWithDotsStore.amount3Dots;

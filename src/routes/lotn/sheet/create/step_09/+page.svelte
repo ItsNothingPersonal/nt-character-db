@@ -18,12 +18,8 @@
 	import { disciplineFreebieStore } from '$lib/stores/disciplineFreebieStore';
 	import { type DisciplineName } from '$lib/zod/lotn/enums/disciplineName';
 	import type { NormalDisciplinePowerUnion, RitualDisciplinePowerUnion } from '$lib/zod/lotn/util';
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
-
-	const debugSub = characterCreationStore.subscribe((value) =>
-		console.warn(JSON.stringify(value, undefined, 2))
-	);
 
 	onMount(() => {
 		if (!selectedClan) {
@@ -60,10 +56,6 @@
 			);
 			disciplineC = secondOneDotDiscipline?.name;
 		}
-	});
-
-	onDestroy(() => {
-		debugSub();
 	});
 
 	$: selectedClan = $characterCreationStore.clan;
