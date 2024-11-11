@@ -54,6 +54,10 @@ export default [
 				document: 'readonly',
 				fetch: 'readonly'
 			}
+		},
+		env: {
+			browser: true,
+			es2021: true
 		}
 	},
 	{
