@@ -6,6 +6,7 @@
 	import { AppRail, AppRailAnchor } from '@skeletonlabs/skeleton';
 
 	export let loggedIn: boolean = false;
+	export let characterCreation = false;
 </script>
 
 <AppRail>
@@ -21,7 +22,7 @@
 	</svelte:fragment>
 	<!-- --- -->
 
-	{#if loggedIn && $characterStoreLotN}
+	{#if loggedIn && $characterStoreLotN && !characterCreation}
 		{#each menuDataLotN as menuEntry}
 			<AppRailAnchor
 				href={menuEntry.href?.replace('[id]', $characterStoreLotN.id)}

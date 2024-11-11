@@ -1,10 +1,14 @@
 <script lang="ts">
+	import { onNavigate } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { characterStore as characterStoreLotN } from '$lib/components/lotn/characterSheet/characterStore';
 	import { menuDataLotN } from '$lib/menuData';
+	import { characterCreationStore } from '$lib/stores/characterCreationStore';
 	import { onMount } from 'svelte';
 	import { isMenuOpen } from './menuStore';
 
-	export let loggedIn: boolean = false;
+	export let loggedIn = false;
+	export let characterCreation = false;
 
 	let sidebarRef: HTMLElement | null = null;
 
@@ -17,6 +21,10 @@
 	onMount(() => {
 		document.addEventListener('click', handleClickOutside);
 		return () => document.removeEventListener('click', handleClickOutside);
+	});
+
+	onNavigate(() => {
+		isMenuOpen.set(false);
 	});
 </script>
 
@@ -34,7 +42,7 @@
 
 			<hr />
 
-			{#if loggedIn && $characterStoreLotN}
+			{#if loggedIn && $characterStoreLotN && !characterCreation}
 				{#each menuDataLotN as menuEntry}
 					<a
 						href={menuEntry.href?.replace('[id]', $characterStoreLotN.id)}
@@ -44,6 +52,97 @@
 						{menuEntry.label}
 					</a>
 				{/each}
+			{:else if loggedIn && characterCreation}
+				<a
+					class={`flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700 ${$page.url.pathname.match('/lotn/sheet/create/step_01') ? 'ring-2 ring-black dark:ring-white' : ''}`}
+					href="/lotn/sheet/create/step_01"
+					type="button"
+				>
+					<iconify-icon height="24" icon="tabler:number-1" width="24" />
+					Who are they?
+				</a>
+				<a
+					class={`flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700 ${$page.url.pathname.match('/lotn/sheet/create/step_02') ? 'ring-2 ring-black dark:ring-white' : ''}`}
+					href="/lotn/sheet/create/step_02"
+					type="button"
+				>
+					<iconify-icon height="24" icon="tabler:number-2" width="24" />
+					Choose A Clan
+				</a>
+				<a
+					class={`flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700 ${$page.url.pathname.match('/lotn/sheet/create/step_03') ? 'ring-2 ring-black dark:ring-white' : ''}`}
+					href="/lotn/sheet/create/step_03"
+					type="button"
+				>
+					<iconify-icon height="24" icon="tabler:number-3" width="24" />
+					Assign Generation & Blood Potency
+				</a>
+				<a
+					class={`flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700 ${$page.url.pathname.match('/lotn/sheet/create/step_04') ? 'ring-2 ring-black dark:ring-white' : ''}`}
+					href="/lotn/sheet/create/step_04"
+					type="button"
+				>
+					<iconify-icon height="24" icon="tabler:number-4" width="24" />
+					Assign Initial Attributes
+				</a>
+				<a
+					class={`flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700 ${$page.url.pathname.match('/lotn/sheet/create/step_05') ? 'ring-2 ring-black dark:ring-white' : ''}`}
+					href="/lotn/sheet/create/step_05"
+					type="button"
+				>
+					<iconify-icon height="24" icon="tabler:number-5" width="24" />
+					Assign Initial Skills
+				</a>
+				{#if !$characterCreationStore.ghoul}
+					<a
+						class={`flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700 ${$page.url.pathname.match('/lotn/sheet/create/step_06') ? 'ring-2 ring-black dark:ring-white' : ''}`}
+						href="/lotn/sheet/create/step_06"
+						type="button"
+					>
+						<iconify-icon height="24" icon="tabler:number-6" width="24" />
+						Choose a Predator Type
+					</a>
+				{/if}
+				<a
+					class={`flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700 ${$page.url.pathname.match('/lotn/sheet/create/step_07') ? 'ring-2 ring-black dark:ring-white' : ''}`}
+					href="/lotn/sheet/create/step_07"
+					type="button"
+				>
+					<iconify-icon height="24" icon="tabler:number-7" width="24" />
+					Starting Backgrounds & Loresheets
+				</a>
+				<a
+					class={`flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700 ${$page.url.pathname.match('/lotn/sheet/create/step_08') ? 'ring-2 ring-black dark:ring-white' : ''}`}
+					href="/lotn/sheet/create/step_08"
+					type="button"
+				>
+					<iconify-icon height="24" icon="tabler:number-8" width="24" />
+					Merits & Flaws
+				</a>
+				<a
+					class={`flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700 ${$page.url.pathname.match('/lotn/sheet/create/step_09') ? 'ring-2 ring-black dark:ring-white' : ''}`}
+					href="/lotn/sheet/create/step_09"
+					type="button"
+				>
+					<iconify-icon height="24" icon="tabler:number-9" width="24" />
+					Assign Initial Disciplines
+				</a>
+				<a
+					class={`flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700 ${$page.url.pathname.match('/lotn/sheet/create/step_10') ? 'ring-2 ring-black dark:ring-white' : ''}`}
+					href="/lotn/sheet/create/step_10"
+					type="button"
+				>
+					<iconify-icon height="24" icon="tabler:number-10" width="24" />
+					Spending Initial XP
+				</a>
+				<a
+					class={`flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700 ${$page.url.pathname.match('/lotn/sheet/create/step_11') ? 'ring-2 ring-black dark:ring-white' : ''}`}
+					href="/lotn/sheet/create/step_11"
+					type="button"
+				>
+					<iconify-icon height="24" icon="tabler:number-11" width="24" />
+					Finishing Touches
+				</a>
 			{/if}
 
 			<hr />

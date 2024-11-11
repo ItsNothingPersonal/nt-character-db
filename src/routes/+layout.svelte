@@ -1,10 +1,11 @@
 <script lang="ts">
-	import Navigation from '$lib/components/navigation/navigation.svelte';
+	import { page } from '$app/stores';
+	import Navigation from '$lib/components/Navigation/Navigation.svelte';
 	import SidebarButton from '$lib/components/SidebarMenu/SidebarButton.svelte';
 	import SidebarMenu from '$lib/components/SidebarMenu/SidebarMenu.svelte';
 	import Footer from '$lib/components/typography/footer.svelte';
 	import { ScreenSize } from '$lib/sceenSize';
-	import { isNotNullOrUndefined } from '$lib/util';
+	import { isCreateSheetRoute, isNotNullOrUndefined } from '$lib/util';
 	import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 	import {
 		AppBar,
@@ -53,9 +54,17 @@
 
 	<svelte:fragment slot="sidebarLeft">
 		{#if innerWidth >= ScreenSize.SM}
-			<Navigation loggedIn={isNotNullOrUndefined(data.user)} />
+			<Navigation
+				loggedIn={isNotNullOrUndefined(data.user)}
+				characterCreation={isCreateSheetRoute()}
+			/>
 		{:else}
-			<SidebarMenu loggedIn={isNotNullOrUndefined(data.user)} />
+			{#key $page.url.pathname}
+				<SidebarMenu
+					loggedIn={isNotNullOrUndefined(data.user)}
+					characterCreation={isCreateSheetRoute()}
+				/>
+			{/key}
 		{/if}
 	</svelte:fragment>
 
