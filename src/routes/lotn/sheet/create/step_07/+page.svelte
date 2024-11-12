@@ -18,6 +18,7 @@
 		checkForFixedBackgrounds,
 		checkForMerits
 	} from '$lib/components/lotn/util/loresheetUtil';
+	import { ScreenSize } from '$lib/sceenSize';
 	import {
 		backgroundPaymentStore,
 		characterCreationStore
@@ -38,6 +39,7 @@
 
 	let { maxFreebiePoints, usedFreebiePoints, paymentStore } = backgroundPaymentStore;
 	let selectedBackground: BackgroundName;
+	let innerWidth = 0;
 
 	$: loresheetConfigEntry = $characterCreationStore.loresheet?.name
 		? loresheetConfig[$characterCreationStore.loresheet.name]
@@ -507,7 +509,11 @@
 				backgroundPaymentStore.removeLoresheetLevel(level);
 			}
 		} else {
-			backgroundPaymentStore.addLoresheetLevel(generateId(), level);
+			if ($characterCreationStore.loresheet?.values.includes(level)) {
+				backgroundPaymentStore.addLoresheetLevel(generateId(), level);
+			} else {
+				backgroundPaymentStore.removeLoresheetLevel(level);
+			}
 		}
 	}
 
@@ -560,11 +566,14 @@
 	}
 </script>
 
+<svelte:window bind:innerWidth />
+
 <EditableLoresheet
 	selectedLoresheet={$characterCreationStore.loresheet?.name}
 	on:loresheetChange={(event) => handleLoresheetChange(event)}
 	on:toggleLoreSheetLevel={(event) => toggleLoresheetLevel(event.detail.level)}
 />
+
 <hr class="my-4" />
 
 <div class="flex flex-col gap-2">
@@ -677,7 +686,7 @@
 			</div>
 		{/if}
 		{#if $characterCreationStore.loresheet}
-			{#if $characterCreationStore.predatorType}
+			{#if $characterCreationStore.predatorType && innerWidth > ScreenSize.SM}
 				<span class="divider-vertical mx-0 h-auto" />
 			{/if}
 			<div class="flex flex-col">
@@ -750,7 +759,7 @@
 				{/key}
 			</div>
 		{/if}
-		{#if $characterCreationStore.predatorType || $characterCreationStore.loresheet?.name}
+		{#if ($characterCreationStore.predatorType || $characterCreationStore.loresheet?.name) && innerWidth > ScreenSize.SM}
 			<span class="divider-vertical mx-0 h-auto" />
 		{/if}
 		<div class="flex flex-col">
@@ -764,6 +773,9 @@
 			</ul>
 		</div>
 	</div>
+
+	<hr class="my-4" />
+
 	<div class="flex flex-col gap-2">
 		<label>
 			Backgrounds
@@ -788,9 +800,12 @@
 			</button>
 		{/key}
 	</div>
+
+	<hr />
+
 	<div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-3">
 		{#key $characterCreationStore.backgrounds}
-			{#each $characterCreationStore.backgrounds as background}
+			{#each $characterCreationStore.backgrounds as background, index}
 				<EditableBackground
 					{background}
 					editModeEnabledAdvantages={true}
@@ -802,6 +817,10 @@
 					on:advantageDeleteClick={handleBackgroundAdvantageDeleteClick}
 					on:disadvantageDeleteClick={handleBackgroundDisadvantageDeleteClick}
 				/>
+
+				{#if ((index + 1) % 3 === 0 && index + 1 !== $characterCreationStore.backgrounds.length) || (innerWidth < ScreenSize.SM && index + 1 !== $characterCreationStore.backgrounds.length)}
+					<div class="col-span-full my-2 h-px bg-gray-300"></div>
+				{/if}
 			{/each}
 		{/key}
 	</div>

@@ -109,6 +109,36 @@
 		$characterCreationStore = $characterCreationStore;
 	}
 
+	function removeMoralityEntry(index: number) {
+		characterCreationStore.update((store) => {
+			store.morality = store.morality.filter((_, i) => i !== index);
+			return store;
+		});
+
+		switch (index) {
+			case 0: {
+				convictionA = convictionB;
+				convictionB = convictionC;
+				convictionC = '';
+				touchstoneA = touchstoneB;
+				touchstoneB = touchstoneC;
+				touchstoneC = '';
+				break;
+			}
+			case 1: {
+				convictionB = convictionC;
+				convictionC = '';
+				touchstoneB = touchstoneC;
+				touchstoneC = '';
+				break;
+			}
+			case 2: {
+				convictionC = '';
+				touchstoneC = '';
+			}
+		}
+	}
+
 	function setSect() {
 		characterCreationStore.update((store) => {
 			store.sect = selectedSect;
@@ -139,52 +169,56 @@
 </label>
 
 <h3 class="h3 mt-4">Chronicle Tenets</h3>
-<dl class="list-dl">
-	<div>
-		<span class="badge rounded-lg bg-primary-500">
-			<iconify-icon height="40" icon="mdi:shield-person" />
-		</span>
-		<span class="flex-auto">
-			<dt class="font-bold">Sei menschlich</dt>
-			<dd>
-				Verursache kein unnötiges Leid und verletze keine Unschuldigen. Lass dich nicht zu
-				Gräueltaten hinreißen. Sei eine Person und keine Bestie!
-			</dd>
-		</span>
-	</div>
-	<div>
-		<span class="badge rounded-lg bg-primary-500">
+<div class="space-y-2">
+	<div class="overflow-hidden rounded-lg border p-4">
+		<span
+			class="float-left mb-2 mr-2 flex h-12 w-12 items-center justify-center rounded-lg bg-primary-500"
+		>
 			<iconify-icon height="40" icon="mdi:home-city" />
 		</span>
-		<span class="flex-auto">
-			<dt class="font-bold">Sei loyal</dt>
-			<dd>
-				Nürnberg ist unsere Stadt. Komme, was wolle. Sie darf nicht äußeren Kräften überlassen
-				werden. Es lohnt sich dafür zu kämpfen!
-			</dd>
-		</span>
+		<h4 class="text-lg font-bold">Sei menschlich</h4>
+		<p class="text-justify">
+			Verursache kein unnötiges Leid und verletze keine Unschuldigen. Lass dich nicht zu Gräueltaten
+			hinreißen. Sei eine Person und keine Bestie!
+		</p>
 	</div>
-	<div>
-		<span class="badge rounded-lg bg-primary-500">
+
+	<div class="overflow-hidden rounded-lg border p-4">
+		<span
+			class="float-left mb-2 mr-2 flex h-12 w-12 items-center justify-center rounded-lg bg-primary-500"
+		>
+			<iconify-icon height="40" icon="mdi:home-city"></iconify-icon>
+		</span>
+		<h4 class="text-lg font-bold">Sei loyal</h4>
+		<p class="text-justify">
+			Nürnberg ist unsere Stadt. Komme, was wolle. Sie darf nicht äußeren Kräften überlassen werden.
+			Es lohnt sich dafür zu kämpfen!
+		</p>
+	</div>
+
+	<div class="overflow-hidden rounded-lg border p-4">
+		<span
+			class="float-left mb-2 mr-2 flex h-12 w-12 items-center justify-center rounded-lg bg-primary-500"
+		>
 			<iconify-icon height="40" icon="healthicons:exercise-running" />
 		</span>
-		<span class="flex-auto">
-			<dt class="font-bold">Krieg’ deinen Arsch hoch</dt>
-			<dd>
-				Ergreife die Möglichkeiten, die sich dir bieten. Die Stadt ist im Umbruch. Sei ein aktiver
-				Teil davon!
-			</dd>
-		</span>
+		<h4 class="text-lg font-bold">Krieg’ deinen Arsch hoch</h4>
+		<p class="text-justify">
+			Ergreife die Möglichkeiten, die sich dir bieten. Die Stadt ist im Umbruch. Sei ein aktiver
+			Teil davon!
+		</p>
 	</div>
-</dl>
+</div>
 
 <h3 class="h3 mt-4">Convictions & Touchstones</h3>
-<div class="grid grid-cols-3 grid-rows-1 gap-2">
+<div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-3 sm:grid-rows-1">
 	<div class="flex flex-col gap-2">
 		<label class="label">
-			<div class="flex">
+			<div class="flex justify-between">
 				<span>Conviction A</span>
-				<iconify-icon class="ml-auto flex align-baseline" height="20" icon="mdi:remove" />
+				<button on:click={() => removeMoralityEntry(0)}>
+					<iconify-icon class="ml-auto flex align-baseline" height="20" icon="mdi:remove" />
+				</button>
 			</div>
 			<input
 				name="convictionA"

@@ -77,68 +77,69 @@
 </div>
 {#if selectedLoresheet}
 	<div class="mt-4 flex flex-col gap-3">
-		<div class="flex gap-x-2">
+		<div class="rounded-lg">
 			<button
-				class={`variant-filled-primary btn rounded-lg ${$characterCreationStore.loresheet?.values.includes(1) ? 'ring-2 ring-black dark:ring-white' : ''}`}
+				class={`variant-filled-primary btn float-left mr-4 flex h-24 w-24 items-center justify-center rounded-lg bg-primary-500 ${$characterCreationStore.loresheet?.values.includes(1) ? 'ring-2 ring-black dark:ring-white' : ''}`}
 				disabled={disableFirstOption}
-				type="button"
 				on:click={() => dispatchChange('toggleLoreSheetLevel', { level: 1 })}
 			>
-				<Ratings justify="justify-left" max={3} value={1}>
+				<Ratings max={3} value={1}>
 					<svelte:fragment slot="empty">
-						<iconify-icon icon="prime:circle" />
+						<iconify-icon height="20" icon="prime:circle" />
 					</svelte:fragment>
 					<svelte:fragment slot="full">
-						<iconify-icon icon="prime:circle-fill" />
+						<iconify-icon height="20" icon="prime:circle-fill" />
 					</svelte:fragment>
 				</Ratings>
 			</button>
-			<div>
-				<strong>{loresheetConfig[selectedLoresheet].level1.title}: </strong>
+			<h2 class="text-lg font-bold">{loresheetConfig[selectedLoresheet].level1.title}</h2>
+			<div class="whitespace-pre-line text-justify">
 				{loresheetConfig[selectedLoresheet].level1.description}
 			</div>
 		</div>
 
-		<div class="flex gap-x-2">
+		<hr />
+
+		<div class="rounded-lg">
 			<button
-				class={`variant-filled-primary btn rounded-lg ${$characterCreationStore.loresheet?.values.includes(2) ? 'ring-2 ring-black dark:ring-white' : ''}`}
+				class={`variant-filled-primary btn float-left mr-4 flex h-24 w-24 items-center justify-center rounded-lg bg-primary-500 ${$characterCreationStore.loresheet?.values.includes(2) ? 'ring-2 ring-black dark:ring-white' : ''}`}
 				disabled={disableSecondOption}
-				type="button"
 				on:click={() => dispatchChange('toggleLoreSheetLevel', { level: 2 })}
 			>
-				<Ratings justify="justify-left" max={3} value={2}>
+				<Ratings max={3} value={2}>
 					<svelte:fragment slot="empty">
-						<iconify-icon icon="prime:circle" />
+						<iconify-icon height="20" icon="prime:circle" />
 					</svelte:fragment>
 					<svelte:fragment slot="full">
-						<iconify-icon icon="prime:circle-fill" />
+						<iconify-icon height="20" icon="prime:circle-fill" />
 					</svelte:fragment>
 				</Ratings>
 			</button>
-			<div>
-				<strong>{loresheetConfig[selectedLoresheet].level2.title}: </strong>
+			<h2 class="text-lg font-bold">{loresheetConfig[selectedLoresheet].level2.title}</h2>
+			<div class="whitespace-pre-line text-justify">
 				{loresheetConfig[selectedLoresheet].level2.description}
 			</div>
 		</div>
 
-		<div class="flex gap-x-2">
+		<hr />
+
+		<div class="rounded-lg">
 			<button
-				class={`variant-filled-primary btn rounded-lg ${$characterCreationStore.loresheet?.values.includes(3) ? 'ring-2 ring-black dark:ring-white' : ''}`}
+				class={`variant-filled-primary btn float-left mr-4 flex h-24 w-24 items-center justify-center rounded-lg bg-primary-500 ${$characterCreationStore.loresheet?.values.includes(3) ? 'ring-2 ring-black dark:ring-white' : ''}`}
 				disabled={disableThirdOption}
-				type="button"
 				on:click={() => dispatchChange('toggleLoreSheetLevel', { level: 3 })}
 			>
-				<Ratings justify="justify-left" max={3} value={3}>
+				<Ratings max={3} value={3}>
 					<svelte:fragment slot="empty">
-						<iconify-icon icon="prime:circle" />
+						<iconify-icon height="20" icon="prime:circle" />
 					</svelte:fragment>
 					<svelte:fragment slot="full">
-						<iconify-icon icon="prime:circle-fill" />
+						<iconify-icon height="20" icon="prime:circle-fill" />
 					</svelte:fragment>
 				</Ratings>
 			</button>
-			<div class="whitespace-pre-line">
-				<strong>{loresheetConfig[selectedLoresheet].level3.title}: </strong>
+			<h2 class="text-lg font-bold">{loresheetConfig[selectedLoresheet].level3.title}</h2>
+			<div class="whitespace-pre-line text-justify">
 				{loresheetConfig[selectedLoresheet].level3.description}
 			</div>
 		</div>

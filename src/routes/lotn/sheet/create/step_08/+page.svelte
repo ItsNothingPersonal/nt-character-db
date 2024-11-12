@@ -19,6 +19,7 @@
 		getValidMythicalFlaws,
 		isThinBloodMerit
 	} from '$lib/components/lotn/util/meritUtil';
+	import { ScreenSize } from '$lib/sceenSize';
 	import {
 		backgroundPaymentStore,
 		characterCreationStore
@@ -42,6 +43,8 @@
 	let meritButtonDisabled = true;
 	let flawButtonDisabled = true;
 	let mythicalFlawButtonDisabled = true;
+
+	let innerWidth = 0;
 
 	onMount(() => {
 		selectMeritMinDotValue();
@@ -290,6 +293,8 @@
 	}
 </script>
 
+<svelte:window bind:innerWidth />
+
 <div class="flex flex-col gap-4">
 	<div class="flex gap-2">
 		{#key $characterCreationStore.flaws}
@@ -308,8 +313,8 @@
 
 	<div class="flex flex-col gap-2">
 		<div class="flex flex-col gap-2">
-			<div class="flex gap-4">
-				<div class="flex min-w-72 flex-col gap-2">
+			<div class="grid auto-rows-auto grid-cols-1 gap-4 sm:grid-cols-[1fr_3fr] sm:grid-rows-1">
+				<div class="flex flex-col gap-2">
 					<label class="label">
 						<span>Choose a Merit</span>
 						{#key $characterCreationStore.merits}
@@ -357,7 +362,7 @@
 		{#if $characterCreationStore.merits && $characterCreationStore.merits.length > 0}
 			<div class="flex flex-col">
 				<h3 class="h3">Merits</h3>
-				<div class="grid grid-cols-4 gap-2">
+				<div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-4">
 					{#each $characterCreationStore.merits as merit}
 						<Merit
 							displayFormat="column"
@@ -374,73 +379,79 @@
 		{/if}
 	</div>
 
+	{#if innerWidth < ScreenSize.SM}
+		<hr />
+	{/if}
+
 	<div class="flex flex-col gap-2">
-		<div class="flex gap-4">
-			<div class="flex min-w-72 flex-col gap-2">
-				<label class="label">
-					<span>Choose a Flaw</span>
-					{#key $characterCreationStore.flaws}
+		<div class="flex flex-col gap-2">
+			<div class="grid auto-rows-auto grid-cols-1 gap-4 sm:grid-cols-[1fr_3fr] sm:grid-rows-1">
+				<div class="flex flex-col gap-2">
+					<label class="label">
+						<span>Choose a Flaw</span>
+						{#key $characterCreationStore.flaws}
+							<select
+								class="select rounded-lg"
+								bind:value={selectedFlaw}
+								on:change={selectFlawMinDotValue}
+							>
+								{#each getValidFlaws() as flaw}
+									<option value={flaw}>
+										{flaw}
+									</option>
+								{/each}
+							</select>
+						{/key}
+					</label>
+					<label class="label">
+						<span>Dots</span>
 						<select
 							class="select rounded-lg"
-							bind:value={selectedFlaw}
-							on:change={selectFlawMinDotValue}
+							disabled={(getApplicableFlawLevels(selectedFlaw) ?? []).length < 2}
+							bind:value={selectedFlawValue}
 						>
-							{#each getValidFlaws() as flaw}
-								<option value={flaw}>
-									{flaw}
+							{#each getApplicableFlawLevels(selectedFlaw) ?? [] as point}
+								<option selected={point === selectedFlawValue} value={point}>
+									{point}
 								</option>
 							{/each}
 						</select>
-					{/key}
-				</label>
-				<label class="label">
-					<span>Dots</span>
-					<select
-						class="select rounded-lg"
-						disabled={(getApplicableFlawLevels(selectedFlaw) ?? []).length < 2}
-						bind:value={selectedFlawValue}
+					</label>
+					<button
+						class="variant-filled-primary btn rounded-lg"
+						disabled={flawButtonDisabled}
+						type="button"
+						on:click={addFlaw}
 					>
-						{#each getApplicableFlawLevels(selectedFlaw) ?? [] as point}
-							<option selected={point === selectedFlawValue} value={point}>
-								{point}
-							</option>
-						{/each}
-					</select>
-				</label>
-				<button
-					class="variant-filled-primary btn rounded-lg"
-					disabled={flawButtonDisabled}
-					type="button"
-					on:click={addFlaw}
-				>
-					Add Flaw
-				</button>
+						Add Flaw
+					</button>
+				</div>
+				<p class="whitespace-pre-line">
+					{getFlawValueDescription(selectedFlaw, selectedFlawValue)}
+				</p>
 			</div>
-			<p class="whitespace-pre-line">
-				{getFlawValueDescription(selectedFlaw, selectedFlawValue)}
-			</p>
 		</div>
+		{#if $characterCreationStore.flaws && $characterCreationStore.flaws.length > 0}
+			<div class="flex flex-col">
+				<h3 class="h3">Flaws</h3>
+				<div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-4">
+					{#each $characterCreationStore.flaws as flaw}
+						<Flaw
+							disableDeleteButton={disableDeleteFlaw(flaw)}
+							disableDescriptionInput={disableFlawDescriptionInput(flaw)}
+							displayFormat="column"
+							{flaw}
+							showDeleteButton={!isPredatorFlaw(flaw) || isMythicalPredatorFlaw(flaw)}
+							showDescriptionInput={displaySpecificFlawDescription(flaw)}
+							on:deleteClick={(event) => deleteFlaw(event.detail.id)}
+							on:descriptionChange={(event) =>
+								updateFlawDescription(event.detail.id, event.detail.description)}
+						/>
+					{/each}
+				</div>
+			</div>
+		{/if}
 	</div>
-	{#if $characterCreationStore.flaws && $characterCreationStore.flaws.length > 0}
-		<div class="flex flex-col">
-			<h3 class="h3">Flaws</h3>
-			<div class="grid grid-cols-4 gap-2">
-				{#each $characterCreationStore.flaws as flaw}
-					<Flaw
-						disableDeleteButton={disableDeleteFlaw(flaw)}
-						disableDescriptionInput={disableFlawDescriptionInput(flaw)}
-						displayFormat="column"
-						{flaw}
-						showDeleteButton={!isPredatorFlaw(flaw) || isMythicalPredatorFlaw(flaw)}
-						showDescriptionInput={displaySpecificFlawDescription(flaw)}
-						on:deleteClick={(event) => deleteFlaw(event.detail.id)}
-						on:descriptionChange={(event) =>
-							updateFlawDescription(event.detail.id, event.detail.description)}
-					/>
-				{/each}
-			</div>
-		</div>
-	{/if}
 </div>
 {#if flawPaymentStore.getRequiredMythicalFlaws() > 0 && $characterCreationStore.predatorType}
 	<div class="mt-4 flex flex-col">

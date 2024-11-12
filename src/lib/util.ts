@@ -1,4 +1,5 @@
 import { browser } from '$app/environment';
+import { page } from '$app/stores';
 import { PUBLIC_CHARACTER_DB_PB_URL } from '$env/static/public';
 import { get } from 'svelte/store';
 import { characterStore } from './components/lotn/characterSheet/characterStore';
@@ -128,4 +129,9 @@ export function getInitiative(isCharacterCreation: boolean = false) {
 		get(characterStore).attributes.social_composure +
 		getSkillValueByName('Awareness', get(characterStore).skills)
 	);
+}
+
+export function isCreateSheetRoute() {
+	const pathname = get(page).url.pathname;
+	return pathname.includes('/lotn/sheet/create');
 }

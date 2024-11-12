@@ -1,35 +1,31 @@
 <script lang="ts">
-	import Navigation from '$lib/components/navigation/navigation.svelte';
+	import { page } from '$app/stores';
+	import Navigation from '$lib/components/Navigation/Navigation.svelte';
+	import SidebarButton from '$lib/components/SidebarMenu/SidebarButton.svelte';
+	import SidebarMenu from '$lib/components/SidebarMenu/SidebarMenu.svelte';
 	import Footer from '$lib/components/typography/footer.svelte';
-	import { selectedCharacterIdStoreClassic } from '$lib/stores/selectedCharacterIdStore';
-	import { isNotNullOrUndefined } from '$lib/util';
+	import { ScreenSize } from '$lib/sceenSize';
+	import { isCreateSheetRoute, isNotNullOrUndefined } from '$lib/util';
 	import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 	import {
 		AppBar,
 		AppShell,
 		LightSwitch,
-		Modal,
 		initializeStores,
 		storePopup
 	} from '@skeletonlabs/skeleton';
 	import 'iconify-icon';
-	import { onMount } from 'svelte';
 	import '../app.postcss';
 
 	export let data;
+	let innerWidth: number = 0;
 
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	initializeStores();
-
-	onMount(() => {
-		if (data.characterId) {
-			selectedCharacterIdStoreClassic.set(data.characterId);
-		}
-	});
 </script>
 
-<Modal />
+<svelte:window bind:innerWidth />
 
 <!-- App Shell -->
 <AppShell
@@ -39,11 +35,15 @@
 	slotSidebarLeft="bg-surface-500/5"
 >
 	<svelte:fragment slot="header">
-		<!-- App Bar -->
 		<AppBar>
 			<svelte:fragment slot="lead">
-				<div class="flex items-center">
-					<a href="/"><strong class="font-comorantBold text-4xl uppercase">Elysium</strong></a>
+				<div class="flex content-center gap-2">
+					{#if innerWidth < ScreenSize.SM}
+						<SidebarButton />
+					{/if}
+					<a href="/">
+						<strong class="font-comorantBold text-4xl uppercase"> Elysium </strong>
+					</a>
 				</div>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
@@ -52,12 +52,22 @@
 		</AppBar>
 	</svelte:fragment>
 
-	<!-- Left Sidebar Slot -->
 	<svelte:fragment slot="sidebarLeft">
-		<Navigation loggedIn={isNotNullOrUndefined(data.user)} />
+		{#if innerWidth >= ScreenSize.SM}
+			<Navigation
+				characterCreation={isCreateSheetRoute()}
+				loggedIn={isNotNullOrUndefined(data.user)}
+			/>
+		{:else}
+			{#key $page.url.pathname}
+				<SidebarMenu
+					characterCreation={isCreateSheetRoute()}
+					loggedIn={isNotNullOrUndefined(data.user)}
+				/>
+			{/key}
+		{/if}
 	</svelte:fragment>
 
-	<!-- Footer -->
 	<svelte:fragment slot="footer">
 		<Footer />
 	</svelte:fragment>
