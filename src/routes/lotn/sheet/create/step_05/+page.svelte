@@ -1,6 +1,7 @@
 <script lang="ts">
 	import EditableSkill from '$lib/components/lotn/EditableSkill/EditableSkill.svelte';
 	import { getSkillHelptext, hasSkillSpecializations } from '$lib/components/lotn/util/skillUtil';
+	import { ScreenSize } from '$lib/sceenSize';
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
 	import { skillsPaidWithDotsStore } from '$lib/stores/skillsPaidWithDotsStore';
 	import { generateId } from '$lib/util';
@@ -13,6 +14,8 @@
 	let selectedSkillSpecialization: string | undefined = undefined;
 
 	let spendingPoints: SkillDotCategory = 3;
+	let innerWidth = 0;
+
 	const amount3Dots = skillsPaidWithDotsStore.amount3Dots;
 	const max3Dots = skillsPaidWithDotsStore.max3Dots;
 	const skills3Dots = skillsPaidWithDotsStore.getSkillsWithPointValue(3);
@@ -92,8 +95,10 @@
 	}
 </script>
 
+<svelte:window bind:innerWidth />
+
 <div class="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-[auto_2fr]">
-	<div class="flex flex-col gap-2">
+	<div class="grid grid-cols-2 grid-rows-2 gap-2 sm:grid-cols-1 sm:grid-rows-4">
 		<button
 			class={`variant-filled-primary btn rounded-lg ${spendingPoints === 3 ? 'ring-2 ring-black dark:ring-white' : ''}`}
 			type="button"
@@ -191,7 +196,7 @@
 </div>
 
 <hr class="mt-4" />
-<div class="col-span-2 grid grid-cols-1 gap-2 p-2 sm:grid-cols-3">
+<div class="col-span-2 grid grid-cols-2 gap-2 p-2 sm:grid-cols-3">
 	<div>
 		Used 3 dots: {$amount3Dots}/{$max3Dots}
 	</div>
@@ -201,12 +206,13 @@
 	<div>
 		Used 1 dots: {$amount1Dots}/{$max1Dots}
 	</div>
-
+</div>
+<div class="col-span-2 grid grid-cols-2 gap-2 p-2 sm:grid-cols-3">
 	<div class="flex flex-col gap-2">
 		{#each $skills3Dots as skill}
 			<EditableSkill
 				displayStyle="dots"
-				displayValue="beside"
+				displayValue={innerWidth < ScreenSize.SM ? 'below' : 'beside'}
 				minValue={skill.value}
 				{skill}
 				on:specializationChange={(event) => handleUpdateSpecialization(event)}
@@ -217,7 +223,7 @@
 		{#each $skills2Dots as skill}
 			<EditableSkill
 				displayStyle="dots"
-				displayValue="beside"
+				displayValue={innerWidth < ScreenSize.SM ? 'below' : 'beside'}
 				minValue={skill.value}
 				{skill}
 				on:specializationChange={(event) => handleUpdateSpecialization(event)}
@@ -228,7 +234,7 @@
 		{#each $skills1Dots as skill}
 			<EditableSkill
 				displayStyle="dots"
-				displayValue="beside"
+				displayValue={innerWidth < ScreenSize.SM ? 'below' : 'beside'}
 				minValue={skill.value}
 				{skill}
 				on:specializationChange={(event) => handleUpdateSpecialization(event)}

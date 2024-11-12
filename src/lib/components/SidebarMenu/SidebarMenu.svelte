@@ -28,6 +28,7 @@
 	});
 </script>
 
+/** eslint-disable no-undef */
 {#if $isMenuOpen}
 	<aside
 		bind:this={sidebarRef}
@@ -35,7 +36,7 @@
 	>
 		<nav>
 			{#if loggedIn}
-				<a href="/" class="flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700">
+				<a class="flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700" href="/">
 					<iconify-icon height="24" icon="ic:baseline-home" width="24" /> Übersicht
 				</a>
 			{/if}
@@ -45,8 +46,8 @@
 			{#if loggedIn && $characterStoreLotN && !characterCreation}
 				{#each menuDataLotN as menuEntry}
 					<a
-						href={menuEntry.href?.replace('[id]', $characterStoreLotN.id)}
 						class="flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700"
+						href={menuEntry.href?.replace('[id]', $characterStoreLotN.id)}
 					>
 						<iconify-icon height="24" icon={menuEntry.icon} width="24" />
 						{menuEntry.label}
@@ -148,26 +149,26 @@
 			<hr />
 
 			{#if loggedIn}
-				<a href="/profile" class="flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700">
+				<a class="flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700" href="/profile">
 					<iconify-icon height="24" icon="mdi:book-information-variant" width="24" />
 					Profil
 				</a>
 				<form action="/logout" method="POST">
 					<button
+						class="flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700"
 						title="Logout"
 						type="submit"
-						class="flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700"
 					>
 						<iconify-icon height="24" icon="mdi:user" width="24" /> Logout
 					</button>
 				</form>
 			{:else}
-				<a href="/login" class="flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700">
+				<a class="flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700" href="/login">
 					<iconify-icon height="24" icon="mdi:book-information-variant" width="24" />
 					Login
 				</a>
 			{/if}
-			<a href="/impressum" class="flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700">
+			<a class="flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700" href="/impressum">
 				<iconify-icon height="24" icon="mdi:book-information-variant" width="24" />
 				Impressum
 			</a>

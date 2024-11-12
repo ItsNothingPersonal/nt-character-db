@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { clanConfig } from '$lib/components/lotn/config/clanConfig';
+	import { ScreenSize } from '$lib/sceenSize';
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
 	import { clanName, type ClanName } from '$lib/zod/lotn/enums/clanName';
 	import { onMount } from 'svelte';
@@ -9,6 +10,8 @@
 			$characterCreationStore.clan = 'Banu Haqim';
 		}
 	});
+
+	let innerWidth = 0;
 
 	function updateClan(clanName: ClanName) {
 		characterCreationStore.update((store) => {
@@ -22,8 +25,10 @@
 	}
 </script>
 
-<div class="mt-2 grid grid-cols-[auto_2fr] gap-4">
-	<div class="flex flex-col gap-2">
+<svelte:window bind:innerWidth />
+
+<div class="mt-2 grid gap-4 sm:grid-cols-[auto_2fr]">
+	<div class="grid auto-rows-auto grid-cols-3 gap-2 sm:flex sm:flex-col">
 		{#each clanName.options as clanNameEntry}
 			<button
 				class={`variant-filled-primary btn rounded-lg ${$characterCreationStore.clan === clanNameEntry ? 'ring-2 ring-black dark:ring-white' : ''}`}
@@ -34,6 +39,11 @@
 			</button>
 		{/each}
 	</div>
+
+	{#if innerWidth < ScreenSize.SM}
+		<hr />
+	{/if}
+
 	<div class="flex flex-col">
 		{#if $characterCreationStore.clan}
 			<p class="whitespace-pre-line">

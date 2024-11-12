@@ -63,7 +63,7 @@
 </script>
 
 <div class="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-[auto_2fr]">
-	<div class="flex flex-col gap-2">
+	<div class="grid grid-cols-2 grid-rows-2 gap-2 sm:grid-cols-1 sm:grid-rows-4">
 		<button
 			class={`variant-filled-primary btn rounded-lg ${spendingPoints === 4 ? 'ring-2 ring-black dark:ring-white' : ''}`}
 			type="button"
@@ -144,7 +144,7 @@
 </div>
 
 <hr class="mt-4" />
-<div class="col-span-2 grid grid-cols-1 gap-2 p-2 sm:grid-cols-4">
+<div class="col-span-2 grid grid-cols-2 gap-2 p-2 sm:grid-cols-4">
 	<div>
 		Used 4 dots: {$amount4Dots}/{$max4Dots}
 	</div>
@@ -157,7 +157,8 @@
 	<div>
 		Used 1 dots: {$amount1Dots}/{$max1Dots}
 	</div>
-
+</div>
+<div class="col-span-2 grid grid-cols-2 gap-2 p-2 sm:grid-cols-4">
 	<div class="flex flex-col gap-2">
 		{#each attributesPaidWithDotsStore.store[4].attributeNames as attribute}
 			<EditableAttribute attributeName={attribute} attributeValue={4} displayStyle="dots" />

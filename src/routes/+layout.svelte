@@ -55,14 +55,14 @@
 	<svelte:fragment slot="sidebarLeft">
 		{#if innerWidth >= ScreenSize.SM}
 			<Navigation
-				loggedIn={isNotNullOrUndefined(data.user)}
 				characterCreation={isCreateSheetRoute()}
+				loggedIn={isNotNullOrUndefined(data.user)}
 			/>
 		{:else}
 			{#key $page.url.pathname}
 				<SidebarMenu
-					loggedIn={isNotNullOrUndefined(data.user)}
 					characterCreation={isCreateSheetRoute()}
+					loggedIn={isNotNullOrUndefined(data.user)}
 				/>
 			{/key}
 		{/if}

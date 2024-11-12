@@ -191,7 +191,7 @@
 	<div class="card rounded-sm p-4">
 		<h2 class="h2">Willpower</h2>
 		<div class="mb-4 mt-2 grid grid-cols-1 grid-rows-1 gap-4">
-			<div class="grid grid-cols-3 grid-rows-1 gap-2 sm:grid-cols-3">
+			<div class="grid grid-cols-2 grid-rows-1 gap-2 sm:grid-cols-3">
 				<Tracker title="Willpower Total" value={getWillpowerTotal()} />
 
 				<Tracker

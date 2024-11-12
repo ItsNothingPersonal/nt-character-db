@@ -7,7 +7,7 @@
 	}
 </script>
 
-<button on:click={toggleMenu} class="rounded-md p-2 text-white lg:hidden">
+<button class="rounded-md p-2 text-white lg:hidden" on:click={toggleMenu}>
 	<svg
 		class="h-6 w-6"
 		fill="none"

@@ -44,6 +44,7 @@
 		hasBeenPaidWithDots,
 		hasThinBloodAlchemyMerit
 	} from '$lib/components/lotn/util/meritUtil';
+	import { ScreenSize } from '$lib/sceenSize';
 	import { attributesPaidWithDotsStore } from '$lib/stores/attributesPaidWithDotsStore';
 	import {
 		backgroundPaymentStore,
@@ -116,6 +117,7 @@
 	$: xpLeft = xpGained - xpSpent;
 
 	let amountInWhatIncreaseOption = getListToIncrease()?.length ?? 0;
+	let innerWidth = 0;
 
 	function getIncreaseKind() {
 		return characterElementTypeName.options
@@ -1328,10 +1330,14 @@
 	}
 </script>
 
-<div class="grid grid-cols-1 grid-rows-1 gap-2 sm:grid-cols-3">
+<svelte:window bind:innerWidth />
+
+<div class="grid grid-cols-2 grid-rows-2 gap-2 sm:grid-cols-3 sm:grid-rows-1">
 	<Tracker title="Experience Total" value={xpGained} />
 	<Tracker title="Experience Spent" value={xpSpent} />
-	<Tracker title="Experience Left" value={xpLeft} />
+	<div class="col-span-2 sm:col-span-1">
+		<Tracker title="Experience Left" value={xpLeft} />
+	</div>
 </div>
 
 <div class="mt-4 grid grid-cols-1 grid-rows-1 gap-2 sm:grid-cols-3">
@@ -1617,7 +1623,7 @@
 				<EditableThinBloodAlchemy disciplineValue={1} dotList={[1]} selectedValue={1} />
 			{/if}
 		{:else}
-			<div class="grid grid-cols-3 gap-2">
+			<div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-3">
 				{#each $characterCreationStore.disciplines as discipline, index}
 					<EditableDiscipline
 						disableDisciplineSelection={index === 0 || index === 1 || index === 2}
@@ -1639,6 +1645,10 @@
 						on:disciplineValueChange={(e) => updateDisciplineValue(e)}
 						on:disciplineDelete={(e) => deleteDiscipline(e)}
 					/>
+
+					{#if innerWidth < ScreenSize.SM}
+						<hr />
+					{/if}
 
 					{#if (index + 1) % 3 === 0 && index + 1 < $characterCreationStore.disciplines.length}
 						<div class="col-span-3 mt-4 border-t-2" />
@@ -1769,7 +1779,7 @@
 			</div>
 		{/if}
 	{:else if selectedKindIncreaseOption === 'Level 1 Discipline Power' && $characterCreationStore.ghoul === true && $characterCreationStore.clan}
-		<div class="grid grid-cols-3 grid-rows-1 gap-2">
+		<div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-3">
 			{#each $characterCreationStore.disciplines as discipline, index}
 				<EditableDiscipline
 					disableDisciplineSelection={index === 0 || index === 1 || index === 2}
@@ -1800,27 +1810,45 @@
 </div>
 
 <div class="table-container mt-6 rounded-tl-lg rounded-tr-lg">
-	<table class="table table-hover rounded-tl-lg rounded-tr-lg">
+	<table class="table table-hover w-full table-fixed rounded-tl-lg rounded-tr-lg">
+		<colgroup>
+			<col style="width: 66.67%;" />
+			{#if innerWidth > ScreenSize.SM}
+				<col style="width: 16.67%;" />
+				<col style="width: 16.67%;" />
+			{:else}
+				<col style="width: 33.33%;" />
+			{/if}
+		</colgroup>
+
 		<thead>
 			<tr>
 				<th>Reason</th>
-				<th>Type</th>
-				<th>Value</th>
+				{#if innerWidth > ScreenSize.SM}
+					<th>Type</th>
+				{/if}
+				<th class="flex justify-center">Value</th>
 			</tr>
 		</thead>
 		<tbody>
 			{#each $characterCreationStore.experience as row}
 				<tr>
-					<td>{row.reason}</td>
-					<td class="capitalize">{row.type}</td>
-					<td>{row.value}</td>
+					<td class="overflow-hidden truncate">
+						{row.reason}
+					</td>
+
+					{#if innerWidth > ScreenSize.SM}
+						<td class="capitalize"> {row.type} </td>
+					{/if}
+
+					<td class="flex justify-end !px-[18px] sm:mr-8"> {row.value} </td>
 				</tr>
 			{/each}
 		</tbody>
 		<tfoot>
 			<tr>
-				<th colspan="2">Total XP Spent</th>
-				<td>{xpSpent}</td>
+				<th colspan={innerWidth > ScreenSize.SM ? 2 : 1}>Total XP Spent</th>
+				<td class="flex justify-end sm:mr-8">{xpSpent}</td>
 			</tr>
 		</tfoot>
 	</table>

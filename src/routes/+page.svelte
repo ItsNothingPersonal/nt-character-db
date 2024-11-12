@@ -72,7 +72,7 @@
 
 	<div class="grid grid-cols-1 grid-rows-1 gap-2">
 		<a
-			class="variant-filled-secondary btn mt-2 rounded-lg"
+			class="variant-filled-primary btn mt-2 rounded-lg"
 			href="/lotn/sheet/create/step_01"
 			type="button"
 		>

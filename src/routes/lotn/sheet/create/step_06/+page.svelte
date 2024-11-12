@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { predatorTypeConfig } from '$lib/components/lotn/config/predatorTypeConfig';
+	import { ScreenSize } from '$lib/sceenSize';
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
 	import { flawPaymentStore } from '$lib/stores/flawPaymentStore';
 	import { meritPaymentStore } from '$lib/stores/meritPaymentStore';
@@ -10,6 +11,7 @@
 
 	$: selectionForFlaws = getSelectionNeededFlaws();
 	let selectedRadio: 'Mythical' | 'Enemy' | undefined = undefined;
+	let innerWidth = 0;
 
 	$: {
 		if (
@@ -190,9 +192,11 @@
 	}
 </script>
 
+<svelte:window bind:innerWidth />
+
 <div class="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-[auto_2fr]">
 	{#if !get(characterCreationStore).ghoul}
-		<div class="flex flex-col gap-2">
+		<div class="grid auto-rows-auto grid-cols-3 gap-2 sm:grid-cols-1">
 			{#each getValidPredatorTypes() as predatorTypeEntry}
 				<button
 					class={`variant-filled-primary btn rounded-lg ${$characterCreationStore.predatorType === predatorTypeEntry ? 'ring-2 ring-black dark:ring-white' : ''}`}
@@ -204,7 +208,12 @@
 			{/each}
 		</div>
 	{/if}
+
 	{#if $characterCreationStore.predatorType}
+		{#if innerWidth < ScreenSize.SM}
+			<hr />
+		{/if}
+
 		<div class="flex flex-col gap-2">
 			<p class="whitespace-pre-line">
 				{predatorTypeConfig[$characterCreationStore.predatorType].description}

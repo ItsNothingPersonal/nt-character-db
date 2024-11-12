@@ -85,6 +85,8 @@
 	let disciplineAPowers: (NormalDisciplinePowerUnion | RitualDisciplinePowerUnion)[] = [];
 	let disciplineBPowers: (NormalDisciplinePowerUnion | RitualDisciplinePowerUnion)[] = [];
 
+	let innerWidth = 0;
+
 	function adjustSelectionBox(
 		event: CustomEvent<{ name: DisciplineName; label: string; value: number }>
 	) {
@@ -166,6 +168,8 @@
 	}
 </script>
 
+<svelte:window bind:innerWidth />
+
 {#if !selectedClan}
 	<aside class="alert variant-filled-warning col-span-2 rounded-lg">
 		<div>
@@ -177,7 +181,7 @@
 		</div>
 	</aside>
 {:else if $characterCreationStore.ghoul}
-	<div class="grid grid-cols-3 grid-rows-1 gap-2">
+	<div class="grid grid-cols-1 grid-rows-2 gap-2 sm:grid-cols-3 sm:grid-rows-1">
 		{#key disciplineAPowers || disciplineBPowers}
 			{#if disciplineBPowers.length < 2}
 				<EditableDiscipline
@@ -250,7 +254,7 @@
 		<EditableThinBloodAlchemy disciplineValue={1} dotList={[1]} selectedValue={1} />
 	{/if}
 {:else}
-	<div class="grid grid-cols-3 grid-rows-1 gap-2">
+	<div class="grid grid-cols-1 grid-rows-3 gap-2 sm:grid-cols-3 sm:grid-rows-1">
 		{#key disciplineA}
 			{#if disciplineA === 'Blood Sorcery'}
 				<div class="flex flex-col gap-4">

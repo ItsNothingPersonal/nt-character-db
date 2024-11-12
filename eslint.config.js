@@ -52,12 +52,10 @@ export default [
 				HTMLInputElement: 'readonly',
 				sessionStorage: 'readonly',
 				document: 'readonly',
-				fetch: 'readonly'
+				fetch: 'readonly',
+				browser: true,
+				es2021: true
 			}
-		},
-		env: {
-			browser: true,
-			es2021: true
 		}
 	},
 	{
@@ -118,7 +116,9 @@ export default [
 		files: [
 			'src/lib/components/selectionbox/selectionbox.svelte',
 			'src/lib/components/editableRatingSelection/editableRatingSelection.svelte',
-			'src/lib/components/ratingSelection/ratingSelection.svelte'
+			'src/lib/components/ratingSelection/ratingSelection.svelte',
+			'src/lib/components/SidebarMenu/SidebarMenu.svelte',
+			'src/lib/components/SidebarMenu/SidebarButton.svelte'
 		],
 		rules: {
 			'no-undef': 0
