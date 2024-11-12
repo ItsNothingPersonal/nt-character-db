@@ -1,5 +1,5 @@
 import HttpStatusCode from '$lib/httpStatusCode';
-import { validateIdParameter } from '$lib/server/util';
+import { fetchWithCatch, parseJson, validateIdParameter } from '$lib/server/util';
 import {
 	bloodSorceryRitualName,
 	type BloodSorceryRitualName
@@ -101,114 +101,156 @@ export async function GET({ url, fetch }) {
 		await playerCharacterBaseDB.json()
 	);
 
-	const playerCharacterNameDB = await fetch(`/api/lotn/character/name?id=${id}`);
-	playerCharacterDB.name = playerCharacterName.parse(await playerCharacterNameDB.json()).name;
+	// Daten aus DB laden
+	const [
+		playerCharacterNameDB,
+		playerAttributeDB,
+		playerSkillDB,
+		playerDisciplineDB,
+		playerMoralityDB,
+		playerFormulaDB,
+		playerRitualsDB,
+		playerCeremoniesDB,
+		playerBackgroundDB,
+		playerLoresheetDB,
+		playerMeritsDB,
+		playerFlawsDB,
+		playerHungerDB,
+		playerHealthDB,
+		playerWillpowerDB,
+		playerExperienceDB,
+		playerHumanityDB,
+		playerItemDB,
+		playerStatusRes
+	] = await Promise.all([
+		fetchWithCatch(`/api/lotn/character/name?id=${id}`, fetch),
+		fetchWithCatch(`/api/lotn/character/attributes?id=${id}`, fetch),
+		fetchWithCatch(`/api/lotn/character/skills?id=${id}`, fetch),
+		fetchWithCatch(`/api/lotn/character/disciplines?id=${id}`, fetch),
+		fetchWithCatch(`/api/lotn/character/morality?id=${id}`, fetch),
+		fetchWithCatch(`/api/lotn/character/formulas?id=${id}`, fetch),
+		fetchWithCatch(`/api/lotn/character/rituals?id=${id}`, fetch),
+		fetchWithCatch(`/api/lotn/character/ceremonies?id=${id}`, fetch),
+		fetchWithCatch(`/api/lotn/character/backgrounds?id=${id}`, fetch),
+		fetchWithCatch(`/api/lotn/character/loresheet?id=${id}`, fetch),
+		fetchWithCatch(`/api/lotn/character/merits?id=${id}`, fetch),
+		fetchWithCatch(`/api/lotn/character/flaws?id=${id}`, fetch),
+		fetchWithCatch(`/api/lotn/character/hunger?id=${id}`, fetch),
+		fetchWithCatch(`/api/lotn/character/health?id=${id}`, fetch),
+		fetchWithCatch(`/api/lotn/character/willpower?id=${id}`, fetch),
+		fetchWithCatch(`/api/lotn/character/experience?id=${id}`, fetch),
+		fetchWithCatch(`/api/lotn/character/humanity?id=${id}`, fetch),
+		fetchWithCatch(`/api/lotn/character/items?id=${id}`, fetch),
+		fetchWithCatch(`/api/lotn/character/status?id=${id}`, fetch)
+	]);
 
-	const playerAttributeDB = await fetch(`/api/lotn/character/attributes?id=${id}`);
-	playerCharacterDB.attributes = playerAttribute.parse(await playerAttributeDB.json());
+	// JSON parsen
+	const [
+		playerCharacterNameJSON,
+		playerAttributes,
+		playerSkills,
+		playerDisciplines,
+		playerMoralityJSON,
+		playerFormulas,
+		playerRituals,
+		playerCeremonies,
+		playerBackgrounds,
+		playerLoresheetJSON,
+		playerMerits,
+		playerFlaws,
+		playerHungerJSON,
+		playerHealthJSON,
+		playerWillpowerJSON,
+		playerExperienceJSON,
+		playerHumanityJSON,
+		playerItems,
+		playerStatusJSON
+	] = await Promise.all([
+		parseJson(playerCharacterNameDB),
+		parseJson(playerAttributeDB),
+		parseJson(playerSkillDB),
+		parseJson(playerDisciplineDB),
+		parseJson(playerMoralityDB),
+		parseJson(playerFormulaDB),
+		parseJson(playerRitualsDB),
+		parseJson(playerCeremoniesDB),
+		parseJson(playerBackgroundDB),
+		parseJson(playerLoresheetDB),
+		parseJson(playerMeritsDB),
+		parseJson(playerFlawsDB),
+		parseJson(playerHungerDB),
+		parseJson(playerHealthDB),
+		parseJson(playerWillpowerDB),
+		parseJson(playerExperienceDB),
+		parseJson(playerHumanityDB),
+		parseJson(playerItemDB),
+		parseJson(playerStatusRes)
+	]);
 
-	const playerSkillDB = await fetch(`/api/lotn/character/skills?id=${id}`);
-	playerCharacterDB.skills = playerSkill.array().parse(await playerSkillDB.json());
+	// Daten in Struktur parsen
+	playerCharacterDB.name = playerCharacterName.parse(playerCharacterNameJSON).name;
+	playerCharacterDB.attributes = playerAttribute.parse(playerAttributes);
+	playerCharacterDB.skills = playerSkill.array().parse(playerSkills);
+	playerCharacterDB.disciplines = playerDiscipline.array().parse(playerDisciplines);
+	playerCharacterDB.morality = playerMorality.array().parse(playerMoralityJSON);
 
-	const playerDisciplineDB = await fetch(`/api/lotn/character/disciplines?id=${id}`);
-	playerCharacterDB.disciplines = playerDiscipline.array().parse(await playerDisciplineDB.json());
-
-	const playerMoralityDB = await fetch(`/api/lotn/character/morality?id=${id}`);
-	playerCharacterDB.morality = playerMorality.array().parse(await playerMoralityDB.json());
-
-	const playerFormulaDB = await fetch(`/api/lotn/character/formulas?id=${id}`);
 	let formulas: PlayerFormula[] | undefined = undefined;
-	if (playerFormulaDB.status === 200) {
-		formulas = playerFormula.array().parse(await playerFormulaDB.json());
+	if (playerFormulaDB?.status === 200) {
+		formulas = playerFormula.array().parse(playerFormulas);
 	}
 	playerCharacterDB.formulas = formulas;
 
-	const playerRitualsDB = await fetch(`/api/lotn/character/rituals?id=${id}`);
 	let rituals: BloodSorceryRitualName[] | undefined = undefined;
-	if (playerRitualsDB.status === 200) {
-		rituals = bloodSorceryRitualName.array().parse(await playerRitualsDB.json());
+	if (playerRitualsDB?.status === 200) {
+		rituals = bloodSorceryRitualName.array().parse(playerRituals);
 	}
 	playerCharacterDB.rituals = rituals;
 
-	const playerCeremoniesDB = await fetch(`/api/lotn/character/ceremonies?id=${id}`);
 	let ceremonies: OblivionCeremonyName[] | undefined = undefined;
-	if (playerCeremoniesDB.status === 200) {
-		ceremonies = oblivionCeremonyName.array().parse(await playerCeremoniesDB.json());
+	if (playerCeremoniesDB?.status === 200) {
+		ceremonies = oblivionCeremonyName.array().parse(playerCeremonies);
 	}
 	playerCharacterDB.ceremonies = ceremonies;
 
-	const playerBackgroundDB = await fetch(`/api/lotn/character/backgrounds?id=${id}`);
-	playerCharacterDB.backgrounds = playerBackground
-		.merge(idSchema)
-		.array()
-		.parse(await playerBackgroundDB.json());
+	playerCharacterDB.backgrounds = playerBackground.merge(idSchema).array().parse(playerBackgrounds);
 
-	const playerLoresheetDB = await fetch(`/api/lotn/character/loresheet?id=${id}`);
 	let loresheet: PlayerLoresheet | undefined = undefined;
-	if (playerLoresheetDB.status === 200) {
-		loresheet = playerLoresheet.optional().parse(await playerLoresheetDB.json());
+	if (playerLoresheetDB?.status === 200) {
+		loresheet = playerLoresheet.optional().parse(playerLoresheetJSON);
 	}
 	playerCharacterDB.loresheet = loresheet;
 
-	const playerMeritsDB = await fetch(`/api/lotn/character/merits?id=${id}`);
-	if (playerMeritsDB.status === 200) {
-		playerCharacterDB.merits = playerMerit
-			.merge(idSchema)
-			.array()
-			.optional()
-			.parse(await playerMeritsDB.json());
+	if (playerMeritsDB?.status === 200) {
+		playerCharacterDB.merits = playerMerit.merge(idSchema).array().optional().parse(playerMerits);
 	} else {
 		playerCharacterDB.merits = undefined;
 	}
 
-	const playerFlawsDB = await fetch(`/api/lotn/character/flaws?id=${id}`);
-	if (playerFlawsDB.status === 200) {
-		playerCharacterDB.flaws = playerFlaw
-			.merge(idSchema)
-			.array()
-			.optional()
-			.parse(await playerFlawsDB.json());
+	if (playerFlawsDB?.status === 200) {
+		playerCharacterDB.flaws = playerFlaw.merge(idSchema).array().optional().parse(playerFlaws);
 	} else {
 		playerCharacterDB.flaws = undefined;
 	}
 
-	const playerHungerDB = await fetch(`/api/lotn/character/hunger?id=${id}`);
-	playerCharacterDB.hunger = playerHunger.parse(await playerHungerDB.json());
+	playerCharacterDB.hunger = playerHunger.parse(playerHungerJSON);
+	playerCharacterDB.health = playerHealth.parse(playerHealthJSON);
+	playerCharacterDB.willpower = playerWillpower.parse(playerWillpowerJSON);
+	playerCharacterDB.experience = playerExperience.array().parse(playerExperienceJSON);
+	playerCharacterDB.humanity = playerHumanity.parse(playerHumanityJSON);
 
-	const playerHealthDB = await fetch(`/api/lotn/character/health?id=${id}`);
-	playerCharacterDB.health = playerHealth.parse(await playerHealthDB.json());
-
-	const playerWillpowerDB = await fetch(`/api/lotn/character/willpower?id=${id}`);
-	playerCharacterDB.willpower = playerWillpower.parse(await playerWillpowerDB.json());
-
-	const playerExperienceDB = await fetch(`/api/lotn/character/experience?id=${id}`);
-	playerCharacterDB.experience = playerExperience.array().parse(await playerExperienceDB.json());
-
-	const playerHumanityDB = await fetch(`/api/lotn/character/humanity?id=${id}`);
-	playerCharacterDB.humanity = playerHumanity.parse(await playerHumanityDB.json());
-
-	const playerItemDB = await fetch(`/api/lotn/character/items?id=${id}`);
-	if (playerItemDB.status === 200) {
-		playerCharacterDB.items = playerItem
-			.merge(idSchema)
-			.array()
-			.optional()
-			.parse(await playerItemDB.json());
+	if (playerItemDB?.status === 200) {
+		playerCharacterDB.items = playerItem.merge(idSchema).array().optional().parse(playerItems);
 	} else {
 		playerCharacterDB.items = undefined;
 	}
 
-	const playerStatusRes = await fetch(`/api/lotn/character/status?id=${id}`);
 	let status: PlayerStatus[] | undefined = undefined;
-	if (playerStatusRes.status === 200) {
-		status = playerStatus
-			.array()
-			.optional()
-			.parse(await playerStatusRes.json());
+	if (playerStatusRes?.status === 200) {
+		status = playerStatus.array().optional().parse(playerStatusJSON);
 	}
 	playerCharacterDB.characterStatus = status;
 
-	// Daten-Schema validieren
+	// Daten-Gesamt-Schema validieren
 	const playerCharacterParsed = playerCharacter.safeParse(playerCharacterDB);
 	if (playerCharacterParsed.success) {
 		// Parsen insgesamt erfolgreich
