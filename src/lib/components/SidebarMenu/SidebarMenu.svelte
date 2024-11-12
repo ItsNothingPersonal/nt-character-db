@@ -28,7 +28,6 @@
 	});
 </script>
 
-/** eslint-disable no-undef */
 {#if $isMenuOpen}
 	<aside
 		bind:this={sidebarRef}
