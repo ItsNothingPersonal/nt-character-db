@@ -12,7 +12,8 @@ export const playerCharacterBase = z.object({
 	bloodPotency: z.number().min(0).max(7),
 	sect: sectName,
 	status: characterStatus.readonly(),
-	ghoul: z.boolean()
+	ghoul: z.boolean(),
+	name: z.string().min(1).max(30)
 });
 export type PlayerCharacterBase = z.infer<typeof playerCharacterBase>;
 
@@ -23,7 +24,8 @@ export const playerCharacterBaseCreate = z.object({
 	bloodPotency: z.number().min(0).max(7).default(1),
 	sect: sectName.optional(),
 	status: characterStatus.default('draft').readonly(),
-	ghoul: z.boolean().default(false)
+	ghoul: z.boolean().default(false),
+	name: z.string().min(1).max(30)
 });
 export type PlayerCharacterBaseCreate = z.infer<typeof playerCharacterBaseCreate>;
 
@@ -35,10 +37,7 @@ export const playerCharacterBaseCreateRequestBody = z.object({
 	sect: sectName,
 	status: characterStatus.readonly(),
 	ghoul: z.boolean(),
-	name: z
-		.string()
-		.transform((e) => (e ? e : undefined))
-		.optional()
+	name: z.string().min(1).max(30)
 });
 export type PlayerCharacterBaseCreateRequestBody = z.infer<
 	typeof playerCharacterBaseCreateRequestBody
