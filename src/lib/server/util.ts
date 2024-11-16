@@ -39,3 +39,31 @@ export async function parseJson(response: ApiResponse) {
 	}
 	return response.json();
 }
+
+export async function writeToDb(
+	requestBody: unknown,
+	url: string,
+	fetch: {
+		(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
+		(input: string | URL | globalThis.Request, init?: RequestInit): Promise<Response>;
+	}
+) {
+	let serverResponse: Response | undefined = undefined;
+	let serverResponseJSON: unknown | undefined = undefined;
+
+	if (requestBody) {
+		serverResponse = await fetch(url, {
+			method: 'POST',
+			body: JSON.stringify(requestBody)
+		});
+		if (serverResponse.status !== HttpStatusCode.OK) {
+			error(
+				HttpStatusCode.BAD_REQUEST,
+				`Creating ${JSON.stringify(requestBody)} failed with status ${serverResponse.status}`
+			);
+		}
+		serverResponseJSON = await serverResponse.json();
+	}
+
+	return serverResponseJSON;
+}
