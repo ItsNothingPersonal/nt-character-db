@@ -1,5 +1,4 @@
 import HttpStatusCode from '$lib/httpStatusCode';
-import type { PlayerCharacterName } from '$lib/zod/lotn/playerCharacter/playerCharacterName.js';
 import {
 	playerCharacterSelection,
 	type PlayerCharacterSelection
@@ -11,20 +10,15 @@ export async function POST({ locals }) {
 	let characters: PlayerCharacterSelection[] = [];
 	try {
 		const characterBaseResponse = await locals.pb
-			.collection<
-				PlayerCharacterSelection & {
-					expand: { lotn_player_character_name_via_character_id: PlayerCharacterName };
-				}
-			>('lotn_player_character_base')
+			.collection<PlayerCharacterSelection>('lotn_player_character_base')
 			.getFullList({
-				fields: 'id, clan, status, expand.lotn_player_character_name_via_character_id.name',
-				filter: "status!='accepted'",
-				expand: 'lotn_player_character_name_via_character_id'
+				fields: 'id, clan, status, name',
+				filter: "status!='accepted'"
 			});
 		characters = characterBaseResponse.map((e) => {
 			return {
 				id: e.id,
-				name: e.expand.lotn_player_character_name_via_character_id.name,
+				name: e.name,
 				clan: e.clan,
 				status: e.status
 			};
