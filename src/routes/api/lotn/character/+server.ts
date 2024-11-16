@@ -1,5 +1,5 @@
 import HttpStatusCode from '$lib/httpStatusCode';
-import { fetchWithCatch, parseJson, validateIdParameter } from '$lib/server/util';
+import { fetchWithCatch, parseJson, validateIdParameter, writeToDb } from '$lib/server/util';
 import {
 	bloodSorceryRitualName,
 	type BloodSorceryRitualName
@@ -25,13 +25,8 @@ import {
 import {
 	playerCharacterBase,
 	playerCharacterBaseCreateRequestBody,
-	playerCharacterBaseDeleteRequestBody,
-	type PlayerCharacterBaseUpdateRequestBody
+	playerCharacterBaseDeleteRequestBody
 } from '$lib/zod/lotn/playerCharacter/playerCharacterBase';
-import {
-	playerCharacterName,
-	playerCharacterNameRequestBodyDB
-} from '$lib/zod/lotn/playerCharacter/playerCharacterName.js';
 import {
 	playerDiscipline,
 	playerDisciplineRequestBodyDB
@@ -58,11 +53,7 @@ import {
 	playerHunger,
 	playerHungerRequestBodyDB
 } from '$lib/zod/lotn/playerCharacter/playerHunger';
-import {
-	playerItem,
-	playerItemRequestBodyDB,
-	type PlayerItem
-} from '$lib/zod/lotn/playerCharacter/playerItem';
+import { playerItem, playerItemRequestBodyDB } from '$lib/zod/lotn/playerCharacter/playerItem';
 import {
 	playerLoresheet,
 	playerLoresheetRequestBodyDB,
@@ -103,7 +94,6 @@ export async function GET({ url, fetch }) {
 
 	// Daten aus DB laden
 	const [
-		playerCharacterNameDB,
 		playerAttributeDB,
 		playerSkillDB,
 		playerDisciplineDB,
@@ -123,7 +113,6 @@ export async function GET({ url, fetch }) {
 		playerItemDB,
 		playerStatusRes
 	] = await Promise.all([
-		fetchWithCatch(`/api/lotn/character/name?id=${id}`, fetch),
 		fetchWithCatch(`/api/lotn/character/attributes?id=${id}`, fetch),
 		fetchWithCatch(`/api/lotn/character/skills?id=${id}`, fetch),
 		fetchWithCatch(`/api/lotn/character/disciplines?id=${id}`, fetch),
@@ -146,7 +135,6 @@ export async function GET({ url, fetch }) {
 
 	// JSON parsen
 	const [
-		playerCharacterNameJSON,
 		playerAttributes,
 		playerSkills,
 		playerDisciplines,
@@ -166,7 +154,6 @@ export async function GET({ url, fetch }) {
 		playerItems,
 		playerStatusJSON
 	] = await Promise.all([
-		parseJson(playerCharacterNameDB),
 		parseJson(playerAttributeDB),
 		parseJson(playerSkillDB),
 		parseJson(playerDisciplineDB),
@@ -188,7 +175,6 @@ export async function GET({ url, fetch }) {
 	]);
 
 	// Daten in Struktur parsen
-	playerCharacterDB.name = playerCharacterName.parse(playerCharacterNameJSON).name;
 	playerCharacterDB.attributes = playerAttribute.parse(playerAttributes);
 	playerCharacterDB.skills = playerSkill.array().parse(playerSkills);
 	playerCharacterDB.disciplines = playerDiscipline.array().parse(playerDisciplines);
@@ -273,240 +259,254 @@ export async function POST({ locals, request, fetch }) {
 	if (!playerCharacterCreateBodyParsed.success) {
 		error(HttpStatusCode.BAD_REQUEST, 'Der Requestbody ist nicht korrekt formatiert');
 	}
-	const baseRequestBody = playerCharacterBaseCreateRequestBody
-		.omit({ name: true })
-		.parse(requestJson);
+	const baseRequestBody = playerCharacterBaseCreateRequestBody.parse(requestJson);
 	const playerCharacterBaseDB = await fetch(`/api/lotn/character/base`, {
 		method: 'POST',
 		body: JSON.stringify(baseRequestBody)
 	});
 	const baseResult = playerCharacterBase.parse(await playerCharacterBaseDB.json());
 
-	const nameRequestBody = playerCharacterNameRequestBodyDB.parse({
-		name: playerCharacterCreateBodyParsed.data.name,
-		character_id: baseResult.id
-	});
-	const nameRequestBodyDB = await fetch(`/api/lotn/character/name`, {
-		method: 'POST',
-		body: JSON.stringify(nameRequestBody)
-	});
-	const nameResult = playerCharacterName.merge(idSchema).parse(await nameRequestBodyDB.json());
-	const baseUpdateRequestBody: PlayerCharacterBaseUpdateRequestBody = {
-		id: baseResult.id,
-		updateData: {
-			name: nameResult.id
-		}
-	};
-	await fetch('/api/lotn/character/base', {
-		method: 'PUT',
-		body: JSON.stringify(baseUpdateRequestBody)
-	});
-
+	// Request-Bodies parsen
 	const attributesRequestBody = playerAttributeRequestBodyDB.parse({
 		...playerCharacterCreateBodyParsed.data.attributes,
 		character_id: baseResult.id
 	});
-	const attributesRequestBodyDB = await fetch(`/api/lotn/character/attributes`, {
-		method: 'POST',
-		body: JSON.stringify(attributesRequestBody)
-	});
-	const attributeResult = playerAttribute.parse(await attributesRequestBodyDB.json());
-
 	const skillsRequestBody = playerSkillRequestBodyDB.parse({
 		skills: playerCharacterCreateBodyParsed.data.skills,
 		character_id: baseResult.id
 	});
-	const skillsRequestBodyDB = await fetch(`/api/lotn/character/skills`, {
-		method: 'POST',
-		body: JSON.stringify(skillsRequestBody)
-	});
-	const skillsResult = playerSkill.array().parse(await skillsRequestBodyDB.json());
-
 	const disciplineRequestBody = playerDisciplineRequestBodyDB.parse({
 		disciplines: playerCharacterCreateBodyParsed.data.disciplines,
 		character_id: baseResult.id
 	});
-	const disciplineRequestBodyDB = await fetch(`/api/lotn/character/disciplines`, {
-		method: 'POST',
-		body: JSON.stringify(disciplineRequestBody)
-	});
-	const disciplineResult = playerDiscipline.array().parse(await disciplineRequestBodyDB.json());
-
 	const moralityRequestBody = playerMoralityRequestBodyDB.parse({
 		morality: playerCharacterCreateBodyParsed.data.morality,
 		character_id: baseResult.id
 	});
-	const moraltiyRequestBodyDB = await fetch(`/api/lotn/character/morality`, {
-		method: 'POST',
-		body: JSON.stringify(moralityRequestBody)
-	});
-	const moralityResult = playerMorality.array().parse(await moraltiyRequestBodyDB.json());
-
 	const backgroundsRequestBody = playerBackgroundRequestBodyDB.parse({
 		backgrounds: playerCharacterCreateBodyParsed.data.backgrounds,
 		character_id: baseResult.id
 	});
-	const backgroundRequestBodyDB = await fetch(`/api/lotn/character/backgrounds`, {
-		method: 'POST',
-		body: JSON.stringify(backgroundsRequestBody)
-	});
-	const backgroundResult = playerBackground
-		.merge(idSchema)
-		.array()
-		.parse(await backgroundRequestBodyDB.json());
-
-	let formulasResult: PlayerFormula[] | undefined = undefined;
-	if (
-		playerCharacterCreateBodyParsed.data.formulas &&
-		playerCharacterCreateBodyParsed.data.formulas.length > 0
-	) {
-		const formulasRequestBody = playerFormulaRequestBodyDB.parse({
-			formulas: playerCharacterCreateBodyParsed.data.formulas,
-			character_id: baseResult.id
-		});
-		const formulasRequestBodyDB = await fetch(`/api/lotn/character/formulas`, {
-			method: 'POST',
-			body: JSON.stringify(formulasRequestBody)
-		});
-		formulasResult = playerFormula.array().parse(await formulasRequestBodyDB.json());
-	}
-
-	let ceremoniesResult: OblivionCeremonyName[] | undefined = undefined;
-	if (
-		playerCharacterCreateBodyParsed.data.ceremonies &&
-		playerCharacterCreateBodyParsed.data.ceremonies.length > 0
-	) {
-		const ceremoniesRequestBody = playerCeremonyRequestBodyDB.parse({
-			ceremonies: playerCharacterCreateBodyParsed.data.ceremonies,
-			character_id: baseResult.id
-		});
-		const ceremoniesRequestBodyDB = await fetch(`/api/lotn/character/ceremonies`, {
-			method: 'POST',
-			body: JSON.stringify(ceremoniesRequestBody)
-		});
-		ceremoniesResult = oblivionCeremonyName.array().parse(await ceremoniesRequestBodyDB.json());
-	}
-
-	let ritualsResult: BloodSorceryRitualName[] | undefined = undefined;
-	if (
-		playerCharacterCreateBodyParsed.data.rituals &&
-		playerCharacterCreateBodyParsed.data.rituals.length > 0
-	) {
-		const ritualsRequestBody = playerRitualRequestBodyDB.parse({
-			rituals: playerCharacterCreateBodyParsed.data.rituals,
-			character_id: baseResult.id
-		});
-		const ritualsRequestBodyDB = await fetch(`/api/lotn/character/rituals`, {
-			method: 'POST',
-			body: JSON.stringify(ritualsRequestBody)
-		});
-		ritualsResult = bloodSorceryRitualName.array().parse(await ritualsRequestBodyDB.json());
-	}
-
+	const formulasRequestBody = playerCharacterCreateBodyParsed.data.formulas
+		? playerFormulaRequestBodyDB.parse({
+				formulas: playerCharacterCreateBodyParsed.data.formulas,
+				character_id: baseResult.id
+			})
+		: undefined;
+	const ceremoniesRequestBody = playerCharacterCreateBodyParsed.data.ceremonies
+		? playerCeremonyRequestBodyDB.parse({
+				ceremonies: playerCharacterCreateBodyParsed.data.ceremonies,
+				character_id: baseResult.id
+			})
+		: undefined;
+	const ritualsRequestBody = playerCharacterCreateBodyParsed.data.rituals
+		? playerRitualRequestBodyDB.parse({
+				rituals: playerCharacterCreateBodyParsed.data.rituals,
+				character_id: baseResult.id
+			})
+		: undefined;
 	const hungerRequestBody = playerHungerRequestBodyDB.parse({
 		value: playerCharacterCreateBodyParsed.data.hunger.value,
 		character_id: baseResult.id
 	});
-	const hungerRequestBodyDB = await fetch(`/api/lotn/character/hunger`, {
-		method: 'POST',
-		body: JSON.stringify(hungerRequestBody)
-	});
-	const hungerResult = playerHunger.parse(await hungerRequestBodyDB.json());
-
 	const healthRequestBody = playerHealthRequestBodyDB.parse({
 		normal: playerCharacterCreateBodyParsed.data.health.normal,
 		aggrevated: playerCharacterCreateBodyParsed.data.health.aggrevated,
 		character_id: baseResult.id
 	});
-	const healthRequestBodyDB = await fetch(`/api/lotn/character/health`, {
-		method: 'POST',
-		body: JSON.stringify(healthRequestBody)
-	});
-	const healthResult = playerHealth.parse(await healthRequestBodyDB.json());
-
 	const willpowerRequestBody = playerWillpowerRequestBodyDB.parse({
 		value: playerCharacterCreateBodyParsed.data.willpower.value,
 		character_id: baseResult.id
 	});
-	const willpowerRequestBodyDB = await fetch(`/api/lotn/character/willpower`, {
-		method: 'POST',
-		body: JSON.stringify(willpowerRequestBody)
-	});
-	const willpowerResult = playerWillpower.parse(await willpowerRequestBodyDB.json());
-
 	const humanityRequestBody = playerHumanityRequestBodyDB.parse({
 		value: playerCharacterCreateBodyParsed.data.humanity.value,
 		stains: playerCharacterCreateBodyParsed.data.humanity.stains,
 		character_id: baseResult.id
 	});
-	const humanityRequestBodyDB = await fetch(`/api/lotn/character/humanity`, {
-		method: 'POST',
-		body: JSON.stringify(humanityRequestBody)
-	});
-	const humanityResult = playerHealth.parse(await humanityRequestBodyDB.json());
-
-	const meritRequestBody = playerMeritRequestBodyDB.parse({
-		merits: playerCharacterCreateBodyParsed.data.merits,
-		character_id: baseResult.id
-	});
-	const meritRequestBodyDB = await fetch(`/api/lotn/character/merits`, {
-		method: 'POST',
-		body: JSON.stringify(meritRequestBody)
-	});
-	const meritsResult = playerMerit
-		.merge(idSchema)
-		.array()
-		.parse(await meritRequestBodyDB.json());
-
-	const flawRequestBody = playerFlawRequestBodyDB.parse({
-		flaws: playerCharacterCreateBodyParsed.data.flaws,
-		character_id: baseResult.id
-	});
-	const flawRequestBodyDB = await fetch(`/api/lotn/character/flaws`, {
-		method: 'POST',
-		body: JSON.stringify(flawRequestBody)
-	});
-	const flawsResult = playerFlaw
-		.merge(idSchema)
-		.array()
-		.parse(await flawRequestBodyDB.json());
-
+	const meritRequestBody = playerCharacterCreateBodyParsed.data.merits
+		? playerMeritRequestBodyDB.parse({
+				merits: playerCharacterCreateBodyParsed.data.merits,
+				character_id: baseResult.id
+			})
+		: undefined;
+	const flawRequestBody = playerCharacterCreateBodyParsed.data.flaws
+		? playerFlawRequestBodyDB.parse({
+				flaws: playerCharacterCreateBodyParsed.data.flaws,
+				character_id: baseResult.id
+			})
+		: undefined;
 	const experienceRequestBody = playerExperienceRequestBodyDB.parse({
 		experience: playerCharacterCreateBodyParsed.data.experience,
 		character_id: baseResult.id
 	});
-	const experienceRequestBodyDB = await fetch(`/api/lotn/character/experience`, {
-		method: 'POST',
-		body: JSON.stringify(experienceRequestBody)
-	});
-	const experienceResult = playerExperience.array().parse(await experienceRequestBodyDB.json());
+	const loresheetRequestBody = playerCharacterCreateBodyParsed.data.loresheet
+		? playerLoresheetRequestBodyDB.parse({
+				name: playerCharacterCreateBodyParsed.data.loresheet?.name,
+				values: playerCharacterCreateBodyParsed.data.loresheet?.values,
+				character_id: baseResult.id
+			})
+		: undefined;
+	const itemRequestBody = playerCharacterCreateBodyParsed.data.items
+		? playerItemRequestBodyDB.parse({
+				items: playerCharacterCreateBodyParsed.data.items,
+				character_id: baseResult.id
+			})
+		: undefined;
 
-	let loresheetResult: PlayerLoresheet | undefined = undefined;
-	if (playerCharacterCreateBodyParsed.data.loresheet) {
-		const loresheetRequestBody = playerLoresheetRequestBodyDB.parse({
-			name: playerCharacterCreateBodyParsed.data.loresheet?.name,
-			values: playerCharacterCreateBodyParsed.data.loresheet?.values,
-			character_id: baseResult.id
-		});
-		const loresheetRequestBodyDB = await fetch(`/api/lotn/character/loresheet`, {
+	// Daten in DB speichern
+	const [
+		attributesRequestBodyDB,
+		skillsRequestBodyDB,
+		disciplineRequestBodyDB,
+		moraltiyRequestBodyDB,
+		backgroundRequestBodyDB,
+		hungerRequestBodyDB,
+		healthRequestBodyDB,
+		willpowerRequestBodyDB,
+		humanityRequestBodyDB,
+		experienceRequestBodyDB
+	] = await Promise.all([
+		fetch(`/api/lotn/character/attributes`, {
 			method: 'POST',
-			body: JSON.stringify(loresheetRequestBody)
+			body: JSON.stringify(attributesRequestBody)
+		}),
+		fetch(`/api/lotn/character/skills`, {
+			method: 'POST',
+			body: JSON.stringify(skillsRequestBody)
+		}),
+		fetch(`/api/lotn/character/disciplines`, {
+			method: 'POST',
+			body: JSON.stringify(disciplineRequestBody)
+		}),
+		fetch(`/api/lotn/character/morality`, {
+			method: 'POST',
+			body: JSON.stringify(moralityRequestBody)
+		}),
+		fetch(`/api/lotn/character/backgrounds`, {
+			method: 'POST',
+			body: JSON.stringify(backgroundsRequestBody)
+		}),
+		fetch(`/api/lotn/character/hunger`, {
+			method: 'POST',
+			body: JSON.stringify(hungerRequestBody)
+		}),
+		fetch(`/api/lotn/character/health`, {
+			method: 'POST',
+			body: JSON.stringify(healthRequestBody)
+		}),
+		fetch(`/api/lotn/character/willpower`, {
+			method: 'POST',
+			body: JSON.stringify(willpowerRequestBody)
+		}),
+		fetch(`/api/lotn/character/humanity`, {
+			method: 'POST',
+			body: JSON.stringify(humanityRequestBody)
+		}),
+		fetch(`/api/lotn/character/experience`, {
+			method: 'POST',
+			body: JSON.stringify(experienceRequestBody)
+		})
+	]);
+
+	// Überprüfen ob alle Daten erfolgreich gespeichert wurden
+	if (
+		attributesRequestBodyDB.status !== HttpStatusCode.OK ||
+		skillsRequestBodyDB.status !== HttpStatusCode.OK ||
+		disciplineRequestBodyDB.status !== HttpStatusCode.OK ||
+		moraltiyRequestBodyDB.status !== HttpStatusCode.OK ||
+		backgroundRequestBodyDB.status !== HttpStatusCode.OK ||
+		hungerRequestBodyDB.status !== HttpStatusCode.OK ||
+		healthRequestBodyDB.status !== HttpStatusCode.OK ||
+		willpowerRequestBodyDB.status !== HttpStatusCode.OK ||
+		humanityRequestBodyDB.status !== HttpStatusCode.OK ||
+		experienceRequestBodyDB.status !== HttpStatusCode.OK
+	) {
+		console.warn(`error found! deleting ${baseResult.id}`);
+		fetch(`/api/lotn/character`, {
+			method: 'DELETE',
+			body: JSON.stringify({ id: baseResult.id })
 		});
-		loresheetResult = playerLoresheet.parse(await loresheetRequestBodyDB.json());
+		error(
+			HttpStatusCode.INTERNAL_SERVER_ERROR,
+			'Ein oder mehrere Daten konnten nicht gespeichert werden'
+		);
 	}
 
-	let itemsResult: PlayerItem[] | undefined = undefined;
-	if (playerCharacterCreateBodyParsed.data.items) {
-		const itemRequestBody = playerItemRequestBodyDB.parse({
-			items: playerCharacterCreateBodyParsed.data.items,
-			character_id: baseResult.id
-		});
-		const itemRequestBodyDB = await fetch(`/api/lotn/character/items`, {
-			method: 'POST',
-			body: JSON.stringify(itemRequestBody)
-		});
-		itemsResult = playerItem.array().parse(await itemRequestBodyDB.json());
-	}
+	// JSON aus den Responses laden
+	const [
+		attributesRequestBodyJSON,
+		skillsRequestBodyJSON,
+		disciplineRequestBodyJSON,
+		moraltiyRequestBodyJSON,
+		backgroundRequestBodyJSON,
+		hungerRequestBodyJSON,
+		healthRequestBodyJSON,
+		willpowerRequestBodyJSON,
+		humanityRequestBodyJSON,
+		experienceRequestBodyJSON
+	] = await Promise.all([
+		attributesRequestBodyDB.json(),
+		skillsRequestBodyDB.json(),
+		disciplineRequestBodyDB.json(),
+		moraltiyRequestBodyDB.json(),
+		backgroundRequestBodyDB.json(),
+		hungerRequestBodyDB.json(),
+		healthRequestBodyDB.json(),
+		willpowerRequestBodyDB.json(),
+		humanityRequestBodyDB.json(),
+		experienceRequestBodyDB.json()
+	]);
+
+	// optionale Elemente ggfs. in DB schreiben
+	const ceremoniesRequestBodyJSON = await writeToDb(
+		ceremoniesRequestBody,
+		'/api/lotn/character/ceremonies',
+		fetch
+	);
+	const formulasRequestBodyJSON = await writeToDb(
+		formulasRequestBody,
+		'/api/lotn/character/formulas',
+		fetch
+	);
+	const ritualsRequestBodyJSON = await writeToDb(
+		ritualsRequestBody,
+		'/api/lotn/character/rituals',
+		fetch
+	);
+	const meritRequestBodyJSON = await writeToDb(
+		meritRequestBody,
+		'/api/lotn/character/merits',
+		fetch
+	);
+	const flawRequestBodyJSON = await writeToDb(flawRequestBody, '/api/lotn/character/flaws', fetch);
+	const loresheetRequestBodyJSON = await writeToDb(
+		loresheetRequestBody,
+		'/api/lotn/character/loresheet',
+		fetch
+	);
+	const itemRequestBodyJSON = await writeToDb(itemRequestBody, '/api/lotn/character/items', fetch);
+
+	// Daten in Struktur parsen
+	const attributeResult = playerAttribute.parse(attributesRequestBodyJSON);
+	const skillsResult = playerSkill.array().parse(skillsRequestBodyJSON);
+	const disciplineResult = playerDiscipline.array().parse(disciplineRequestBodyJSON);
+	const moralityResult = playerMorality.array().parse(moraltiyRequestBodyJSON);
+	const backgroundResult = playerBackground
+		.merge(idSchema)
+		.array()
+		.parse(backgroundRequestBodyJSON);
+	const formulasResult = playerFormula.array().optional().parse(formulasRequestBodyJSON);
+	const ceremoniesResult = oblivionCeremonyName.array().optional().parse(ceremoniesRequestBodyJSON);
+	const ritualsResult = bloodSorceryRitualName.array().optional().parse(ritualsRequestBodyJSON);
+	const hungerResult = playerHunger.parse(hungerRequestBodyJSON);
+	const healthResult = playerHealth.parse(healthRequestBodyJSON);
+	const willpowerResult = playerWillpower.parse(willpowerRequestBodyJSON);
+	const humanityResult = playerHealth.parse(humanityRequestBodyJSON);
+	const meritsResult = playerMerit.merge(idSchema).array().parse(meritRequestBodyJSON);
+	const flawsResult = playerFlaw.merge(idSchema).array().parse(flawRequestBodyJSON);
+	const experienceResult = playerExperience.array().parse(experienceRequestBodyJSON);
+	const loresheetResult = playerLoresheet.optional().parse(loresheetRequestBodyJSON);
+	const itemsResult = playerItem.array().optional().parse(itemRequestBodyJSON);
 
 	const resultCharacter: PlayerCharacter = playerCharacter.parse({
 		...baseResult,
@@ -527,8 +527,7 @@ export async function POST({ locals, request, fetch }) {
 			flaws: flawsResult,
 			experience: experienceResult,
 			loresheet: loresheetResult,
-			items: itemsResult,
-			name: nameResult.name
+			items: itemsResult
 		}
 	});
 
