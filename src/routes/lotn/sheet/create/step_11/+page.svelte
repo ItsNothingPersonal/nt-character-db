@@ -5,10 +5,7 @@
 	import Tracker from '$lib/components/tracker/tracker.svelte';
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
 	import { getHealthTotal, getInitiative, getSkillValueByName, getWillpowerTotal } from '$lib/util';
-	import {
-		playerCharacter,
-		playerCharacterCreate
-	} from '$lib/zod/lotn/playerCharacter/playerCharacter';
+	import { playerCharacter } from '$lib/zod/lotn/playerCharacter/playerCharacter';
 
 	let responseMessage: string | undefined;
 
@@ -71,7 +68,7 @@
 	</HelpText>
 </div>
 
-{#if playerCharacterCreate.safeParse($characterCreationStore).success}
+{#if playerCharacter.safeParse($characterCreationStore).success}
 	<aside class="alert variant-filled-success col-span-2 mt-4 rounded-lg">
 		<div>
 			<iconify-icon height="48" icon="mdi:success" />
@@ -115,7 +112,9 @@
 		<div class="alert-message">
 			<h3 class="h3">The character is invalid</h3>
 			<p>There are some formal validation errors with the character.</p>
-			{#each playerCharacterCreate.safeParse($characterCreationStore).error?.errors ?? [] as error}
+			{#each playerCharacter
+				.safeParse($characterCreationStore)
+				.error?.errors.filter((e) => !e.path.includes('id')) ?? [] as error}
 				<p>{error.path}: {error.message}</p>
 			{/each}
 		</div>
