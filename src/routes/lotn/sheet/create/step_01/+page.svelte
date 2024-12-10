@@ -145,6 +145,15 @@
 			return store;
 		});
 	}
+
+	function updateName(event: Event) {
+		const target = event.target as HTMLInputElement;
+		characterCreationStore.update((store) => {
+			const value = target.value.trim();
+			store.name = value.length <= 0 ? undefined : value;
+			return store;
+		});
+	}
 </script>
 
 <label class="label">
@@ -154,7 +163,8 @@
 		class="input variant-form-material"
 		placeholder="Select a name for your character"
 		type="text"
-		bind:value={$characterCreationStore.name}
+		value={$characterCreationStore.name ?? ''}
+		on:change={updateName}
 	/>
 </label>
 

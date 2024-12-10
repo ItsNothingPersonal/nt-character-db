@@ -38,6 +38,27 @@
 		}
 		submitting = false;
 	}
+
+	function validCharacter() {
+		const result = playerCharacter.safeParse($characterCreationStore);
+		if (result.success) {
+			return true;
+		} else {
+			const errors = result.error?.errors;
+			return errors.length === 1 && errors[0].path.length === 1 && errors[0].path[0] === 'id'
+				? true
+				: false;
+		}
+	}
+
+	function getErrorMessages() {
+		const result = playerCharacter.safeParse($characterCreationStore);
+		if (result.success) {
+			return [];
+		} else {
+			return result.error?.errors.filter((e) => e.path[0] !== 'id') ?? [];
+		}
+	}
 </script>
 
 <div class="grid grid-cols-1 grid-rows-1 gap-2 sm:grid-cols-3">
@@ -68,7 +89,7 @@
 	</HelpText>
 </div>
 
-{#if playerCharacter.safeParse($characterCreationStore).success}
+{#if validCharacter()}
 	<aside class="alert variant-filled-success col-span-2 mt-4 rounded-lg">
 		<div>
 			<iconify-icon height="48" icon="mdi:success" />
@@ -112,9 +133,7 @@
 		<div class="alert-message">
 			<h3 class="h3">The character is invalid</h3>
 			<p>There are some formal validation errors with the character.</p>
-			{#each playerCharacter
-				.safeParse($characterCreationStore)
-				.error?.errors.filter((e) => !e.path.includes('id')) ?? [] as error}
+			{#each getErrorMessages() as error}
 				<p>{error.path}: {error.message}</p>
 			{/each}
 		</div>
