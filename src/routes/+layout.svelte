@@ -4,7 +4,7 @@
 	import SidebarButton from '$lib/components/SidebarMenu/SidebarButton.svelte';
 	import SidebarMenu from '$lib/components/SidebarMenu/SidebarMenu.svelte';
 	import Footer from '$lib/components/typography/footer.svelte';
-	import { detectTouchscreen, isCreateSheetRoute, isNotNullOrUndefined } from '$lib/util';
+	import { isCreateSheetRoute, isDesktopSize, isNotNullOrUndefined } from '$lib/util';
 	import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 	import {
 		AppBar,
@@ -37,7 +37,7 @@
 		<AppBar>
 			<svelte:fragment slot="lead">
 				<div class="flex content-center gap-2">
-					{#if detectTouchscreen()}
+					{#if !isDesktopSize(innerWidth)}
 						<SidebarButton />
 					{/if}
 					<a href="/">
@@ -52,7 +52,7 @@
 	</svelte:fragment>
 
 	<svelte:fragment slot="sidebarLeft">
-		{#if !detectTouchscreen()}
+		{#if isDesktopSize(innerWidth)}
 			<Navigation
 				characterCreation={isCreateSheetRoute()}
 				loggedIn={isNotNullOrUndefined(data.user)}

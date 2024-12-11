@@ -4,6 +4,7 @@ import { PUBLIC_CHARACTER_DB_PB_URL } from '$env/static/public';
 import { get } from 'svelte/store';
 import { characterStore } from './components/lotn/characterSheet/characterStore';
 import { hasDisciplinePower } from './components/lotn/util/disciplines';
+import { ScreenSize } from './sceenSize';
 import { characterCreationStore } from './stores/characterCreationStore';
 import type { SkillName } from './zod/lotn/enums/skillName';
 import type { PlayerSkill } from './zod/lotn/playerCharacter/playerSkill';
@@ -34,6 +35,10 @@ export function detectTouchscreen() {
 		}
 	}
 	return isTouchscreen;
+}
+
+export function isDesktopSize(innerWidth: number) {
+	return innerWidth > ScreenSize.LG;
 }
 
 export function getSkillValueByName(skillName: SkillName | undefined, playerSkills: PlayerSkill[]) {
