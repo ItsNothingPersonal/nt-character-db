@@ -1332,10 +1332,10 @@
 
 <svelte:window bind:innerWidth />
 
-<div class="grid grid-cols-2 grid-rows-2 gap-2 sm:grid-cols-3 sm:grid-rows-1">
+<div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3">
 	<Tracker title="Experience Total" value={xpGained} />
 	<Tracker title="Experience Spent" value={xpSpent} />
-	<div class="col-span-2 sm:col-span-1">
+	<div class="sm:col-span-2 xl:col-span-1">
 		<Tracker title="Experience Left" value={xpLeft} />
 	</div>
 </div>

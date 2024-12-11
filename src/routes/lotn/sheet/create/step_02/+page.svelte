@@ -28,7 +28,7 @@
 <svelte:window bind:innerWidth />
 
 <div class="mt-2 grid gap-4 sm:grid-cols-[auto_2fr]">
-	<div class="grid auto-rows-auto grid-cols-3 gap-2 sm:flex sm:flex-col">
+	<div class="grid auto-rows-auto grid-cols-2 gap-2 sm:flex sm:flex-col">
 		{#each clanName.options as clanNameEntry}
 			<button
 				class={`variant-filled-primary btn rounded-lg ${$characterCreationStore.clan === clanNameEntry ? 'ring-2 ring-black dark:ring-white' : ''}`}
