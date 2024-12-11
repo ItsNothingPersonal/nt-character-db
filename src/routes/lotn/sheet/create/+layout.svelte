@@ -1,12 +1,18 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
-	import { detectTouchscreen } from '$lib/util';
+	import { detectTouchscreen, isDesktopSize } from '$lib/util';
+
+	let innerWidth: number = 0;
 </script>
 
+<svelte:window bind:innerWidth />
+
 <h1 class="h1">Character-Creation</h1>
-<div class="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-[auto_2fr]">
-	{#if !detectTouchscreen()}
+<div
+	class={`mt-4 grid gap-2 ${isDesktopSize(innerWidth) && !detectTouchscreen() ? 'grid-cols-1 sm:grid-cols-[auto_2fr]' : 'grid-cols-1'}`}
+>
+	{#if isDesktopSize(innerWidth) && !detectTouchscreen()}
 		<div class="flex flex-col gap-2">
 			<a
 				class={`variant-filled-primary btn rounded-lg ${$page.url.pathname.match('/lotn/sheet/create/step_01') ? 'ring-2 ring-black dark:ring-white' : ''}`}
