@@ -196,7 +196,7 @@
 
 <div class="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-[auto_2fr]">
 	{#if !get(characterCreationStore).ghoul}
-		<div class="grid auto-rows-auto grid-cols-3 gap-2 sm:grid-cols-1">
+		<div class="grid auto-rows-auto grid-cols-2 gap-2 sm:grid-cols-1">
 			{#each getValidPredatorTypes() as predatorTypeEntry}
 				<button
 					class={`variant-filled-primary btn rounded-lg ${$characterCreationStore.predatorType === predatorTypeEntry ? 'ring-2 ring-black dark:ring-white' : ''}`}

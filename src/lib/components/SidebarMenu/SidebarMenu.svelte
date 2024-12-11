@@ -31,7 +31,7 @@
 {#if $isMenuOpen}
 	<aside
 		bind:this={sidebarRef}
-		class="fixed inset-y-0 left-0 z-10 w-64 bg-gray-400 p-4 text-white dark:bg-gray-700"
+		class="fixed inset-y-0 left-0 z-10 w-64 overflow-scroll bg-gray-400 p-4 text-white dark:bg-gray-700"
 	>
 		<nav>
 			{#if loggedIn}
