@@ -522,7 +522,7 @@
 				</svelte:fragment>
 			</HelpText>
 			{#if background.description}
-				<p class="whitespace-pre-line text-sm">
+				<p class="col-span-2 whitespace-pre-line text-sm">
 					{background.description}
 				</p>
 			{/if}

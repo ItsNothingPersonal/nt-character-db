@@ -15,6 +15,7 @@
 	export let displayFormat: 'row' | 'column' = 'row';
 	export let showDescriptionInput: boolean = false;
 	export let enableEditValue: boolean = false;
+	export let enableEditLinkedSkill: boolean = false;
 	export let minValue: number = 1;
 
 	const config = meritConfig[merit.name];
@@ -127,7 +128,7 @@
 						</p>
 					</svelte:fragment>
 				</HelpText>
-			{:else}
+			{:else if merit.value > 0}
 				<Ratings
 					id={`${merit.name}-${merit.id}-value`}
 					interactive={true}
@@ -168,19 +169,25 @@
 			}}
 		/>
 	{:else if meritHasLinkedSkills(merit)}
-		<select
-			class="select mt-2 rounded-lg"
-			bind:value={merit.linkedSkill}
-			on:change={() =>
-				dispatchChange('linkedSkillChange', { id: merit.id, linkedSkill: merit.linkedSkill })}
-		>
-			<option disabled selected value={undefined}> Please select an option </option>
+		{#if enableEditLinkedSkill}
+			<select
+				class="select mt-2 rounded-lg"
+				bind:value={merit.linkedSkill}
+				on:change={() =>
+					dispatchChange('linkedSkillChange', { id: merit.id, linkedSkill: merit.linkedSkill })}
+			>
+				<option disabled selected value={undefined}> Please select an option </option>
 
-			{#each meritHasLinkedSkills(merit) ?? [] as linkedSkill}
-				<option selected={linkedSkill === merit.linkedSkill} value={linkedSkill}>
-					{linkedSkill}
-				</option>
-			{/each}
-		</select>
+				{#each meritHasLinkedSkills(merit) ?? [] as linkedSkill}
+					<option selected={linkedSkill === merit.linkedSkill} value={linkedSkill}>
+						{linkedSkill}
+					</option>
+				{/each}
+			</select>
+		{:else}
+			<p class="whitespace-pre-line text-sm">
+				{merit.linkedSkill}
+			</p>
+		{/if}
 	{/if}
 </label>

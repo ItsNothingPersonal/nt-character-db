@@ -371,6 +371,7 @@
 					{#each $characterCreationStore.merits as merit}
 						<EditableMerit
 							displayFormat="column"
+							enableEditLinkedSkill={true}
 							{merit}
 							showDeleteButton={!isPredatorMerit(merit) && !isLoresheetMerit(merit)}
 							showDescriptionInput={displaySpecificMeritDescription(merit)}
