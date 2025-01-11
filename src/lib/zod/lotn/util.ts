@@ -31,7 +31,11 @@ import { backgroundDisadvantageConfig } from './playerCharacter/playerBackground
 export function createDisciplineConfigSchema(
 	disciplineNameValue: NormalDisciplines | RitualDisciplines
 ) {
-	return z.object({
+	// Determine if the disciplineNameValue is a normal discipline
+	const isNormal = isNormalDiscipline(disciplineNameValue);
+
+	// Create a base schema without the `powers` property
+	const baseSchema = z.object({
 		name: z.literal(disciplineNameValue),
 		characteristics: z.object({
 			type: disciplineAttributeType.or(extendedDisciplineType).refine((data) => {
@@ -51,11 +55,19 @@ export function createDisciplineConfigSchema(
 				'Variable'
 			]),
 			description: z.string().optional()
-		}),
-		powers: !isNormalDiscipline(disciplineNameValue)
-			? createRitualPowerSchema(disciplineNameValue)
-			: createNormalDisciplinePowerSchema(disciplineNameValue)
+		})
 	});
+
+	// Extend the base schema with the appropriate `powers` type
+	if (isNormal) {
+		return baseSchema.extend({
+			powers: createNormalDisciplinePowerSchema(disciplineNameValue)
+		});
+	} else {
+		return baseSchema.extend({
+			powers: createRitualPowerSchema(disciplineNameValue)
+		});
+	}
 }
 
 const extendedDisciplineType = z.object({ text: disciplineAttributeType, hint: z.string() });

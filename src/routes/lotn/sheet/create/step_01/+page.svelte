@@ -1,29 +1,9 @@
 <script lang="ts">
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
-	import { sectName, type SectName } from '$lib/zod/lotn/enums/sectName';
-	import { onMount } from 'svelte';
-
-	onMount(() => {
-		convictionA = $characterCreationStore.morality[0]?.conviction || '';
-		touchstoneA = $characterCreationStore.morality[0]?.touchstone || '';
-		convictionB = $characterCreationStore.morality[1]?.conviction || '';
-		touchstoneB = $characterCreationStore.morality[1]?.touchstone || '';
-		convictionC = $characterCreationStore.morality[2]?.conviction || '';
-		touchstoneC = $characterCreationStore.morality[2]?.touchstone || '';
-		selectedSect = $characterCreationStore.sect;
-	});
-
-	let convictionA = '';
-	let touchstoneA = '';
-	let convictionB = '';
-	let touchstoneB = '';
-	let convictionC = '';
-	let touchstoneC = '';
+	import { sectName } from '$lib/zod/lotn/enums/sectName';
 
 	const convictionText = 'Your conviction';
 	const touchstoneText = 'The mortal who embodies your conviction';
-
-	let selectedSect: SectName | undefined = undefined;
 
 	$: convictionBVisible =
 		$characterCreationStore.morality[0]?.conviction.length > 0 ||
@@ -34,79 +14,43 @@
 		$characterCreationStore.morality[1]?.touchstone.length > 0;
 
 	function setConviction(index: number, conviction: string) {
-		if (!$characterCreationStore.morality[index]) {
-			$characterCreationStore.morality[index] = {
-				conviction: '',
-				touchstone: ''
-			};
-		}
-		$characterCreationStore.morality[index].conviction = conviction;
-
-		if (
-			$characterCreationStore.morality[index].conviction.length === 0 &&
-			$characterCreationStore.morality[index].touchstone.length === 0
-		) {
-			$characterCreationStore.morality = $characterCreationStore.morality.filter(
-				(_, i) => i !== index
-			);
-
-			if (index === 1) {
-				convictionB = convictionC;
-				convictionC = '';
-				touchstoneB = touchstoneC;
-				touchstoneC = '';
-			} else if (index === 0) {
-				convictionA = convictionB;
-				convictionB = '';
-				touchstoneA = touchstoneB;
-				touchstoneB = '';
+		characterCreationStore.update((store) => {
+			if (!store.morality[index]) {
+				store.morality[index] = {
+					conviction: '',
+					touchstone: ''
+				};
 			}
-		}
+			store.morality[index].conviction = conviction;
 
-		$characterCreationStore = $characterCreationStore;
+			if (
+				store.morality[index].conviction.length === 0 &&
+				store.morality[index].touchstone.length === 0
+			) {
+				store.morality = store.morality.filter((_, i) => i !== index);
+			}
+			return store;
+		});
 	}
 
 	function setTouchstone(index: number, touchstone: string) {
-		if (!$characterCreationStore.morality[index]) {
-			$characterCreationStore.morality[index] = {
-				conviction: '',
-				touchstone: ''
-			};
-		}
-		$characterCreationStore.morality[index].touchstone = touchstone;
-
-		if (
-			$characterCreationStore.morality[index].conviction.length === 0 &&
-			$characterCreationStore.morality[index].touchstone.length === 0
-		) {
-			$characterCreationStore.morality = $characterCreationStore.morality.filter(
-				(_, i) => i !== index
-			);
-
-			if (index === 1) {
-				convictionB = convictionC;
-				convictionC = '';
-				touchstoneB = touchstoneC;
-				touchstoneC = '';
-			} else if (index === 0) {
-				convictionA = convictionB;
-				if (convictionC.length > 0) {
-					convictionB = convictionC;
-					convictionC = '';
-				} else {
-					convictionB = '';
-				}
-				touchstoneA = touchstoneB;
-				if (touchstoneC.length > 0) {
-					touchstoneB = touchstoneC;
-					touchstoneC = '';
-				} else {
-					touchstoneB = '';
-				}
+		characterCreationStore.update((store) => {
+			if (!store.morality[index]) {
+				store.morality[index] = {
+					conviction: '',
+					touchstone: ''
+				};
 			}
-		}
+			store.morality[index].touchstone = touchstone;
 
-		$characterCreationStore = $characterCreationStore;
+			if (
+				store.morality[index].conviction.length === 0 &&
+				store.morality[index].touchstone.length === 0
+			) {
+				store.morality = store.morality.filter((_, i) => i !== index);
+			}
+			return store;
+		});
 	}
 
 	function removeMoralityEntry(index: number) {
@@ -114,34 +58,12 @@
 			store.morality = store.morality.filter((_, i) => i !== index);
 			return store;
 		});
-
-		switch (index) {
-			case 0: {
-				convictionA = convictionB;
-				convictionB = convictionC;
-				convictionC = '';
-				touchstoneA = touchstoneB;
-				touchstoneB = touchstoneC;
-				touchstoneC = '';
-				break;
-			}
-			case 1: {
-				convictionB = convictionC;
-				convictionC = '';
-				touchstoneB = touchstoneC;
-				touchstoneC = '';
-				break;
-			}
-			case 2: {
-				convictionC = '';
-				touchstoneC = '';
-			}
-		}
 	}
 
-	function setSect() {
+	function setSect(event: Event) {
+		const target = event.target as HTMLInputElement;
 		characterCreationStore.update((store) => {
-			store.sect = selectedSect;
+			store.sect = sectName.parse(target.value);
 			return store;
 		});
 	}
@@ -170,7 +92,7 @@
 
 <label class="label">
 	<span>Sect</span>
-	<select class="select rounded-lg" bind:value={selectedSect} on:change={setSect}>
+	<select class="select rounded-lg" value={$characterCreationStore.sect} on:change={setSect}>
 		<option disabled selected value={undefined}>Select a sect</option>
 		{#each sectName.options as sect}
 			<option value={sect}>{sect}</option>
@@ -235,8 +157,8 @@
 				class="input variant-form-material"
 				placeholder={convictionText}
 				type="text"
-				bind:value={convictionA}
-				on:blur={() => setConviction(0, convictionA)}
+				value={$characterCreationStore.morality[0]?.conviction || ''}
+				on:blur={(event) => setConviction(0, event.currentTarget.value)}
 			/>
 		</label>
 		<label class="label">
@@ -246,8 +168,8 @@
 				class="input variant-form-material"
 				placeholder={touchstoneText}
 				type="text"
-				bind:value={touchstoneA}
-				on:blur={() => setTouchstone(0, touchstoneA)}
+				value={$characterCreationStore.morality[0]?.touchstone || ''}
+				on:blur={(event) => setTouchstone(0, event.currentTarget.value)}
 			/>
 		</label>
 	</div>
@@ -260,8 +182,8 @@
 					class="input variant-form-material"
 					placeholder={convictionText}
 					type="text"
-					bind:value={convictionB}
-					on:blur={() => setConviction(1, convictionB)}
+					value={$characterCreationStore.morality[1]?.conviction || ''}
+					on:blur={(event) => setConviction(1, event.currentTarget.value)}
 				/>
 			</label>
 			<label class="label">
@@ -271,8 +193,8 @@
 					class="input variant-form-material"
 					placeholder={touchstoneText}
 					type="text"
-					bind:value={touchstoneB}
-					on:blur={() => setTouchstone(1, touchstoneB)}
+					value={$characterCreationStore.morality[1]?.touchstone || ''}
+					on:blur={(event) => setTouchstone(1, event.currentTarget.value)}
 				/>
 			</label>
 		</div>
@@ -286,8 +208,8 @@
 					class="input variant-form-material"
 					placeholder={convictionText}
 					type="text"
-					bind:value={convictionC}
-					on:blur={() => setConviction(2, convictionC)}
+					value={$characterCreationStore.morality[2]?.conviction || ''}
+					on:blur={(event) => setConviction(2, event.currentTarget.value)}
 				/>
 			</label>
 			<label class="label">
@@ -297,8 +219,8 @@
 					class="input variant-form-material"
 					placeholder={touchstoneText}
 					type="text"
-					bind:value={touchstoneC}
-					on:blur={() => setTouchstone(2, touchstoneC)}
+					value={$characterCreationStore.morality[2]?.touchstone || ''}
+					on:blur={(event) => setTouchstone(2, event.currentTarget.value)}
 				/>
 			</label>
 		</div>

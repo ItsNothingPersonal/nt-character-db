@@ -1,14 +1,7 @@
 <script lang="ts">
-	import ValueRating from '$lib/components/lotn/characterSheet/components/ValueRating.svelte';
-	import {
-		getSkillHelptext,
-		isMentalSkill,
-		isPhysicalSkill,
-		isSocialSkill
-	} from '../../util/skillUtil';
+	import EditableSkill from '../../EditableSkill/EditableSkill.svelte';
+	import { isMentalSkill, isPhysicalSkill, isSocialSkill } from '../../util/skillUtil';
 	import { characterStore } from '../characterStore';
-
-	const changedSkills = new Map<string, number>();
 
 	function getPhysicalSkills() {
 		return $characterStore.skills.filter((e) => isPhysicalSkill(e.name));
@@ -26,35 +19,17 @@
 <div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-3">
 	<div class="flex min-h-28 flex-col gap-2">
 		{#each getPhysicalSkills() as skill}
-			<ValueRating
-				helpText={getSkillHelptext(skill.name)}
-				label={skill.name}
-				specialization={skill.specialization}
-				start={changedSkills.get(skill.name)}
-				bind:value={skill.value}
-			/>
+			<EditableSkill displayStyle="dots" {skill} />
 		{/each}
 	</div>
 	<div class="flex min-h-28 flex-col gap-2">
 		{#each getSocialSkills() as skill}
-			<ValueRating
-				helpText={getSkillHelptext(skill.name)}
-				label={skill.name}
-				specialization={skill.specialization}
-				start={changedSkills.get(skill.name)}
-				bind:value={skill.value}
-			/>
+			<EditableSkill displayStyle="dots" {skill} />
 		{/each}
 	</div>
 	<div class="flex min-h-28 flex-col gap-2">
 		{#each getMentalSkills() as skill}
-			<ValueRating
-				helpText={getSkillHelptext(skill.name)}
-				label={skill.name}
-				specialization={skill.specialization}
-				start={changedSkills.get(skill.name)}
-				bind:value={skill.value}
-			/>
+			<EditableSkill displayStyle="dots" {skill} />
 		{/each}
 	</div>
 </div>

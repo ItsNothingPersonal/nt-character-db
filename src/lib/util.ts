@@ -140,3 +140,22 @@ export function isCreateSheetRoute() {
 	const pathname = get(page).url.pathname;
 	return pathname.includes('/lotn/sheet/create');
 }
+
+export function deepClone<T>(obj: T): T {
+	if (obj === null || typeof obj !== 'object') {
+		return obj;
+	}
+
+	if (Array.isArray(obj)) {
+		return obj.map(deepClone) as unknown as T;
+	}
+
+	const clonedObj: { [key: string]: unknown } = {};
+	for (const key in obj) {
+		if (Object.prototype.hasOwnProperty.call(obj, key)) {
+			clonedObj[key] = deepClone((obj as { [key: string]: unknown })[key]);
+		}
+	}
+
+	return clonedObj as T;
+}

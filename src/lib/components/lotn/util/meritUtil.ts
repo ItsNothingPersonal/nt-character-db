@@ -83,85 +83,87 @@ export function hasThinBloodAlchemyMerit() {
 export function getValidMerits() {
 	const isThinBlood = get(characterCreationStore).clan === 'Thin-Blooded';
 
-	return meritName.options.filter((merit) => {
-		const config = meritConfig[merit];
-		if (!config) return false;
+	return meritName.options
+		.filter((merit) => {
+			const config = meritConfig[merit];
+			if (!config) return false;
 
-		if (!get(characterCreationStore).ghoul && config.category === 'Ghoul') {
-			return false;
-		}
-		if (!isThinBlood && config.category === 'Thin-Blood') {
-			return false;
-		}
-		if (
-			get(characterCreationStore).ghoul &&
-			config.category === 'Feeding' &&
-			config.ghoulAllowed !== true
-		) {
-			return false;
-		}
+			if (!get(characterCreationStore).ghoul && config.category === 'Ghoul') {
+				return false;
+			}
+			if (!isThinBlood && config.category === 'Thin-Blood') {
+				return false;
+			}
+			if (
+				get(characterCreationStore).ghoul &&
+				config.category === 'Feeding' &&
+				config.ghoulAllowed !== true
+			) {
+				return false;
+			}
 
-		const multiPurchase = config.multiPurchase ?? false;
-		if (
-			get(characterCreationStore).merits?.some(
-				(existingMerit) =>
-					existingMerit.name === merit &&
-					(!multiPurchase ||
-						(config.max &&
-							(get(characterCreationStore).merits?.filter((e) => e.name === merit) ?? []).length >=
-								config.max))
-			)
-		) {
-			return false;
-		}
+			const multiPurchase = config.multiPurchase ?? false;
+			if (
+				get(characterCreationStore).merits?.some(
+					(existingMerit) =>
+						existingMerit.name === merit &&
+						(!multiPurchase ||
+							(config.max &&
+								(get(characterCreationStore).merits?.filter((e) => e.name === merit) ?? [])
+									.length >= config.max))
+				)
+			) {
+				return false;
+			}
 
-		if (config.prerequisite) {
-			const prereq = config.prerequisite;
-			if (Array.isArray(prereq)) {
-				const invalidPrerequisiteFound = prereq.some((prereqEntry) => {
-					if (typeof prereqEntry === 'string') {
-						return get(characterCreationStore).clan === prereqEntry;
-					} else {
-						const isBackground = backgroundName.safeParse(prereqEntry.name);
-						if (
-							prereqEntry.name === 'Blood Potency' &&
-							get(characterCreationStore).bloodPotency > prereqEntry.value
-						) {
-							return true;
-						} else if (isBackground.success) {
-							const background = get(characterCreationStore).backgrounds.find(
-								(e) => e.name === prereqEntry.name && e.value >= prereqEntry.value
-							);
-							if (!background) return true;
+			if (config.prerequisite) {
+				const prereq = config.prerequisite;
+				if (Array.isArray(prereq)) {
+					const invalidPrerequisiteFound = prereq.some((prereqEntry) => {
+						if (typeof prereqEntry === 'string') {
+							return get(characterCreationStore).clan === prereqEntry;
+						} else {
+							const isBackground = backgroundName.safeParse(prereqEntry.name);
+							if (
+								prereqEntry.name === 'Blood Potency' &&
+								get(characterCreationStore).bloodPotency > prereqEntry.value
+							) {
+								return true;
+							} else if (isBackground.success) {
+								const background = get(characterCreationStore).backgrounds.find(
+									(e) => e.name === prereqEntry.name && e.value >= prereqEntry.value
+								);
+								if (!background) return true;
+							}
 						}
-					}
-					return false;
-				});
-
-				// falls ein Hinderungsgrund gefunden wurde muss hier der invertierte Wert (also false) zurückgegeben werden, da wir hier weiter "außen".filter verwenden
-				return !invalidPrerequisiteFound;
-			} else {
-				if (typeof prereq === 'string') {
-					return get(characterCreationStore).clan === prereq;
-				} else {
-					if (
-						prereq.name === 'Blood Potency' &&
-						get(characterCreationStore).bloodPotency > prereq.value
-					) {
 						return false;
+					});
+
+					// falls ein Hinderungsgrund gefunden wurde muss hier der invertierte Wert (also false) zurückgegeben werden, da wir hier weiter "außen".filter verwenden
+					return !invalidPrerequisiteFound;
+				} else {
+					if (typeof prereq === 'string') {
+						return get(characterCreationStore).clan === prereq;
 					} else {
-						const background = get(characterCreationStore).backgrounds.find(
-							(e) => e.name === prereq.name && e.value >= prereq.value
-						);
-						if (!background) return false;
-						return true;
+						if (
+							prereq.name === 'Blood Potency' &&
+							get(characterCreationStore).bloodPotency > prereq.value
+						) {
+							return false;
+						} else {
+							const background = get(characterCreationStore).backgrounds.find(
+								(e) => e.name === prereq.name && e.value >= prereq.value
+							);
+							if (!background) return false;
+							return true;
+						}
 					}
 				}
 			}
-		}
 
-		return true;
-	});
+			return true;
+		})
+		.toSorted();
 }
 
 export function getValidFlaws() {
@@ -262,4 +264,12 @@ export function isThinBloodMerit(merit: MeritName) {
 	if (!config) return false;
 
 	return config.category === 'Thin-Blood';
+}
+
+export function isPredatorMerit(merit: PlayerMerit & { id: string }) {
+	return meritPaymentStore.getPredatorMerits().some((e) => e.id === merit.id);
+}
+
+export function isLoresheetMerit(merit: PlayerMerit & { id: string }) {
+	return backgroundPaymentStore.isLoresheetMerit(merit.id);
 }

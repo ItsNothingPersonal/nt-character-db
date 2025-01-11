@@ -11,7 +11,7 @@
 <div class="flex flex-col">
 	{#if ceremonyConfigEntry}
 		<label
-			class="card label grid h-full w-full grid-cols-1 grid-rows-1 rounded-sm p-4"
+			class="card label grid h-full w-full grid-cols-1 grid-rows-1 rounded-lg p-4"
 			for={ceremony}
 		>
 			<HelpText id={ceremony}>

@@ -24,7 +24,7 @@
 	export let data;
 	let innerWidth: number = 0;
 
-	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
+	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
 	initializeStores();
 </script>

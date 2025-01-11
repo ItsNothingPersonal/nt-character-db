@@ -569,7 +569,8 @@
 <svelte:window bind:innerWidth />
 
 <EditableLoresheet
-	selectedLoresheet={$characterCreationStore.loresheet?.name}
+	editModeEnabled={true}
+	selectedLoresheet={$characterCreationStore.loresheet}
 	on:loresheetChange={(event) => handleLoresheetChange(event)}
 	on:toggleLoreSheetLevel={(event) => toggleLoresheetLevel(event.detail.level)}
 />
@@ -808,6 +809,7 @@
 			{#each $characterCreationStore.backgrounds as background, index}
 				<EditableBackground
 					{background}
+					editModeEnabled={true}
 					editModeEnabledAdvantages={true}
 					editModeEnabledDisadvantages={true}
 					on:change={handleChange}

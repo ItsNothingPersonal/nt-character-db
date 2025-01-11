@@ -8,7 +8,6 @@
 		addOblivionCeremonyPowers,
 		deleteBloodSorceryRitualPowers,
 		deleteOblivionCeremonyPowers,
-		getDisciplineValue,
 		getValidDisciplines,
 		updateBloodSorceryRitualPowers,
 		updateOblivionCeremonyPowers
@@ -17,7 +16,12 @@
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
 	import { disciplineFreebieStore } from '$lib/stores/disciplineFreebieStore';
 	import { type DisciplineName } from '$lib/zod/lotn/enums/disciplineName';
-	import type { NormalDisciplinePowerUnion, RitualDisciplinePowerUnion } from '$lib/zod/lotn/util';
+	import { disciplinePowerConfig } from '$lib/zod/lotn/enums/disciplinePowers/disciplinePowerConfig';
+	import type { PlayerDiscipline } from '$lib/zod/lotn/playerCharacter/playerDiscipline';
+	import {
+		type NormalDisciplinePowerUnion,
+		type RitualDisciplinePowerUnion
+	} from '$lib/zod/lotn/util';
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 
@@ -31,30 +35,28 @@
 			const twoDotDiscipline = $characterCreationStore.disciplines.find(
 				(e) => e.name === get(store).disciplines[0].name
 			);
-			disciplineA = twoDotDiscipline?.name;
-			disciplineAPowers = twoDotDiscipline?.powers ?? [];
+			disciplineA = twoDotDiscipline;
 
 			const secondTwoDotDiscipline = $characterCreationStore.disciplines.find(
 				(e) => e.name === get(store).disciplines[1].name
 			);
-			disciplineB = secondTwoDotDiscipline?.name;
-			disciplineBPowers = secondTwoDotDiscipline?.powers ?? [];
+			disciplineB = secondTwoDotDiscipline;
 		} else {
 			const store = disciplineFreebieStore.getStore();
 			const twoDotDiscipline = $characterCreationStore.disciplines.find(
 				(e) => get(store).disciplines.find((d) => d.value === 2)?.name === e.name
 			);
-			disciplineA = twoDotDiscipline?.name;
+			disciplineA = twoDotDiscipline;
 
 			const firstOneDotDiscipline = $characterCreationStore.disciplines.find(
 				(e) => get(store).disciplines.find((d) => d.value === 1)?.name === e.name
 			);
-			disciplineB = firstOneDotDiscipline?.name;
+			disciplineB = firstOneDotDiscipline;
 
 			const secondOneDotDiscipline = $characterCreationStore.disciplines.find(
 				(e) => get(store).disciplines.find((d) => d.value === 1)?.name === e.name
 			);
-			disciplineC = secondOneDotDiscipline?.name;
+			disciplineC = secondOneDotDiscipline;
 		}
 	});
 
@@ -65,25 +67,20 @@
 			const twoDotDiscipline = $characterCreationStore.disciplines.find(
 				(e) => e.name === get(store).disciplines[0].name
 			);
-			disciplineA = twoDotDiscipline?.name;
-			disciplineAPowers = twoDotDiscipline?.powers ?? [];
+			disciplineA = twoDotDiscipline;
 
 			if (get(store).disciplines.length > 1) {
 				const secondTwoDotDiscipline = $characterCreationStore.disciplines.find(
 					(e) => e.name === get(store).disciplines[1].name
 				);
-				disciplineB = secondTwoDotDiscipline?.name;
-				disciplineBPowers = secondTwoDotDiscipline?.powers ?? [];
+				disciplineB = secondTwoDotDiscipline;
 			}
 		}
 	}
 
-	let disciplineA: DisciplineName | undefined = undefined;
-	let disciplineB: DisciplineName | undefined = undefined;
-	let disciplineC: DisciplineName | undefined = undefined;
-
-	let disciplineAPowers: (NormalDisciplinePowerUnion | RitualDisciplinePowerUnion)[] = [];
-	let disciplineBPowers: (NormalDisciplinePowerUnion | RitualDisciplinePowerUnion)[] = [];
+	let disciplineA: PlayerDiscipline | undefined = undefined;
+	let disciplineB: PlayerDiscipline | undefined = undefined;
+	let disciplineC: PlayerDiscipline | undefined = undefined;
 
 	let innerWidth = 0;
 
@@ -92,61 +89,58 @@
 	) {
 		switch (event.detail.label) {
 			case 'Discipline A':
-				if (disciplineB === event.detail.name) {
+				if (disciplineB?.name === event.detail.name) {
 					disciplineB = disciplineA;
-				} else if (disciplineC === event.detail.name) {
+				} else if (disciplineC?.name === event.detail.name) {
 					disciplineC = disciplineA;
 				}
 
 				if (disciplineA) {
-					disciplineFreebieStore.removeDiscipline(disciplineA);
-					if (disciplineA === 'Blood Sorcery') {
+					disciplineFreebieStore.removeDiscipline(disciplineA.name);
+					if (disciplineA.name === 'Blood Sorcery') {
 						characterCreationStore.update((store) => {
 							store.rituals = [];
 							return store;
 						});
 					}
 				}
-				disciplineA = event.detail.name;
-				disciplineAPowers = [];
-
+				disciplineA = { name: event.detail.name, value: event.detail.value, powers: [] };
 				break;
 			case 'Discipline B':
-				if (disciplineA === event.detail.name) {
+				if (disciplineA?.name === event.detail.name) {
 					disciplineA = disciplineB;
-				} else if (disciplineC === event.detail.name) {
+				} else if (disciplineC?.name === event.detail.name) {
 					disciplineC = disciplineB;
 				}
 
 				if (disciplineB) {
-					disciplineFreebieStore.removeDiscipline(disciplineB);
-					if (disciplineB === 'Blood Sorcery') {
+					disciplineFreebieStore.removeDiscipline(disciplineB.name);
+					if (disciplineB.name === 'Blood Sorcery') {
 						characterCreationStore.update((store) => {
 							store.rituals = [];
 							return store;
 						});
 					}
 				}
-				disciplineB = event.detail.name;
-				disciplineBPowers = [];
+				disciplineB = { name: event.detail.name, value: event.detail.value, powers: [] };
 				break;
 			case 'Discipline C':
-				if (disciplineA === event.detail.name) {
+				if (disciplineA?.name === event.detail.name) {
 					disciplineA = disciplineC;
-				} else if (disciplineB === event.detail.name) {
+				} else if (disciplineB?.name === event.detail.name) {
 					disciplineB = disciplineC;
 				}
 
 				if (disciplineC) {
-					disciplineFreebieStore.removeDiscipline(disciplineC);
-					if (disciplineC === 'Blood Sorcery') {
+					disciplineFreebieStore.removeDiscipline(disciplineC.name);
+					if (disciplineC.name === 'Blood Sorcery') {
 						characterCreationStore.update((store) => {
 							store.rituals = [];
 							return store;
 						});
 					}
 				}
-				disciplineC = event.detail.name;
+				disciplineC = { name: event.detail.name, value: event.detail.value, powers: [] };
 				break;
 		}
 
@@ -166,6 +160,25 @@
 			}, 0) >= 2
 		);
 	}
+
+	function updateDisciplinePower(
+		discipline: PlayerDiscipline | undefined,
+		event: CustomEvent<{
+			name: NormalDisciplinePowerUnion | RitualDisciplinePowerUnion | undefined;
+		}>
+	) {
+		if (!event.detail.name || !discipline) return;
+
+		const schema = disciplinePowerConfig[discipline.name];
+
+		if (!discipline.powers.some((p) => p === event.detail.name)) {
+			discipline.powers = schema.array().parse([...discipline.powers, event.detail.name]);
+		} else if (event.detail.name && disciplineA) {
+			discipline.powers = schema
+				.array()
+				.parse(discipline.powers.filter((p) => p !== event.detail.name));
+		}
+	}
 </script>
 
 <svelte:window bind:innerWidth />
@@ -182,52 +195,36 @@
 	</aside>
 {:else if $characterCreationStore.ghoul}
 	<div class="grid grid-cols-1 grid-rows-2 gap-2 sm:grid-cols-3 sm:grid-rows-1">
-		{#key disciplineAPowers || disciplineBPowers}
-			{#if disciplineBPowers.length < 2}
+		{#key disciplineA?.powers || disciplineB?.powers}
+			{#if (disciplineB?.powers?.length ?? 0) < 2}
 				<EditableDiscipline
 					disableDisciplinePowerSelection={disableDisciplinePowerSelectionForGhouls()}
 					disableDots={true}
-					disciplineValue={getDisciplineValue(disciplineA)}
+					discipline={disciplineA}
 					disciplines={getValidDisciplines(selectedClan, true)}
 					dotList={[1, 2]}
 					hideDotDisplay={true}
 					label="Discipline A"
-					selectedDiscipline={disciplineA}
-					selectedValue={2}
 					showDisciplinePowerDeleteButton={true}
-					showOnlyFirstPower={disciplineBPowers.length >= 1}
+					showOnlyFirstPower={(disciplineB?.powers?.length ?? 0) >= 1}
 					on:disciplineChange={adjustSelectionBox}
-					on:disciplinePowerChange={(event) => {
-						if (event.detail.name && !disciplineAPowers.some((p) => p === event.detail.name)) {
-							disciplineAPowers = [...disciplineAPowers, event.detail.name];
-						} else if (event.detail.name) {
-							disciplineAPowers = disciplineAPowers.filter((p) => p !== event.detail.name);
-						}
-					}}
+					on:disciplinePowerChange={(event) => updateDisciplinePower(disciplineA, event)}
 				/>
 			{/if}
 
-			{#if disciplineAPowers.length < 2}
+			{#if disciplineA && disciplineA.powers.length < 2}
 				<EditableDiscipline
 					disableDisciplinePowerSelection={disableDisciplinePowerSelectionForGhouls()}
 					disableDots={true}
-					disciplineValue={getDisciplineValue(disciplineB)}
+					discipline={disciplineB}
 					disciplines={getValidDisciplines(selectedClan, true)}
 					dotList={[1, 2]}
 					hideDotDisplay={true}
 					label="Discipline B"
-					selectedDiscipline={disciplineB}
-					selectedValue={2}
 					showDisciplinePowerDeleteButton={true}
-					showOnlyFirstPower={disciplineAPowers.length >= 1}
+					showOnlyFirstPower={disciplineA.powers.length >= 1}
 					on:disciplineChange={adjustSelectionBox}
-					on:disciplinePowerChange={(event) => {
-						if (event.detail.name && !disciplineBPowers.some((p) => p === event.detail.name)) {
-							disciplineBPowers = [...disciplineBPowers, event.detail.name];
-						} else if (event.detail.name) {
-							disciplineBPowers = disciplineBPowers.filter((p) => p !== event.detail.name);
-						}
-					}}
+					on:disciplinePowerChange={(event) => updateDisciplinePower(disciplineB, event)}
 				/>
 			{/if}
 		{/key}
@@ -255,17 +252,15 @@
 	{/if}
 {:else}
 	<div class="grid grid-cols-1 grid-rows-3 gap-2 sm:grid-cols-3 sm:grid-rows-1">
-		{#key disciplineA}
-			{#if disciplineA === 'Blood Sorcery'}
+		{#key disciplineA?.name}
+			{#if disciplineA?.name === 'Blood Sorcery'}
 				<div class="flex flex-col gap-4">
 					<EditableDiscipline
 						disableDots={true}
-						disciplineValue={getDisciplineValue(disciplineA)}
+						discipline={disciplineA}
 						disciplines={getValidDisciplines(selectedClan, true)}
 						dotList={[1, 2]}
 						label="Discipline A"
-						selectedDiscipline={disciplineA}
-						selectedValue={2}
 						on:disciplineChange={adjustSelectionBox}
 						on:disciplineValueChange={adjustDisciplineValue}
 					/>
@@ -281,16 +276,14 @@
 						on:deleteRitualPower={(e) => deleteBloodSorceryRitualPowers(e)}
 					/>
 				</div>
-			{:else if disciplineA === 'Oblivion'}
+			{:else if disciplineA?.name === 'Oblivion'}
 				<div class="flex flex-col gap-4">
 					<EditableDiscipline
 						disableDots={true}
-						disciplineValue={getDisciplineValue(disciplineA)}
+						discipline={disciplineA}
 						disciplines={getValidDisciplines(selectedClan, true)}
 						dotList={[1, 2]}
 						label="Discipline A"
-						selectedDiscipline={disciplineA}
-						selectedValue={2}
 						on:disciplineChange={adjustSelectionBox}
 						on:disciplineValueChange={adjustDisciplineValue}
 					/>
@@ -309,28 +302,26 @@
 			{:else}
 				<EditableDiscipline
 					disableDots={true}
-					disciplineValue={getDisciplineValue(disciplineA)}
+					discipline={disciplineA}
 					disciplines={getValidDisciplines(selectedClan, true)}
 					dotList={[1, 2]}
+					editModeEnabled={true}
+					initSelectedValue={2}
 					label="Discipline A"
-					selectedDiscipline={disciplineA}
-					selectedValue={2}
 					on:disciplineChange={adjustSelectionBox}
 				/>
 			{/if}
 		{/key}
 
-		{#key disciplineB}
-			{#if disciplineB === 'Blood Sorcery'}
+		{#key disciplineB?.name}
+			{#if disciplineB?.name === 'Blood Sorcery'}
 				<div class="flex flex-col gap-4">
 					<EditableDiscipline
 						disableDots={true}
-						disciplineValue={getDisciplineValue(disciplineB)}
+						discipline={disciplineB}
 						disciplines={getValidDisciplines(selectedClan, true)}
 						dotList={[1]}
 						label="Discipline B"
-						selectedDiscipline={disciplineB}
-						selectedValue={1}
 						on:disciplineChange={adjustSelectionBox}
 					/>
 					<EditableBloodSorceryRitual
@@ -344,16 +335,14 @@
 						on:deleteRitualPower={(e) => deleteBloodSorceryRitualPowers(e)}
 					/>
 				</div>
-			{:else if disciplineB === 'Oblivion'}
+			{:else if disciplineB?.name === 'Oblivion'}
 				<div class="flex flex-col gap-4">
 					<EditableDiscipline
 						disableDots={true}
-						disciplineValue={getDisciplineValue(disciplineB)}
+						discipline={disciplineB}
 						disciplines={getValidDisciplines(selectedClan, true)}
 						dotList={[1]}
 						label="Discipline B"
-						selectedDiscipline={disciplineB}
-						selectedValue={1}
 						on:disciplineChange={adjustSelectionBox}
 						on:disciplineValueChange={adjustDisciplineValue}
 					/>
@@ -372,28 +361,25 @@
 			{:else}
 				<EditableDiscipline
 					disableDots={true}
-					disciplineValue={getDisciplineValue(disciplineB)}
+					discipline={disciplineB}
 					disciplines={getValidDisciplines(selectedClan, true)}
 					dotList={[1]}
+					editModeEnabled={true}
 					label="Discipline B"
-					selectedDiscipline={disciplineB}
-					selectedValue={1}
 					on:disciplineChange={adjustSelectionBox}
 				/>
 			{/if}
 		{/key}
 
-		{#key disciplineC}
-			{#if disciplineC === 'Blood Sorcery'}
+		{#key disciplineC?.name}
+			{#if disciplineC?.name === 'Blood Sorcery'}
 				<div class="flex flex-col gap-4">
 					<EditableDiscipline
 						disableDots={true}
-						disciplineValue={getDisciplineValue(disciplineC)}
+						discipline={disciplineC}
 						disciplines={getValidDisciplines(selectedClan)}
 						dotList={[1]}
 						label="Discipline C"
-						selectedDiscipline={disciplineC}
-						selectedValue={1}
 						on:disciplineChange={adjustSelectionBox}
 					/>
 					<EditableBloodSorceryRitual
@@ -407,16 +393,14 @@
 						on:deleteRitualPower={(e) => deleteBloodSorceryRitualPowers(e)}
 					/>
 				</div>
-			{:else if disciplineC === 'Oblivion'}
+			{:else if disciplineC?.name === 'Oblivion'}
 				<div class="flex flex-col gap-4">
 					<EditableDiscipline
 						disableDots={true}
-						disciplineValue={getDisciplineValue(disciplineC)}
+						discipline={disciplineC}
 						disciplines={getValidDisciplines(selectedClan, true)}
 						dotList={[1]}
 						label="Discipline C"
-						selectedDiscipline={disciplineC}
-						selectedValue={1}
 						on:disciplineChange={adjustSelectionBox}
 						on:disciplineValueChange={adjustDisciplineValue}
 					/>
@@ -435,12 +419,11 @@
 			{:else}
 				<EditableDiscipline
 					disableDots={true}
-					disciplineValue={getDisciplineValue(disciplineC)}
+					discipline={disciplineC}
 					disciplines={getValidDisciplines(selectedClan)}
 					dotList={[1]}
+					editModeEnabled={true}
 					label="Discipline C"
-					selectedDiscipline={disciplineC}
-					selectedValue={1}
 					on:disciplineChange={adjustSelectionBox}
 				/>
 			{/if}

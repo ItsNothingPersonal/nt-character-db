@@ -1,9 +1,10 @@
 <script lang="ts">
-	import type { Placement } from '@floating-ui/dom';
+	import { type Placement } from '@floating-ui/dom';
 	import { popup } from '@skeletonlabs/skeleton';
+	import { isMobileScreen } from '../../util/generalUtils';
 
 	export let id: string;
-	export let placement: Placement = 'bottom';
+	export let placement: Placement = isMobileScreen() ? 'bottom' : 'right-start';
 </script>
 
 <label
@@ -12,15 +13,15 @@
 	use:popup={{
 		event: 'click',
 		target: `popupHover-${id.replaceAll(' ', '_')}`,
-		placement: placement
+		placement: isMobileScreen() ? 'bottom' : placement
 	}}
 >
 	<slot />
 </label>
 <div
-	class="card variant-filled z-10 max-w-xl scroll-auto rounded-lg p-4"
+	class="card variant-filled z-10 max-h-[50vh] min-w-[30vh] max-w-lg overflow-y-auto overflow-x-hidden rounded-lg p-4 sm:max-h-[70vh] sm:max-w-xl"
 	data-popup="popupHover-{id.replaceAll(' ', '_')}"
 >
 	<slot name="helpText" />
-	<div class="variant-filled arrow" />
+	<div class="variant-ghost arrow" />
 </div>

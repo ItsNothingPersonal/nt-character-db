@@ -129,7 +129,7 @@
 					on:change={(event) => setAttribute(attributeName.parse(event.currentTarget.value))}
 				>
 					<option disabled selected value="">Select an Attribute</option>
-					{#each attributeName.options as attribute}
+					{#each attributeName.options.sort() as attribute}
 						<option value={attribute}>{attribute}</option>
 					{/each}
 				</select>

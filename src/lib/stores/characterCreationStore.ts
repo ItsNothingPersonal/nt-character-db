@@ -861,6 +861,7 @@ export class BackgroundPaymentStore {
 	}
 
 	canAddBackgroundAdvantage(
+		id: string | undefined,
 		background: BackgroundName,
 		advantage: BackgroundAdvantageName,
 		value: number,
@@ -878,13 +879,18 @@ export class BackgroundPaymentStore {
 
 			const loresheetAdvantagePointsLeft = this.getLoresheetPointsLeft(background);
 
+			const valueAlreadyPaid =
+				get(characterCreationStore)
+					.backgrounds.find((b) => b.id === id)
+					?.advantages?.find((a) => a.name === advantage)?.value ?? 0;
+
 			return (
 				predatorPointsLeft +
 					loresheetPointsLeft +
 					freebiePointsLeft +
 					predatorAdvantagePointsLeft +
 					loresheetAdvantagePointsLeft >=
-				value
+				value - valueAlreadyPaid
 			);
 		} else {
 			return true;

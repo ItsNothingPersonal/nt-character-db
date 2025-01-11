@@ -1,5 +1,4 @@
 <script lang="ts">
-	import P from '$lib/components/typography/p.svelte';
 	import { getHuntingTestPool } from '$lib/testPools/testPools';
 	import { clanConfig } from '../../config/clanConfig';
 	import { predatorTypeConfig } from '../../config/predatorTypeConfig';
@@ -26,11 +25,21 @@
 	</label>
 	<label class="label flex flex-col" for="generation">
 		<span>Generation</span>
-		<P id="generation">{$characterStore.generation}</P>
+		<p
+			id="generation"
+			class="variant-form-material chip m-0 mt-1 justify-start px-3 py-2 text-base"
+		>
+			{$characterStore.generation}
+		</p>
 	</label>
 	<label class="label flex flex-col" for="bloodPotency">
 		<span>Blood Potency</span>
-		<P id="bloodPotency">{$characterStore.bloodPotency}</P>
+		<p
+			id="bloodPotency"
+			class="variant-form-material chip m-0 mt-1 justify-start px-3 py-2 text-base"
+		>
+			{$characterStore.bloodPotency}
+		</p>
 	</label>
 	<LabelWithHelpText
 		id="predatorType"
@@ -48,7 +57,9 @@
 	/>
 	<label class="label flex flex-col" for="sect">
 		<span>Sect</span>
-		<P id="sect">{$characterStore.sect}</P>
+		<p id="sect" class="variant-form-material chip m-0 mt-1 justify-start px-3 py-2 text-base">
+			{$characterStore.sect}
+		</p>
 	</label>
 	<LabelWithHelpText
 		id="compulsion"
@@ -65,6 +76,11 @@
 
 	<label class="label flex flex-col" for="clanBaneSeverity">
 		<span>Clan Bane Severity</span>
-		<P id="clanBaneSeverity">1</P>
+		<p
+			id="clanBaneSeverity"
+			class="variant-form-material chip m-0 mt-1 justify-start px-3 py-2 text-base"
+		>
+			1
+		</p>
 	</label>
 </div>

@@ -89,9 +89,7 @@
 	}
 
 	function getAvailableSkills() {
-		return skillName.options.filter(
-			(e) => !$characterCreationStore.skills.some((s) => s.name === e)
-		);
+		return skillName.options.sort();
 	}
 </script>
 
@@ -146,20 +144,22 @@
 		<div class="flex flex-col gap-2">
 			{#key spendingPoints}
 				{#key selectedSkillSpecialization}
-					<select
-						class="select rounded-lg"
-						on:change={(event) => {
-							if (!hasSkillSpecializations(skillName.parse(event.currentTarget.value))) {
-								setSkill(skillName.parse(event.currentTarget.value));
-							}
-						}}
-						bind:value={selectedSkill}
-					>
-						<option disabled selected value="">Select a Skill</option>
-						{#each getAvailableSkills() as skill}
-							<option value={skill}>{skill}</option>
-						{/each}
-					</select>
+					{#key selectedSkill}
+						<select
+							class="select rounded-lg"
+							on:change={(event) => {
+								if (!hasSkillSpecializations(skillName.parse(event.currentTarget.value))) {
+									setSkill(skillName.parse(event.currentTarget.value));
+								}
+							}}
+							bind:value={selectedSkill}
+						>
+							<option disabled selected value="">Select a Skill</option>
+							{#each getAvailableSkills() as skill}
+								<option value={skill}>{skill}</option>
+							{/each}
+						</select>
+					{/key}
 				{/key}
 				{#if selectedSkill && hasSkillSpecializations(skillName.parse(selectedSkill))}
 					<label>
