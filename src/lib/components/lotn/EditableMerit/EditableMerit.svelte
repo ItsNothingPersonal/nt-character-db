@@ -168,7 +168,12 @@
 				dispatchChange('descriptionChange', { id: merit.id, description: merit.description });
 			}}
 		/>
-	{:else if meritHasLinkedSkills(merit)}
+	{:else if merit.description}
+		<p class="whitespace-pre-line text-sm">
+			{merit.description}
+		</p>
+	{/if}
+	{#if meritHasLinkedSkills(merit)}
 		{#if enableEditLinkedSkill}
 			<select
 				class="select mt-2 rounded-lg"
