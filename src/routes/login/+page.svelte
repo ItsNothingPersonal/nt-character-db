@@ -41,7 +41,7 @@
 </script>
 
 <div class="flex justify-center">
-	<div class="card mt-12 max-w-sm">
+	<div class="card mt-12 max-w-sm rounded-lg">
 		<header class="card-header flex flex-col items-center">
 			<Icon height={16} icon="material-symbols:code" width={16} />
 			<h2 class="text-base-content mt-2 text-center text-3xl font-bold tracking-tight">
@@ -79,14 +79,14 @@
 					/>
 				</div>
 				<div class="w-full max-w-xs pt-3">
-					<button class="variant-filled-primary btn w-full max-w-xs rounded-none" type="submit">
+					<button class="variant-filled-primary btn w-full max-w-xs rounded-lg" type="submit">
 						Login
 					</button>
 				</div>
 			</form>
 			<div class="w-full max-w-xs pt-3">
 				<button
-					class="variant-filled-secondary btn w-full max-w-xs rounded-none"
+					class="variant-filled-secondary btn w-full max-w-xs rounded-lg"
 					on:click={() => modalPasswortReset()}
 				>
 					Passwort vergessen
@@ -101,7 +101,7 @@
 					<div class="flex flex-col justify-center gap-2 text-center">
 						{#each data.authProviders as p}
 							<button
-								class="variant-filled btn rounded-none"
+								class="variant-filled btn rounded-lg"
 								type="button"
 								on:click={() => gotoAuthProvider(p)}
 							>

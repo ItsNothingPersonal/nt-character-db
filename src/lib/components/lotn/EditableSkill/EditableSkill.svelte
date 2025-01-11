@@ -4,7 +4,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import HelpText from '../characterSheet/components/HelpText.svelte';
 	import { createNumberList } from '../util/generalUtils';
-	import { getSkillHelptext, hasSkillSpecializations } from '../util/skillUtil';
+	import { getSkillHelptext } from '../util/skillUtil';
 
 	export let skill: PlayerSkill;
 	export let showDeleteButton: boolean = false;
@@ -34,7 +34,7 @@
 			{#if displayValue === 'below'}
 				<div class="flex flex-col">
 					<HelpText id={skill.name}>
-						<h3 class="h3">{skill.name}</h3>
+						<h3 class="h3 text-nowrap">{skill.name}</h3>
 						<svelte:fragment slot="helpText">
 							<p class="whitespace-pre-line">
 								{getSkillHelptext(skill.name)}
@@ -85,7 +85,7 @@
 			{:else}
 				<div class="flex gap-2">
 					<HelpText id={skill.name}>
-						<h3 class="h3">{skill.name}</h3>
+						<h3 class="h3 text-nowrap">{skill.name}</h3>
 						<svelte:fragment slot="helpText">
 							<p class="whitespace-pre-line">
 								{getSkillHelptext(skill.name)}
@@ -141,23 +141,28 @@
 				</button>
 			{/if}
 		</div>
+		{#if skill.specialization}
+			<section class="flex flex-col pt-0">
+				{#if editModeEnabled}
+					<label>
+						<span class="font-bold">Specialization</span>
+						<input
+							id="name"
+							class="input variant-form-material"
+							disabled={!editModeEnabled}
+							type="text"
+							value={skill.specialization ?? ''}
+							on:blur={(event) =>
+								dispatchChange('specializationChange', {
+									label: skill.name,
+									specialization: event.currentTarget.value
+								})}
+						/>
+					</label>
+				{:else}
+					<p class="whitespace-pre-line text-sm">{skill.specialization}</p>
+				{/if}
+			</section>
+		{/if}
 	</header>
-	{#if hasSkillSpecializations(skill.name)}
-		<section class="flex flex-col p-4 pt-0">
-			<label>
-				Specialization
-				<input
-					id="name"
-					class="input variant-form-material"
-					type="text"
-					value={skill.specialization ?? ''}
-					on:blur={(event) =>
-						dispatchChange('specializationChange', {
-							label: skill.name,
-							specialization: event.currentTarget.value
-						})}
-				/>
-			</label>
-		</section>
-	{/if}
 </div>

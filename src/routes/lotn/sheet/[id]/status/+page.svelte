@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { characterStore } from '$lib/components/lotn/characterSheet/characterStore';
-	import Tracker from '$lib/components/tracker/tracker.svelte';
+	import Tracker from '$lib/components/lotn/trackers/tracker/tracker.svelte';
 	import HttpStatusCode from '$lib/httpStatusCode';
 	import { playerCharacterSelectionStore } from '$lib/stores/selectionStore';
 	import type { SectName } from '$lib/zod/lotn/enums/sectName';

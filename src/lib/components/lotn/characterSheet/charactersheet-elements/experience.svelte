@@ -1,6 +1,6 @@
 <script lang="ts">
-	import ValueNumber from '$lib/components/valueNumber/valueNumber.svelte';
 	import type { PlayerExperience } from '$lib/zod/lotn/playerCharacter/playerExperience';
+	import LabelWithHelpText from '../components/LabelWithHelpText.svelte';
 	export let experience: PlayerExperience[];
 
 	$: gained = experience
@@ -15,8 +15,28 @@
 </script>
 
 <div class="mb-4 grid w-full grid-cols-2 gap-2 sm:grid-cols-4">
-	<ValueNumber label="Start" value={20} />
-	<ValueNumber label="Gained" value={gained} />
-	<ValueNumber label="Spent" value={spent} />
-	<ValueNumber label="Remaining" value={left} />
+	<LabelWithHelpText
+		id="experience"
+		helpText="You gain 20 experience points at the start of the game."
+		label="Start"
+		text={20}
+	/>
+	<LabelWithHelpText
+		id="gained"
+		helpText="This is the total amount of experience you have gained."
+		label="Gained"
+		text={gained}
+	/>
+	<LabelWithHelpText
+		id="spent"
+		helpText="This is the total amount of experience you have spent."
+		label="Spent"
+		text={spent}
+	/>
+	<LabelWithHelpText
+		id="remaining"
+		helpText="This is the amount of experience you have left to spend."
+		label="Remaining"
+		text={left}
+	/>
 </div>

@@ -8,7 +8,7 @@
 	} from '$lib/zod/lotn/util';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import HelpText from '../characterSheet/components/HelpText.svelte';
-	import { getDisciplinePowerConfigsForDiscipline } from '../util/disciplines';
+	import { getDisciplinePower, getDisciplinePowerConfigsForDiscipline } from '../util/disciplines';
 	import { joinWithOr } from '../util/generalUtils';
 
 	export let dot: number;
@@ -20,15 +20,17 @@
 		| undefined;
 	export let disableDisciplinePowerSelection: boolean = false;
 	export let showDeleteButton: boolean = false;
+	export let editModeEnabled: boolean = false;
+
+	$: disciplinePowerConfig = selectedDisciplinePower
+		? getDisciplinePower(selectedDiscipline, selectedDisciplinePower)
+		: undefined;
 
 	onMount(() => {
 		previousDisciplinePower = selectedDisciplinePower;
 	});
 
 	let previousDisciplinePower: NormalDisciplinePowerUnion | RitualDisciplinePowerUnion | undefined;
-	$: disciplinePowerConfig = getDisciplinePowerConfigsForDiscipline(selectedDiscipline).find(
-		(e) => e.name === selectedDisciplinePower
-	);
 
 	const dispatchChange = createEventDispatcher<{
 		disciplinePowerChange: {
@@ -129,114 +131,181 @@
 	}
 </script>
 
-<label class="label">
-	<span>Power {dot}</span>
-	<select
-		class="select rounded-lg"
-		disabled={disableDisciplinePowerSelection}
-		bind:value={selectedDisciplinePower}
-		on:change={() => {
-			if (selectedDiscipline && selectedDisciplinePower) {
-				addDisciplinePower(selectedDiscipline, selectedDisciplinePower, previousDisciplinePower);
-				previousDisciplinePower = selectedDisciplinePower;
+{#if editModeEnabled}
+	<label class="label">
+		<span>Power {dot}</span>
+		<select
+			class="select rounded-lg"
+			disabled={disableDisciplinePowerSelection}
+			bind:value={selectedDisciplinePower}
+			on:change={() => {
+				if (selectedDiscipline && selectedDisciplinePower) {
+					addDisciplinePower(selectedDiscipline, selectedDisciplinePower, previousDisciplinePower);
+					previousDisciplinePower = selectedDisciplinePower;
 
-				dispatchChange('disciplinePowerChange', { name: selectedDisciplinePower });
-			}
-		}}
-	>
-		<option disabled selected value={undefined}> Please select a power for that discipline </option>
+					dispatchChange('disciplinePowerChange', { name: selectedDisciplinePower });
+				}
+			}}
+		>
+			<option disabled selected value={undefined}>
+				Please select a power for that discipline
+			</option>
 
-		{#each getDisciplinePowers(selectedDiscipline, dot) as disciplinePower}
-			{#if disciplinePower.data?.level}
-				<option
-					selected={selectedDisciplinePower === disciplinePower.name}
-					value={disciplinePower.name}
-				>
-					{disciplinePower.name} (Level: {disciplinePower.data?.level})
-				</option>
-			{:else}
-				<option
-					selected={selectedDisciplinePower === disciplinePower.name}
-					value={disciplinePower.name}
-				>
-					{disciplinePower.name}
-				</option>
+			{#each getDisciplinePowers(selectedDiscipline, dot) as disciplinePower}
+				{#if disciplinePower.data?.level}
+					<option
+						selected={selectedDisciplinePower === disciplinePower.name}
+						value={disciplinePower.name}
+					>
+						{disciplinePower.name} (Level: {disciplinePower.data?.level})
+					</option>
+				{:else}
+					<option
+						selected={selectedDisciplinePower === disciplinePower.name}
+						value={disciplinePower.name}
+					>
+						{disciplinePower.name}
+					</option>
+				{/if}
+			{/each}
+		</select>
+
+		{#if disciplinePowerConfig && selectedDisciplinePower}
+			<div class="flex">
+				<HelpText id={selectedDisciplinePower}>
+					<p class="underline decoration-dotted">Power-Description</p>
+					<svelte:fragment slot="helpText">
+						{#if disciplinePowerConfig.amalgam}
+							<p class="whitespace-pre-line">
+								<span class="font-bold">Amalgam:</span>
+								{disciplinePowerConfig.amalgam.name}
+								{disciplinePowerConfig.amalgam.value}
+							</p>
+						{/if}
+						{#if disciplinePowerConfig.challengePool}
+							<p class="whitespace-pre-line">
+								<span class="font-bold">Challenge Pool:</span>
+								{#if typeof disciplinePowerConfig.challengePool.defender === 'string'}
+									{disciplinePowerConfig.challengePool.attacker.attribute} + {disciplinePowerConfig
+										.challengePool.attacker.skill} vs {disciplinePowerConfig.challengePool.defender}
+								{:else if 'skillOrAttribute' in disciplinePowerConfig.challengePool}
+									{disciplinePowerConfig.challengePool.attacker.attribute} + {disciplinePowerConfig
+										.challengePool.attacker.skill} vs {`${disciplinePowerConfig.challengePool.defender.attribute} + ${disciplinePowerConfig.challengePool.skillOrAttribute}`}
+								{/if}
+
+								{#if disciplinePowerConfig.challengePool.hint}
+									{disciplinePowerConfig.challengePool.hint}
+								{/if}
+							</p>
+						{/if}
+						<p class="whitespace-pre-line">
+							<span class="font-bold">Cost:</span>
+							{disciplinePowerConfig.cost}
+						</p>
+						{#if disciplinePowerConfig && 'prerequisite' in disciplinePowerConfig}
+							<p class="whitespace-pre-line">
+								<span class="font-bold">Prerequisite:</span>
+								{#if Array.isArray(disciplinePowerConfig.prerequisite)}
+									{joinWithOr(disciplinePowerConfig.prerequisite)}
+								{:else if typeof disciplinePowerConfig.prerequisite !== 'string' && disciplinePowerConfig.prerequisite?.main && disciplinePowerConfig.prerequisite.or}
+									{disciplinePowerConfig.prerequisite.main} and either {joinWithOr(
+										disciplinePowerConfig.prerequisite.or
+									)}
+								{:else}
+									{disciplinePowerConfig.prerequisite}
+								{/if}
+							</p>
+						{/if}
+						<p class="whitespace-pre-line">
+							{disciplinePowerConfig.system}
+						</p>
+						<p class="whitespace-pre-line">
+							<span class="font-bold">Duration:</span>
+							{disciplinePowerConfig.duration}
+						</p>
+					</svelte:fragment>
+				</HelpText>
+				{#if showDeleteButton}
+					<button
+						class="variant-filled-primary btn ml-auto w-3 rounded-lg"
+						type="button"
+						on:click={() => {
+							if (selectedDiscipline && selectedDisciplinePower) {
+								deleteDisciplinePower(selectedDiscipline, selectedDisciplinePower);
+								dispatchChange('disciplinePowerChange', { name: selectedDisciplinePower });
+								selectedDisciplinePower = undefined;
+								previousDisciplinePower = undefined;
+							}
+						}}
+					>
+						<iconify-icon height="12" icon="mdi:remove" />
+					</button>
+				{/if}
+			</div>
+		{/if}
+	</label>
+{:else if selectedDisciplinePower && disciplinePowerConfig}
+	<HelpText id={selectedDisciplinePower}>
+		<span id={selectedDisciplinePower}>
+			{selectedDisciplinePower} (Level: {disciplinePowerConfig.level})
+		</span>
+		<svelte:fragment slot="helpText">
+			{#if disciplinePowerConfig.amalgam}
+				<p class="whitespace-pre-line">
+					<span class="font-bold">Amalgam:</span>
+					{disciplinePowerConfig.amalgam.name}
+					{disciplinePowerConfig.amalgam.value}
+				</p>
 			{/if}
-		{/each}
-	</select>
+			{#if disciplinePowerConfig.challengePool}
+				<p class="whitespace-pre-line">
+					<span class="font-bold">Challenge Pool:</span>
+					{#if typeof disciplinePowerConfig.challengePool.defender === 'string'}
+						{disciplinePowerConfig.challengePool.attacker.attribute} + {disciplinePowerConfig
+							.challengePool.attacker.skill} vs {disciplinePowerConfig.challengePool.defender}
+					{:else}
+						{disciplinePowerConfig.challengePool.attacker.attribute} + {disciplinePowerConfig
+							.challengePool.attacker.skill} vs {`${disciplinePowerConfig.challengePool.defender.attribute} + ${disciplinePowerConfig.challengePool.defender.skillOrAttribute}`}
+					{/if}
 
-	{#if disciplinePowerConfig && selectedDisciplinePower}
-		<div class="flex">
-			<HelpText id={selectedDisciplinePower}>
-				<p class="underline decoration-dotted">Power-Description</p>
-				<svelte:fragment slot="helpText">
-					{#if disciplinePowerConfig.amalgam}
-						<p class="whitespace-pre-line">
-							<span class="font-bold">Amalgam:</span>
-							{disciplinePowerConfig.amalgam.name}
-							{disciplinePowerConfig.amalgam.value}
-						</p>
+					{#if disciplinePowerConfig.challengePool.hint}
+						{disciplinePowerConfig.challengePool.hint}
 					{/if}
-					{#if disciplinePowerConfig.data?.challengePool}
-						<p class="whitespace-pre-line">
-							<span class="font-bold">Challenge Pool:</span>
-							{#if typeof disciplinePowerConfig.data.challengePool.defender === 'string'}
-								{disciplinePowerConfig.data.challengePool.attacker.attribute} + {disciplinePowerConfig
-									.data.challengePool.attacker.skill} vs {disciplinePowerConfig.data.challengePool
-									.defender}
-							{:else if 'skillOrAttribute' in disciplinePowerConfig.data.challengePool}
-								{disciplinePowerConfig.data.challengePool.attacker.attribute} + {disciplinePowerConfig
-									.data.challengePool.attacker.skill} vs {`${disciplinePowerConfig.data.challengePool.defender.attribute} + ${disciplinePowerConfig.data.challengePool.skillOrAttribute}`}
-							{/if}
-
-							{#if disciplinePowerConfig.data.challengePool.hint}
-								{disciplinePowerConfig.data.challengePool.hint}
-							{/if}
-						</p>
-					{/if}
-					<p class="whitespace-pre-line">
-						<span class="font-bold">Cost:</span>
-						{disciplinePowerConfig.data?.cost}
-					</p>
-					{#if disciplinePowerConfig.data && 'prerequisite' in disciplinePowerConfig.data}
-						<p class="whitespace-pre-line">
-							<span class="font-bold">Prerequisite:</span>
-							{#if Array.isArray(disciplinePowerConfig.data.prerequisite)}
-								{joinWithOr(disciplinePowerConfig.data.prerequisite)}
-							{:else if typeof disciplinePowerConfig.data.prerequisite !== 'string' && disciplinePowerConfig.data.prerequisite?.main && disciplinePowerConfig.data.prerequisite.or}
-								{disciplinePowerConfig.data.prerequisite.main} and either {joinWithOr(
-									disciplinePowerConfig.data.prerequisite.or
-								)}
-							{:else}
-								{disciplinePowerConfig.data.prerequisite}
-							{/if}
-						</p>
-					{/if}
-					<p class="whitespace-pre-line">
-						{disciplinePowerConfig.data?.system}
-					</p>
-					<p class="whitespace-pre-line">
-						<span class="font-bold">Duration:</span>
-						{disciplinePowerConfig.data?.duration}
-					</p>
-				</svelte:fragment>
-			</HelpText>
-			{#if showDeleteButton}
-				<button
-					class="variant-filled-primary btn ml-auto w-3 rounded-lg"
-					type="button"
-					on:click={() => {
-						if (selectedDiscipline && selectedDisciplinePower) {
-							deleteDisciplinePower(selectedDiscipline, selectedDisciplinePower);
-							dispatchChange('disciplinePowerChange', { name: selectedDisciplinePower });
-							selectedDisciplinePower = undefined;
-							previousDisciplinePower = undefined;
-						}
-					}}
-				>
-					<iconify-icon height="12" icon="mdi:remove" />
-				</button>
+				</p>
 			{/if}
-		</div>
-	{/if}
-</label>
+			<p class="whitespace-pre-line">
+				<span class="font-bold">Cost:</span>
+				{disciplinePowerConfig.cost}
+			</p>
+			{#if 'prerequisite' in disciplinePowerConfig && disciplinePowerConfig.prerequisite}
+				<p class="whitespace-pre-line">
+					<span class="font-bold">Prerequisite:</span>
+					{#if Array.isArray(disciplinePowerConfig.prerequisite)}
+						{joinWithOr(disciplinePowerConfig.prerequisite)}
+					{:else if typeof disciplinePowerConfig.prerequisite !== 'string'}
+						{disciplinePowerConfig.prerequisite.main} and either {joinWithOr(
+							disciplinePowerConfig.prerequisite.or
+						)}
+					{:else}
+						{disciplinePowerConfig.prerequisite}
+					{/if}
+				</p>
+			{/if}
+			<p class="whitespace-pre-line">
+				<span class="font-bold">System:</span>
+				{disciplinePowerConfig.system}
+			</p>
+			<p class="whitespace-pre-line">
+				<span class="font-bold">Duration:</span>
+				{disciplinePowerConfig.duration}
+			</p>
+		</svelte:fragment>
+	</HelpText>
+{:else}
+	<p>
+		{selectedDisciplinePower}
+	</p>
+	<p>
+		{JSON.stringify({ disciplinePowerConfig })}
+	</p>
+{/if}

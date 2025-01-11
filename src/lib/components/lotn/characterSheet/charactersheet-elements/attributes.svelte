@@ -1,72 +1,61 @@
 <script lang="ts">
-	import ValueRating from '$lib/components/lotn/characterSheet/components/ValueRating.svelte';
-	import { get } from 'svelte/store';
-	import { attributeConfig } from '../../config/attributeConfig';
+	import EditableAttribute from '../../EditableAttributes/EditableAttribute.svelte';
 	import { characterStore } from '../characterStore';
 </script>
 
 <div class="grid auto-rows-auto grid-cols-1 gap-2 lg:grid-cols-3">
 	<div class="flex flex-col gap-2">
 		<h3 class="h3">Physical</h3>
-		<ValueRating
-			helpText={attributeConfig.physical.strength.helptext}
-			label="Strength"
-			start={get(characterStore).attributes.physical_strength}
-			bind:value={$characterStore.attributes.physical_strength}
+		<EditableAttribute
+			attributeName="Strength"
+			attributeValue={$characterStore.attributes.physical_strength}
+			displayStyle="dots"
 		/>
-		<ValueRating
-			helpText={attributeConfig.physical.dexterity.helptext}
-			label="Dexterity"
-			start={get(characterStore).attributes.physical_dexterity}
-			bind:value={$characterStore.attributes.physical_dexterity}
+		<EditableAttribute
+			attributeName="Dexterity"
+			attributeValue={$characterStore.attributes.physical_dexterity}
+			displayStyle="dots"
 		/>
-		<ValueRating
-			helpText={attributeConfig.physical.stamina.helptext}
-			label="Stamina"
-			start={get(characterStore).attributes.physical_stamina}
-			bind:value={$characterStore.attributes.physical_stamina}
+		<EditableAttribute
+			attributeName="Stamina"
+			attributeValue={$characterStore.attributes.physical_stamina}
+			displayStyle="dots"
 		/>
 	</div>
 	<div class="flex flex-col gap-2">
 		<h3 class="h3">Social</h3>
-		<ValueRating
-			helpText={attributeConfig.social.charisma.helptext}
-			label="Charisma"
-			start={get(characterStore).attributes.social_charisma}
-			bind:value={$characterStore.attributes.social_charisma}
+		<EditableAttribute
+			attributeName="Charisma"
+			attributeValue={$characterStore.attributes.social_charisma}
+			displayStyle="dots"
 		/>
-		<ValueRating
-			helpText={attributeConfig.social.manipulation.helptext}
-			label="Manipulation"
-			start={get(characterStore).attributes.social_manipulation}
-			bind:value={$characterStore.attributes.social_manipulation}
+		<EditableAttribute
+			attributeName="Manipulation"
+			attributeValue={$characterStore.attributes.social_manipulation}
+			displayStyle="dots"
 		/>
-		<ValueRating
-			helpText={attributeConfig.social.composure.helptext}
-			label="Composure"
-			start={get(characterStore).attributes.social_composure}
-			bind:value={$characterStore.attributes.social_composure}
+		<EditableAttribute
+			attributeName="Composure"
+			attributeValue={$characterStore.attributes.social_composure}
+			displayStyle="dots"
 		/>
 	</div>
 	<div class="flex flex-col gap-2">
 		<h3 class="h3">Mental</h3>
-		<ValueRating
-			helpText={attributeConfig.mental.intelligence.helptext}
-			label="Intelligence"
-			start={get(characterStore).attributes.mental_intelligence}
-			bind:value={$characterStore.attributes.mental_intelligence}
+		<EditableAttribute
+			attributeName="Intelligence"
+			attributeValue={$characterStore.attributes.mental_intelligence}
+			displayStyle="dots"
 		/>
-		<ValueRating
-			helpText={attributeConfig.mental.wits.helptext}
-			label="Wits"
-			start={get(characterStore).attributes.mental_wits}
-			bind:value={$characterStore.attributes.mental_wits}
+		<EditableAttribute
+			attributeName="Wits"
+			attributeValue={$characterStore.attributes.mental_wits}
+			displayStyle="dots"
 		/>
-		<ValueRating
-			helpText={attributeConfig.mental.resolve.helptext}
-			label="Resolve"
-			start={get(characterStore).attributes.mental_resolve}
-			bind:value={$characterStore.attributes.mental_resolve}
+		<EditableAttribute
+			attributeName="Resolve"
+			attributeValue={$characterStore.attributes.mental_resolve}
+			displayStyle="dots"
 		/>
 	</div>
 </div>

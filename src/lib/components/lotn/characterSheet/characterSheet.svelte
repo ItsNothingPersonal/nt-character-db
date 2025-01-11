@@ -4,7 +4,8 @@
 	import { characterStore } from './characterStore';
 	import BaseInformation from './charactersheet-elements/baseInformation.svelte';
 
-	import Loresheet from './charactersheet-elements/Loresheet.svelte';
+	import EditableLoresheet from '../EditableLoresheet/EditableLoresheet.svelte';
+	import Moralities from './charactersheet-elements/Moralities.svelte';
 	import Attributes from './charactersheet-elements/attributes.svelte';
 	import Backgrounds from './charactersheet-elements/backgrounds.svelte';
 	import Ceremonies from './charactersheet-elements/ceremonies.svelte';
@@ -72,13 +73,21 @@
 			<Backgrounds />
 		</svelte:fragment>
 	</AccordionItem>
+	<AccordionItem {autocollapse} {open}>
+		<svelte:fragment slot="summary">
+			<h2 class="h2">Convictions & Touchstones</h2>
+		</svelte:fragment>
+		<svelte:fragment slot="content">
+			<Moralities />
+		</svelte:fragment>
+	</AccordionItem>
 	{#if $characterStore.loresheet}
 		<AccordionItem {autocollapse} {open}>
 			<svelte:fragment slot="summary">
 				<h2 class="h2">Loresheet</h2>
 			</svelte:fragment>
 			<svelte:fragment slot="content">
-				<Loresheet />
+				<EditableLoresheet selectedLoresheet={$characterStore.loresheet} />
 			</svelte:fragment>
 		</AccordionItem>
 	{/if}

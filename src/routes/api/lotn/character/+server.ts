@@ -421,7 +421,6 @@ export async function POST({ locals, request, fetch }) {
 		humanityRequestBodyDB.status !== HttpStatusCode.OK ||
 		experienceRequestBodyDB.status !== HttpStatusCode.OK
 	) {
-		console.warn(`error found! deleting ${baseResult.id}`);
 		fetch(`/api/lotn/character`, {
 			method: 'DELETE',
 			body: JSON.stringify({ id: baseResult.id })

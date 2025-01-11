@@ -12,6 +12,7 @@
 	import type { BackgroundDisadvantageName } from '$lib/zod/lotn/enums/backgroundDisadvantageName';
 	import type { PlayerBackground } from '$lib/zod/lotn/playerCharacter/playerBackground';
 	import type { PlayerBackgroundDisadvantage } from '$lib/zod/lotn/playerCharacter/playerBackgroundDisdvantage';
+	import type { Placement } from '@floating-ui/dom';
 	import { Ratings } from '@skeletonlabs/skeleton';
 	import { createEventDispatcher } from 'svelte';
 	import { interactiveModeStore } from '../../interactiveModeStore';
@@ -30,6 +31,7 @@
 		| MaskConfigSchema
 		| ResourcesConfigSchema;
 	export let showDeleteButton: boolean = false;
+	export let placement: Placement = 'right-start';
 
 	let { paymentStore } = backgroundPaymentStore;
 	const description = getDescription(disadvantage.name);
@@ -84,11 +86,11 @@
 </script>
 
 <label
-	class={`label grid w-full grid-cols-[1fr_1fr_45px] grid-rows-1 gap-2`}
+	class={`label grid w-full ${showDeleteButton ? 'grid-cols-[1fr_1fr_45px]' : 'grid-cols-2'} grid-rows-1 gap-2`}
 	for={`${background.id}-${disadvantage.name}`}
 >
 	{#if description}
-		<HelpText id={`${background.id}-${disadvantage.name}`}>
+		<HelpText id={`${background.id}-${disadvantage.name}`} {placement}>
 			<span id={`${background.id}-${disadvantage.name}`}>
 				{disadvantage.name}
 			</span>

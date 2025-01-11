@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
+	import { characterStore } from '$lib/components/lotn/characterSheet/characterStore';
 	import HelpText from '$lib/components/lotn/characterSheet/components/HelpText.svelte';
-	import Tracker from '$lib/components/tracker/tracker.svelte';
+	import Tracker from '$lib/components/lotn/trackers/tracker/tracker.svelte';
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
 	import { getHealthTotal, getInitiative, getSkillValueByName, getWillpowerTotal } from '$lib/util';
 	import { playerCharacter } from '$lib/zod/lotn/playerCharacter/playerCharacter';
@@ -26,6 +27,7 @@
 				const result = playerCharacter.safeParse(await response.json());
 				if (result.success) {
 					submitting = false;
+					characterStore.set(result.data);
 					goto(`${base}/lotn/sheet/${result.data.id}`, { replaceState: true });
 				} else {
 					responseMessage = JSON.stringify(result.error.errors, undefined, 2);

@@ -18,6 +18,7 @@ export function createNumberList(max: number | undefined, min: number = 1) {
 	return Array.from({ length: max - min + 1 }, (_, i) => min + i);
 }
 
-export function isMobileScreen(): boolean {
-	return window.matchMedia('(max-width: 767px)').matches;
+export function isMobileScreen(breakpoint: string = '(max-width: 768px)'): boolean {
+	if (typeof window === 'undefined') return false;
+	return window.matchMedia(breakpoint).matches;
 }

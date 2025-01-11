@@ -15,7 +15,11 @@
 	import EditableThinBloodAlchemy from '$lib/components/lotn/EditableThinBloodAlchemy/EditableThinBloodAlchemy.svelte';
 	import Tracker from '$lib/components/lotn/trackers/tracker/tracker.svelte';
 	import { mapAttributeNameToProperty } from '$lib/components/lotn/util/attributesUtil';
-	import { addBackground, canOnlyBeBoughtOnce } from '$lib/components/lotn/util/backgroundUtil';
+	import {
+		addBackground,
+		canOnlyBeBoughtOnce,
+		updateBackgroundAdvantageValue
+	} from '$lib/components/lotn/util/backgroundUtil';
 	import {
 		addBloodSorceryRitualPowers,
 		addOblivionCeremonyPowers,
@@ -38,6 +42,7 @@
 		checkForMerits
 	} from '$lib/components/lotn/util/loresheetUtil';
 	import {
+		displaySpecificMeritDescription,
 		getApplicableMeritLevels,
 		getValidMerits,
 		hasBeenGrantedByLoresheet,
@@ -555,6 +560,13 @@
 				];
 			}
 
+			updateBackgroundAdvantageValue(
+				event.detail.backgroundId,
+				event.detail.advantageId,
+				event.detail.name,
+				event.detail.value
+			);
+
 			return store;
 		});
 	}
@@ -568,6 +580,10 @@
 
 			if (!store.backgrounds[backgroundIndex].advantages) return store;
 
+			const removeAdvantage = store.backgrounds[backgroundIndex].advantages?.find(
+				(advantage) => advantage.name === event.detail.advantageName
+			);
+
 			store.backgrounds[backgroundIndex].advantages = store.backgrounds[
 				backgroundIndex
 			].advantages?.filter((advantage) => advantage.name !== event.detail.advantageName);
@@ -576,9 +592,8 @@
 				store.backgrounds[backgroundIndex].advantages = undefined;
 			}
 
-			store.experience = store.experience.filter(
-				(exp) => !exp.reason.match(`Background Advantage ${event.detail.advantageName}`)
-			);
+			store.experience = store.experience.filter((exp) => exp.element_id !== removeAdvantage?.id);
+
 			return store;
 		});
 
@@ -660,6 +675,7 @@
 
 			let oldValue = store.merits[toEditIndex].value;
 			store.merits[toEditIndex].value = event.detail.value;
+
 			if (oldValue > event.detail.value) {
 				cleanUpExperienceLogFlat(
 					event.detail.id,
@@ -1543,12 +1559,13 @@
 			{#each $characterCreationStore.backgrounds as background}
 				<EditableBackground
 					{background}
+					editModeEnabled={true}
 					editModeEnabledAdvantages={true}
 					mode="experience"
-					on:change={(e) => updateBackground(e)}
-					on:deleteClick={(e) => deleteBackground(e)}
-					on:advantageClick={(e) => updateBackgroundAdvantage(e)}
-					on:advantageDeleteClick={(e) => deleteBackgroundAdvantage(e)}
+					on:change={updateBackground}
+					on:deleteClick={deleteBackground}
+					on:advantageClick={updateBackgroundAdvantage}
+					on:advantageDeleteClick={deleteBackgroundAdvantage}
 				/>
 			{/each}
 		</div>
@@ -1556,12 +1573,10 @@
 		<div class="grid grid-cols-1 grid-rows-1 gap-2 sm:grid-cols-3">
 			{#each $characterCreationStore.merits as merit}
 				<EditableMerit
-					displayStyle="numbers"
-					displayValue="below"
-					editModeEnabled={getApplicableMeritLevels(merit.name).length > 1}
-					editModeLinkedSkillEnabled={true}
+					enableEditValue={getApplicableMeritLevels(merit.name).length > 1}
 					{merit}
 					showDeleteButton={!hasBeenPaidWithDots(merit) && !hasBeenGrantedByLoresheet(merit)}
+					showDescriptionInput={displaySpecificMeritDescription(merit)}
 					on:linkedSkillChange={(e) => updateMeritLinkedSkill(e)}
 					on:descriptionChange={(e) => updateMeritDescription(e)}
 					on:valueChange={(e) => updateMeritValue(e)}
@@ -1585,8 +1600,9 @@
 				disableFirstOption={backgroundPaymentStore.hasLoresheetLevelBeenPaidWithDots(1)}
 				disableSecondOption={backgroundPaymentStore.hasLoresheetLevelBeenPaidWithDots(2)}
 				disableThirdOption={backgroundPaymentStore.hasLoresheetLevelBeenPaidWithDots(3)}
+				editModeEnabled={true}
 				enableLoresheetSelection={false}
-				selectedLoresheet={$characterCreationStore.loresheet.name}
+				selectedLoresheet={$characterCreationStore.loresheet}
 				on:toggleLoreSheetLevel={(event) => toggleLoresheetLevel(event)}
 			/>
 		{/if}
@@ -1627,7 +1643,7 @@
 				{#each $characterCreationStore.disciplines as discipline, index}
 					<EditableDiscipline
 						disableDisciplineSelection={index === 0 || index === 1 || index === 2}
-						disciplineValue={discipline.value}
+						{discipline}
 						disciplines={getValidDisciplines(
 							$characterCreationStore.clan,
 							false,
@@ -1637,9 +1653,8 @@
 							5,
 							disciplineFreebieStore.getDiscipline(discipline.name)?.value ?? 1
 						)}
+						editModeEnabled={true}
 						label={`Discipline ${index + 1}`}
-						selectedDiscipline={discipline.name}
-						selectedValue={discipline.value}
 						showDeleteButton={isNotFreebieDiscipline(discipline.name)}
 						on:disciplineChange={(e) => updateDiscipline(e)}
 						on:disciplineValueChange={(e) => updateDisciplineValue(e)}
@@ -1783,12 +1798,10 @@
 			{#each $characterCreationStore.disciplines as discipline, index}
 				<EditableDiscipline
 					disableDisciplineSelection={index === 0 || index === 1 || index === 2}
-					disciplineValue={$characterCreationStore.disciplines[index].value}
+					{discipline}
 					disciplines={getValidDisciplines($characterCreationStore.clan, true)}
 					dotList={createNumberList(5)}
 					label={`Discipline ${index + 1}`}
-					selectedDiscipline={discipline.name}
-					selectedValue={discipline.value}
 					showDeleteButton={isNotFreebieDiscipline(discipline.name)}
 					on:disciplineChange={(e) => updateDiscipline(e)}
 					on:disciplineValueChange={(e) => updateDisciplineValue(e)}

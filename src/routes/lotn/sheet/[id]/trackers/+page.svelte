@@ -1,13 +1,15 @@
 <script lang="ts">
 	import { characterStore } from '$lib/components/lotn/characterSheet/characterStore';
+	import { hungerConfig } from '$lib/components/lotn/config/hungerConfig';
+	import Tracker from '$lib/components/lotn/trackers/tracker/tracker.svelte';
 	import { isMortal } from '$lib/components/lotn/util/mortalUtil';
-	import Tracker from '$lib/components/tracker/tracker.svelte';
 	import { getHealthTotal, getWillpowerTotal } from '$lib/util';
 	import type { PlayerHealthUpdateRequestBody } from '$lib/zod/lotn/playerCharacter/playerHealth';
 	import {
 		playerHumanity,
 		type PlayerHumanity
 	} from '$lib/zod/lotn/playerCharacter/playerHumanity';
+	import type { PlayerHungerUpdateRequestBody } from '$lib/zod/lotn/playerCharacter/playerHunger';
 	import type { PlayerWillpowerUpdateRequestBody } from '$lib/zod/lotn/playerCharacter/playerWillpower';
 	import { get } from 'svelte/store';
 
@@ -136,10 +138,45 @@
 
 		updating = false;
 	}
+
+	async function changeHunger(value: number, type: 'add' | 'substract') {
+		updating = true;
+
+		const updateBody: PlayerHungerUpdateRequestBody = {
+			character_id: $characterStore.id,
+			updateData: {
+				value:
+					type === 'add'
+						? $characterStore.hunger.value + value
+						: $characterStore.hunger.value - value
+			}
+		};
+
+		const response = await fetch(`/api/lotn/character/hunger`, {
+			method: 'PUT',
+			body: JSON.stringify(updateBody)
+		});
+
+		if (response.ok) {
+			if (type === 'add') {
+				characterStore.update((store) => {
+					store.hunger.value++;
+					return store;
+				});
+			} else {
+				characterStore.update((store) => {
+					store.hunger.value--;
+					return store;
+				});
+			}
+		}
+
+		updating = false;
+	}
 </script>
 
 <h1 class="h1">Trackers</h1>
-<div class="grid auto-rows-auto grid-cols-1 gap-4 sm:grid-cols-2">
+<div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-2">
 	<div class="card rounded-sm p-4">
 		<h2 class="h2">Health</h2>
 		<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-4">
@@ -218,10 +255,10 @@
 	</div>
 </div>
 
-<div class="card mt-4 rounded-sm p-4">
-	<h2 class="h2">Humanity & Stains</h2>
-	<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-2">
-		<div class="row-start-2 grid grid-cols-2 gap-2">
+<div class="mt-2 grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-2">
+	<div class="card rounded-sm p-4">
+		<h2 class="h2">Humanity & Stains</h2>
+		<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-2">
 			<Tracker
 				buttonsConfig={{
 					addFunction: () =>
@@ -259,6 +296,32 @@
 				title="Stains"
 				value={$characterStore.humanity.stains}
 			/>
+		</div>
+	</div>
+
+	<div class="card rounded-sm p-4">
+		<h2 class="h2">Hunger</h2>
+		<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-2">
+			<Tracker
+				buttonsConfig={{
+					addFunction: () => changeHunger(1, 'add'),
+					substractFunction: () => changeHunger(1, 'substract'),
+					updating,
+					max: 5
+				}}
+				title="Hunger"
+				value={$characterStore.hunger.value}
+			/>
+			<div class="col-span-2 sm:col-span-1">
+				<p class="text-center font-bold">Effect</p>
+				{#if hungerConfig[$characterStore.hunger.value]}
+					<p class="whitespace-pre-line">
+						{hungerConfig[$characterStore.hunger.value]}
+					</p>
+				{:else}
+					<p class="whitespace-pre-line">No effect</p>
+				{/if}
+			</div>
 		</div>
 	</div>
 </div>

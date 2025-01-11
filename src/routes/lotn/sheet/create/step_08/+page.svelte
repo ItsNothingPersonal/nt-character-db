@@ -1,10 +1,10 @@
 <script lang="ts">
 	import Flaw from '$lib/components/lotn/characterSheet/components/Flaw.svelte';
 	import HelpText from '$lib/components/lotn/characterSheet/components/HelpText.svelte';
-	import Merit from '$lib/components/lotn/characterSheet/components/Merit.svelte';
 	import { flawConfig } from '$lib/components/lotn/config/flawsConfig';
 	import { meritConfig } from '$lib/components/lotn/config/meritsConfig';
 	import { predatorTypeConfig } from '$lib/components/lotn/config/predatorTypeConfig';
+	import EditableMerit from '$lib/components/lotn/EditableMerit/EditableMerit.svelte';
 	import {
 		getApplicableFlawLevels,
 		getFlawValueDescription,
@@ -17,19 +17,18 @@
 		getValidFlaws,
 		getValidMerits,
 		getValidMythicalFlaws,
+		isLoresheetMerit,
+		isPredatorMerit,
 		isThinBloodMerit
 	} from '$lib/components/lotn/util/meritUtil';
 	import { ScreenSize } from '$lib/sceenSize';
-	import {
-		backgroundPaymentStore,
-		characterCreationStore
-	} from '$lib/stores/characterCreationStore';
+	import { characterCreationStore } from '$lib/stores/characterCreationStore';
 	import { flawPaymentStore } from '$lib/stores/flawPaymentStore';
 	import { meritPaymentStore } from '$lib/stores/meritPaymentStore';
 	import { type FlawName } from '$lib/zod/lotn/enums/flawName';
 	import { type MeritName } from '$lib/zod/lotn/enums/meritName';
+	import type { SkillName } from '$lib/zod/lotn/enums/skillName';
 	import type { PlayerFlaw } from '$lib/zod/lotn/playerCharacter/playerFlaw';
-	import type { PlayerMerit } from '$lib/zod/lotn/playerCharacter/playerMerit';
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 
@@ -250,14 +249,6 @@
 		);
 	}
 
-	function isPredatorMerit(merit: PlayerMerit & { id: string }) {
-		return meritPaymentStore.getPredatorMerits().some((e) => e.id === merit.id);
-	}
-
-	function isLoresheetMerit(merit: PlayerMerit & { id: string }) {
-		return backgroundPaymentStore.isLoresheetMerit(merit.id);
-	}
-
 	function updateFlawDescription(id: string, description: string | undefined) {
 		if (!description) return;
 
@@ -272,7 +263,7 @@
 		});
 	}
 
-	function updateMeritescription(id: string, description: string | undefined) {
+	function updateMeritDescription(id: string, description: string | undefined) {
 		if (!description) return;
 
 		characterCreationStore.update((store) => {
@@ -290,6 +281,20 @@
 		return flawPaymentStore
 			.getPredatorFlaws()
 			.some((e) => e.id === flaw.id && e.hasPredeterminedDescription);
+	}
+
+	function updateMeritLinkedSkill(id: string, linkedSkill: SkillName | undefined) {
+		if (!linkedSkill) return;
+
+		characterCreationStore.update((store) => {
+			if (!store.merits) return store;
+
+			const merit = store.merits.find((merit) => merit.id === id);
+			if (!merit) return store;
+
+			merit.linkedSkill = linkedSkill;
+			return store;
+		});
 	}
 </script>
 
@@ -364,14 +369,17 @@
 				<h3 class="h3">Merits</h3>
 				<div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-4">
 					{#each $characterCreationStore.merits as merit}
-						<Merit
+						<EditableMerit
 							displayFormat="column"
+							enableEditLinkedSkill={true}
 							{merit}
 							showDeleteButton={!isPredatorMerit(merit) && !isLoresheetMerit(merit)}
 							showDescriptionInput={displaySpecificMeritDescription(merit)}
 							on:deleteClick={(event) => deleteMerit(event.detail.id)}
 							on:descriptionChange={(event) =>
-								updateMeritescription(event.detail.id, event.detail.description)}
+								updateMeritDescription(event.detail.id, event.detail.description)}
+							on:linkedSkillChange={(event) =>
+								updateMeritLinkedSkill(event.detail.id, event.detail.linkedSkill)}
 						/>
 					{/each}
 				</div>

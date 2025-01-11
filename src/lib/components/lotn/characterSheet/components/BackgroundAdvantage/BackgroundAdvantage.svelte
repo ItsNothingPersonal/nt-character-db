@@ -10,6 +10,7 @@
 	import type { BackgroundAdvantageName } from '$lib/zod/lotn/enums/backgroundAdvantageName';
 	import type { PlayerBackground } from '$lib/zod/lotn/playerCharacter/playerBackground';
 	import type { PlayerBackgroundAdvantage } from '$lib/zod/lotn/playerCharacter/playerBackgroundAdvantage';
+	import type { Placement } from '@floating-ui/dom';
 	import { Ratings } from '@skeletonlabs/skeleton';
 	import { createEventDispatcher } from 'svelte';
 	import { interactiveModeStore } from '../../interactiveModeStore';
@@ -29,6 +30,7 @@
 		| MaskConfigSchema
 		| ResourcesConfigSchema;
 	export let showDeleteButton: boolean = false;
+	export let placement: Placement = 'right-start';
 
 	const description = getDescription(advantage.name);
 	const valueDescription = getValueDescription(advantage.name, advantage.value);
@@ -69,12 +71,12 @@
 </script>
 
 <label
-	class={`label grid w-full grid-cols-[1fr_1fr_45px] grid-rows-1 gap-2`}
+	class={`label grid w-full ${showDeleteButton ? 'grid-cols-[1fr_1fr_45px]' : 'grid-cols-[1fr_auto]'} grid-rows-1 gap-2`}
 	for={`${background.id}-${advantage.name}`}
 >
 	{#if description}
-		<HelpText id={`${background.id}-${advantage.name}`}>
-			<span id={`${background.id}-${advantage.name}`}>
+		<HelpText id={`${background.id}-${advantage.name}`} {placement}>
+			<span id={`${background.id}-${advantage.name}`} class="whitespace-nowrap">
 				{advantage.name}
 			</span>
 			<svelte:fragment slot="helpText">
@@ -85,7 +87,7 @@
 		</HelpText>
 	{:else if valueDescription}
 		<HelpText id={`${background.id}-${advantage.name}`}>
-			<span id={`${background.id}-${advantage.name}`}>
+			<span id={`${background.id}-${advantage.name}`} class="whitespace-nowrap">
 				{advantage.name}
 			</span>
 			<svelte:fragment slot="helpText">
@@ -95,7 +97,7 @@
 			</svelte:fragment>
 		</HelpText>
 	{:else}
-		<span id={`${background.id}-${advantage.name}`}>
+		<span id={`${background.id}-${advantage.name}`} class="whitespace-nowrap">
 			{advantage.name}
 		</span>
 	{/if}

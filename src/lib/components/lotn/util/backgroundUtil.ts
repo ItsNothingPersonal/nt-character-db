@@ -1,5 +1,6 @@
 import { backgroundPaymentStore, characterCreationStore } from '$lib/stores/characterCreationStore';
 import { generateId } from '$lib/util';
+import type { BackgroundAdvantageName } from '$lib/zod/lotn/enums/backgroundAdvantageName';
 import type { BackgroundName } from '$lib/zod/lotn/enums/backgroundName';
 import { get } from 'svelte/store';
 import { alliesConfig } from '../config/backgrounds/alliesConfig';
@@ -63,4 +64,37 @@ export function addBackground(
 	});
 
 	return id;
+}
+
+export function updateBackgroundValue(id: string, value: number) {
+	characterCreationStore.update((store) => {
+		const background = store.backgrounds.find((item) => item.id === id);
+		if (!background) return store;
+
+		background.value = value;
+		return store;
+	});
+}
+
+export function updateBackgroundAdvantageValue(
+	idBackground: string,
+	idAdvantage: string,
+	name: BackgroundAdvantageName,
+	value: number
+) {
+	characterCreationStore.update((store) => {
+		const background = store.backgrounds.find((item) => item.id === idBackground);
+		if (!background) return store;
+
+		const advantage = background.advantages?.find((item) => item.name === name);
+		if (!advantage) {
+			if (!background.advantages) {
+				background.advantages = [];
+			}
+			background.advantages.push({ id: idAdvantage, name, value });
+		} else {
+			advantage.value = value;
+		}
+		return store;
+	});
 }
