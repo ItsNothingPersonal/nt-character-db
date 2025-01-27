@@ -1,6 +1,6 @@
 <script lang="ts">
 	export let title: string;
-	export let value: number;
+	export let value: number | string | undefined = undefined;
 	export let value2: number | string | undefined = undefined;
 	export let buttonsConfig:
 		| {
@@ -15,6 +15,7 @@
 				max: number;
 		  }
 		| undefined = undefined;
+	export let emptyIcon = 'mdi:minus';
 </script>
 
 <div
@@ -29,8 +30,10 @@
 	<p class="self-start pb-2 text-center text-8xl font-bold">
 		{#if value2 && value2 !== value}
 			{value} | {value2}
-		{:else}
+		{:else if value}
 			{value}
+		{:else}
+			<iconify-icon icon={emptyIcon} />
 		{/if}
 	</p>
 

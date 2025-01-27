@@ -8,7 +8,8 @@ export async function load({ params, fetch }) {
 		const response = await fetch(`/api/lotn/character?id=${params.id}`);
 
 		if (response.status === HttpStatusCode.OK) {
-			characterStore.set(playerCharacter.parse(await response.json()));
+			const json = await response.json();
+			characterStore.set(playerCharacter.parse(json));
 		}
 	}
 }

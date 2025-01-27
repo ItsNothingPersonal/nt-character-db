@@ -753,7 +753,7 @@
 			event.detail.level === 1 ? 'level1' : event.detail.level === 2 ? 'level2' : 'level3'
 		);
 
-		if (fixedLoresheetBackgrounds.length > 0) {
+		if (fixedLoresheetBackgrounds.length > 0 && $characterCreationStore.loresheet?.values) {
 			if ($characterCreationStore.loresheet?.values.includes(event.detail.level)) {
 				fixedLoresheetBackgrounds.forEach((change) => {
 					backgroundPaymentStore.addFixedBackground(
@@ -776,7 +776,7 @@
 			event.detail.level === 1 ? 'level1' : event.detail.level === 2 ? 'level2' : 'level3'
 		);
 
-		if (merits.length > 0) {
+		if (merits.length > 0 && $characterCreationStore.loresheet?.values) {
 			if ($characterCreationStore.loresheet?.values.includes(event.detail.level)) {
 				merits.forEach((merit) => {
 					const id = generateId();

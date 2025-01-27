@@ -186,10 +186,12 @@
 	</div>
 {:else}
 	<label class="card flex flex-col rounded-lg p-4" for={`${flaw.name}-${flaw.id}`}>
-		<div class={`label flex ${displayFormat === 'row' ? 'flex-row gap-x-2' : 'flex-col '}`}>
+		<div
+			class={`label flex flex-wrap ${displayFormat === 'row' ? 'flex-row gap-x-2' : 'flex-col'}`}
+		>
 			{#if config && config.prerequisite}
 				<HelpText id={`${flaw.name}-${flaw.id}`}>
-					<span id={`${flaw.name}-${flaw.id}`} class="whitespace-pre-line">{flaw.name}</span>
+					<span id={`${flaw.name}-${flaw.id}`} class="whitespace-nowrap">{flaw.name}</span>
 					<svelte:fragment slot="helpText">
 						{#if config && config.prerequisite}
 							<p class="whitespace-pre-line">
@@ -215,7 +217,7 @@
 				</HelpText>
 			{:else if config}
 				<HelpText id={`${flaw.name}-${flaw.id}`}>
-					<span id={`${flaw.name}-${flaw.id}`} class="whitespace-pre-line">{flaw.name}</span>
+					<span id={`${flaw.name}-${flaw.id}`} class="whitespace-nowrap">{flaw.name}</span>
 					<svelte:fragment slot="helpText">
 						<p class="whitespace-pre-line">
 							{getFlawValueDescription(flaw.name, flaw.value)}
@@ -223,7 +225,7 @@
 					</svelte:fragment>
 				</HelpText>
 			{:else}
-				<span id={`${flaw.name}-${flaw.id}`} class="whitespace-pre-line">{flaw.name}</span>
+				<span id={`${flaw.name}-${flaw.id}`} class="whitespace-nowrap">{flaw.name}</span>
 			{/if}
 			{#if flaw.value > 0}
 				<HelpText id={`${flaw.name}-${flaw.id}-value`}>

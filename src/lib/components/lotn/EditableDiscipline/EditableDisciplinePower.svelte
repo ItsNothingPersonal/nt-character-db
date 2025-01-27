@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
+	import { playerDiscipline } from '$lib/zod/lotn/playerCharacter/playerDiscipline';
 	import type {
 		NormalDisciplinePowerUnion,
 		NormalDisciplines,
@@ -44,18 +45,21 @@
 		previousPower: NormalDisciplinePowerUnion | RitualDisciplinePowerUnion | undefined
 	) {
 		characterCreationStore.update((store) => {
-			let entryToEdit = store.disciplines.find((e) => e.name === discipline);
+			let entryToEdit = store.disciplines.find((e) => e.name === discipline) as {
+				name: string;
+				powers: { name: NormalDisciplinePowerUnion | RitualDisciplinePowerUnion }[];
+			};
 			if (!entryToEdit) return store;
-			if (entryToEdit.powers.some((e) => e === power)) {
+			if (entryToEdit.powers.some((e) => e.name === power)) {
 				selectedDisciplinePower = previousPower;
 				return store;
 			}
 
 			if (previousPower) {
-				const oldIndex = entryToEdit.powers.findIndex((e) => e === previousPower);
-				entryToEdit.powers[oldIndex] = power;
+				const oldIndex = entryToEdit.powers.findIndex((e) => e.name === previousPower);
+				entryToEdit.powers[oldIndex].name = power;
 			} else {
-				addValue(entryToEdit.powers, power);
+				entryToEdit.powers.push({ name: power });
 			}
 
 			if (!entryToEdit) {
@@ -63,7 +67,7 @@
 			}
 
 			const index = store.disciplines.findIndex((e) => e.name === discipline);
-			store.disciplines[index] = entryToEdit;
+			store.disciplines[index] = playerDiscipline.parse(entryToEdit);
 
 			return store;
 		});
@@ -78,21 +82,13 @@
 			if (!entryToEdit) return store;
 
 			const index = store.disciplines.findIndex((e) => e.name === discipline);
-			const indexPower = entryToEdit.powers.findIndex((e) => e === power);
+			const indexPower = entryToEdit.powers.findIndex((e) => e.name === power);
 
 			entryToEdit.powers.splice(indexPower, 1);
 			store.disciplines[index] = entryToEdit;
 
 			return store;
 		});
-	}
-
-	function addValue<T extends NormalDisciplinePowerUnion | RitualDisciplinePowerUnion>(
-		array: T[],
-		value: T
-	) {
-		array.push(value as T);
-		return;
 	}
 
 	function getDisciplinePowers(
@@ -113,7 +109,7 @@
 						return false;
 					} else if (
 						$characterCreationStore.disciplines.some(
-							(d) => d.name === discipline && d.powers.some((p) => p === power.name)
+							(d) => d.name === discipline && d.powers.some((p) => p.name === power.name)
 						)
 					) {
 						return false;

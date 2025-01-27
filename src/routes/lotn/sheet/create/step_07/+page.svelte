@@ -289,21 +289,21 @@
 
 	function getBackgroundLoresheetEntries(loresheet: LoresheetName) {
 		let level1: LoresheetChangeEntry[] = [];
-		if ($characterCreationStore.loresheet?.values.includes(1)) {
+		if ($characterCreationStore.loresheet?.values?.includes(1)) {
 			level1 = (loresheetConfig[loresheet].level1.changes ?? []).filter(
 				(e) => e.kind === 'Background' && e.fixed !== true
 			);
 		}
 
 		let level2: LoresheetChangeEntry[] = [];
-		if ($characterCreationStore.loresheet?.values.includes(2)) {
+		if ($characterCreationStore.loresheet?.values?.includes(2)) {
 			level2 = (loresheetConfig[loresheet].level2.changes ?? []).filter(
 				(e) => e.kind === 'Background' && e.fixed !== true
 			);
 		}
 
 		let level3: LoresheetChangeEntry[] = [];
-		if ($characterCreationStore.loresheet?.values.includes(3)) {
+		if ($characterCreationStore.loresheet?.values?.includes(3)) {
 			level3 = (loresheetConfig[loresheet].level3.changes ?? []).filter(
 				(e) => e.kind === 'Background' && e.fixed !== true
 			);
@@ -436,7 +436,7 @@
 		);
 
 		if (fixedLoresheetBackgrounds.length > 0) {
-			if ($characterCreationStore.loresheet?.values.includes(level)) {
+			if ($characterCreationStore.loresheet?.values?.includes(level)) {
 				fixedLoresheetBackgrounds.forEach((change) => {
 					backgroundPaymentStore.addFixedBackground(
 						backgroundName.parse(change.name),
@@ -459,7 +459,7 @@
 
 		if (
 			dotBonusLoresheetBackgrounds.length > 0 &&
-			!$characterCreationStore.loresheet?.values.includes(level)
+			!$characterCreationStore.loresheet?.values?.includes(level)
 		) {
 			dotBonusLoresheetBackgrounds.forEach((change) => {
 				if (Array.isArray(change.name)) {
@@ -478,7 +478,7 @@
 		);
 
 		if (merits.length > 0) {
-			if ($characterCreationStore.loresheet?.values.includes(level)) {
+			if ($characterCreationStore.loresheet?.values?.includes(level)) {
 				merits.forEach((merit) => {
 					const id = generateId();
 					characterCreationStore.update((store) => {
@@ -509,7 +509,7 @@
 				backgroundPaymentStore.removeLoresheetLevel(level);
 			}
 		} else {
-			if ($characterCreationStore.loresheet?.values.includes(level)) {
+			if ($characterCreationStore.loresheet?.values?.includes(level)) {
 				backgroundPaymentStore.addLoresheetLevel(generateId(), level);
 			} else {
 				backgroundPaymentStore.removeLoresheetLevel(level);
@@ -557,7 +557,7 @@
 			deletLoresheetBonusForLevel('level2');
 			deletLoresheetBonusForLevel('level3');
 
-			loresheet.values.forEach((value) => {
+			loresheet.values?.forEach((value) => {
 				backgroundPaymentStore.removeLoresheetLevel(value as 1 | 2 | 3);
 			});
 		}
@@ -709,7 +709,7 @@
 					</svelte:fragment>
 				</HelpText>
 
-				{#key $characterCreationStore.loresheet?.values.length}
+				{#key $characterCreationStore.loresheet?.values?.length}
 					<ul class="list">
 						{#key $characterCreationStore.loresheet.name}
 							{#each getBackgroundLoresheetEntries($characterCreationStore.loresheet.name) as pointsRecordEntry}

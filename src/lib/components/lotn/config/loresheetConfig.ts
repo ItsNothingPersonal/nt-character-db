@@ -361,10 +361,18 @@ export const loresheetConfig: LoresheetConfigMap = {
 		prerequisite: 'Salubri',
 		description:
 			'When the clan’s progenitor traveled through the East he embraced two childer, Zao-Zei and Zao-Xue. The first was a thief and a warrior, and the latter was a scholar and healer. They and their descendants often focused less on the study and pursuit of Golconda, and more on protecting Cainites from supernatural threats. In the modern era, the descendants of Zao-Xue are known as the Watchers: scholars and chroniclers who serve as knowledgeable shepherds through the dangers that threaten vampiric existence.',
+
 		level1: {
 			title: 'Hidden Scholar',
 			description:
-				'Most descendants of Zao-Xue are capable of hiding amongst mortals and establishing hidden locations where they can study supernatural dangers to vampires. With this advantage, you gain four dots selected from the Mask and Haven Backgrounds or their associated Advantages.'
+				'Most descendants of Zao-Xue are capable of hiding amongst mortals and establishing hidden locations where they can study supernatural dangers to vampires. With this advantage, you gain four dots selected from the Mask and Haven Backgrounds or their associated Advantages.',
+			changes: [
+				{
+					kind: 'Background',
+					name: ['Haven', 'Mask'],
+					value: 4
+				}
+			]
 		},
 		level2: {
 			title: 'Supernatural Encyclopedia',

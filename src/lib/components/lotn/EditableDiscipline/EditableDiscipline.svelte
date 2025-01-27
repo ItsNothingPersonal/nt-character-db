@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
 	import { deepClone } from '$lib/util';
-	import { type DisciplineName } from '$lib/zod/lotn/enums/disciplineName';
+	import { disciplineName, type DisciplineName } from '$lib/zod/lotn/enums/disciplineName';
 	import type { PlayerDiscipline } from '$lib/zod/lotn/playerCharacter/playerDiscipline';
 	import {
 		type NormalDisciplinePowerUnion,
@@ -33,8 +33,7 @@
 	export let editModeEnabled = false;
 	export let initSelectedValue: number | undefined = undefined;
 
-	let previousDiscipline: PlayerDiscipline | undefined = undefined;
-
+	$: previousDiscipline = discipline;
 	$: selectedDisciplineName = discipline?.name;
 	$: selectedDisciplineValue = discipline?.value ?? 0;
 
@@ -48,9 +47,6 @@
 			addDiscipline(discipline.name, dotList[dotList.length - 1], previousDiscipline?.name);
 		}
 
-		if (discipline) {
-			rebuildSelectedDisciplinePower(discipline.powers);
-		}
 		selectedDisciplineValue = initSelectedValue ? initSelectedValue : (discipline?.value ?? 1);
 		previousDiscipline = deepClone(discipline);
 	});
@@ -64,60 +60,40 @@
 		disciplineDelete: { name: DisciplineName | undefined };
 	}>();
 
-	export let selectedDisciplinePower: Record<
-		number,
-		NormalDisciplinePowerUnion | RitualDisciplinePowerUnion | undefined
-	> = {
-		1: undefined,
-		2: undefined,
-		3: undefined,
-		4: undefined,
-		5: undefined
-	};
+	function changeDiscipline(disciplineName: DisciplineName | undefined) {
+		if (!disciplineName) return;
 
-	function rebuildSelectedDisciplinePower(
-		diciplinePowers: NormalDisciplinePowerUnion[] | RitualDisciplinePowerUnion[]
-	) {
-		diciplinePowers.forEach((e, i) => {
-			selectedDisciplinePower[i + 1] = e;
-		});
-	}
-
-	function changeDiscipline() {
-		if (!selectedDisciplineName) return;
 		characterCreationStore.update((store) => {
 			const indexPrevious = store.disciplines.findIndex((e) => e.name === previousDiscipline?.name);
-			const indexSelected = store.disciplines.findIndex((e) => e.name === selectedDisciplineName);
+			const indexNew = store.disciplines.findIndex((e) => e.name === disciplineName);
 
-			if (
-				indexPrevious !== -1 &&
-				indexSelected !== -1 &&
-				previousDiscipline &&
-				selectedDisciplineName
-			) {
-				store.disciplines[indexPrevious].name = selectedDisciplineName;
-				store.disciplines[indexPrevious].powers = [];
-				store.disciplines[indexSelected].name = previousDiscipline.name;
-				store.disciplines[indexSelected].powers = [];
-			} else if (selectedDisciplineName) {
-				addDiscipline(
-					selectedDisciplineName,
-					dotList[dotList.length - 1],
-					previousDiscipline?.name
+			if (indexPrevious !== -1 && indexNew !== -1 && previousDiscipline) {
+				const savedNew = deepClone(store.disciplines[indexNew]);
+
+				store.disciplines[indexNew].value = deepClone(store.disciplines[indexPrevious]).value;
+				store.disciplines[indexNew].powers = store.disciplines[indexNew].powers.slice(
+					0,
+					store.disciplines[indexNew].value
 				);
-			}
 
-			if (indexSelected !== -1) {
-				rebuildSelectedDisciplinePower(store.disciplines[indexSelected].powers);
+				store.disciplines[indexPrevious].value = savedNew.value;
+				store.disciplines[indexPrevious].powers = store.disciplines[indexPrevious].powers.slice(
+					0,
+					store.disciplines[indexPrevious].value
+				);
+			} else if (disciplineName) {
+				addDiscipline(disciplineName, dotList[dotList.length - 1], previousDiscipline?.name);
 			}
 
 			return store;
 		});
+
 		dispatchChange('disciplineChange', {
-			name: selectedDisciplineName,
-			label: selectedDisciplineName,
+			name: disciplineName,
+			label,
 			value: selectedDisciplineValue
 		});
+
 		previousDiscipline = discipline;
 	}
 
@@ -135,8 +111,6 @@
 					value
 				);
 			}
-
-			rebuildSelectedDisciplinePower(store.disciplines[indexSelected].powers);
 
 			return store;
 		});
@@ -201,14 +175,6 @@
 								name: discipline?.name
 							});
 							discipline = undefined;
-
-							selectedDisciplinePower = {
-								1: undefined,
-								2: undefined,
-								3: undefined,
-								4: undefined,
-								5: undefined
-							};
 						}}
 					>
 						<iconify-icon height="12" icon="mdi:remove" />
@@ -218,8 +184,8 @@
 			<select
 				class="select rounded-lg"
 				disabled={disciplines.length === 1 || disableDisciplineSelection}
-				bind:value={selectedDisciplineName}
-				on:change={changeDiscipline}
+				value={discipline?.name}
+				on:change={(event) => changeDiscipline(disciplineName.parse(event.currentTarget.value))}
 			>
 				<option disabled selected value={undefined}> Please select a discipline </option>
 				{#each disciplines as discipline}
@@ -247,15 +213,17 @@
 		{/if}
 
 		{#each createNumberList(showOnlyFirstPower ? 1 : selectedDisciplineValue) as dot}
-			{#if (!disableDisciplinePowerSelection || (disableDisciplinePowerSelection && selectedDisciplinePower[Number(dot)] !== undefined)) && selectedDisciplineName}
-				{#key selectedDisciplinePower[Number(dot)]}
+			{#if discipline && (!disableDisciplinePowerSelection || (disableDisciplinePowerSelection && discipline.powers[dot - 1] !== undefined)) && selectedDisciplineName}
+				{#key discipline.powers[Number(dot)]}
 					<EditableDisciplinePower
 						disableDisciplinePowerSelection={disableDisciplinePowerSelection ||
 							(selectedDisciplinePowers && selectedDisciplinePowers.length >= 2)}
 						dot={Number(dot)}
 						{editModeEnabled}
 						selectedDiscipline={selectedDisciplineName}
-						selectedDisciplinePower={selectedDisciplinePower[Number(dot)]}
+						selectedDisciplinePower={discipline.powers.length >= dot
+							? discipline.powers[dot - 1].name
+							: undefined}
 						showDeleteButton={showDisciplinePowerDeleteButton}
 					/>
 				{/key}
@@ -314,7 +282,7 @@
 								(selectedDisciplinePowers && selectedDisciplinePowers.length >= 2)}
 							dot={Number(dot)}
 							selectedDiscipline={discipline.name}
-							selectedDisciplinePower={selectedDisciplinePower[Number(dot)]}
+							selectedDisciplinePower={discipline.powers[dot - 1].name}
 							showDeleteButton={showDisciplinePowerDeleteButton}
 						/>
 					</li>

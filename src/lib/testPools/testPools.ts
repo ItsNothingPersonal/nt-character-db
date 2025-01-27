@@ -1,7 +1,7 @@
 import { characterStore } from '$lib/components/lotn/characterSheet/characterStore';
 import { bloodPotencyConfig } from '$lib/components/lotn/config/bloodPotencyConfig';
 import { mapAttributeNameToProperty } from '$lib/components/lotn/util/attributesUtil';
-import { getDisciplinePowerChallengePool } from '$lib/components/lotn/util/disciplines';
+import { getDisciplinePowerConfigEntry } from '$lib/components/lotn/util/disciplines';
 import { attackerPositionStore } from '$lib/stores/attackerPositionStore';
 import { bloodSurgeStore } from '$lib/stores/bloodSurgeStore';
 import { characterConditionStore } from '$lib/stores/characterConditionStore';
@@ -128,7 +128,7 @@ export function getDefenderTestPool(
 	discipline: NormalDisciplines | RitualDisciplines,
 	power: NormalDisciplinePowerUnion | RitualDisciplinePowerUnion
 ) {
-	const challengePool = getDisciplinePowerChallengePool(discipline, power);
+	const challengePool = getDisciplinePowerConfigEntry(discipline, { name: power })?.challengePool;
 	if (isNullOrUndefined(challengePool)) return 0;
 
 	if (typeof challengePool.defender === 'string') {

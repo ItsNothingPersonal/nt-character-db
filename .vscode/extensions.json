@@ -7,7 +7,7 @@
 		"svelte.svelte-vscode",
 		"bradlc.vscode-tailwindcss",
 		"austenc.tailwind-docs",
-		"rangav.vscode-thunder-client",
-		"vitest.explorer"
+		"vitest.explorer",
+		"vasubasraj.flashpost"
 	]
 }

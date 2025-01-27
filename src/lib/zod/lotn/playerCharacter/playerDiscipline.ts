@@ -26,7 +26,6 @@ export const playerDiscipline = z.discriminatedUnion('name', [
 	protean,
 	thinBloodAlchemy
 ]);
-
 export type PlayerDiscipline = z.infer<typeof playerDiscipline>;
 
 export const playerDisciplineSingleRequestBodyDB = z.object({

@@ -2,10 +2,11 @@ import { z } from 'zod';
 import { thinBloodAlchemyPowers } from '../enums/disciplinePowers/thinBloodAlchemyPowers';
 import { createDisciplineConfigSchema } from '../util';
 import { discipline } from './discipline';
+import { disciplinePower } from './disciplinePower';
 
 export const thinBloodAlchemy = discipline.extend({
 	name: z.literal('Thin-Blood Alchemy'),
-	powers: thinBloodAlchemyPowers.array().min(1)
+	powers: disciplinePower.extend({ name: thinBloodAlchemyPowers }).array().min(1).default([])
 });
 
 export const thinBloodAlchemyConfigSchema = createDisciplineConfigSchema('Thin-Blood Alchemy');

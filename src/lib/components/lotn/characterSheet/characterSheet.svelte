@@ -1,13 +1,12 @@
 <script lang="ts">
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
-	import { characterStore } from './characterStore';
-	import BaseInformation from './charactersheet-elements/baseInformation.svelte';
-
 	import EditableLoresheet from '../EditableLoresheet/EditableLoresheet.svelte';
+	import { characterStore } from './characterStore';
 	import Moralities from './charactersheet-elements/Moralities.svelte';
 	import Attributes from './charactersheet-elements/attributes.svelte';
 	import Backgrounds from './charactersheet-elements/backgrounds.svelte';
+	import BaseInformation from './charactersheet-elements/baseInformation.svelte';
 	import Ceremonies from './charactersheet-elements/ceremonies.svelte';
 	import Disciplines from './charactersheet-elements/disciplines.svelte';
 	import Experience from './charactersheet-elements/experience.svelte';

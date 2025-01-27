@@ -27,21 +27,6 @@
 		linkedSkillChange: { id: string; linkedSkill: SkillName | undefined };
 	}>();
 
-	function getDisplayFormatString() {
-		let resultString: string;
-
-		switch (displayFormat) {
-			case 'row':
-				resultString = 'grid-cols-[2fr_auto] grid-rows-1 gap-2';
-				break;
-			case 'column':
-				resultString = 'grid-cols-[1fr_auto] grid-rows-1 gap-2';
-				break;
-		}
-
-		return resultString;
-	}
-
 	function iconClick(event: CustomEvent<{ index: number }>) {
 		if (event.detail.index > minValue) {
 			return dispatchChange('valueChange', {
@@ -60,105 +45,99 @@
 </script>
 
 <label
-	class={`card grid w-full auto-rows-auto grid-cols-1 rounded-lg p-2`}
+	class={`card grid w-full auto-rows-auto grid-cols-1 rounded-lg p-4`}
 	for={`${merit.name}-${merit.id}`}
 >
-	<div
-		class={merit.value > 0
-			? `grid w-full ${getDisplayFormatString()}`
-			: `grid w-full auto-rows-auto grid-cols-[2fr_auto]`}
-	>
-		<div class={`label flex ${displayFormat === 'row' ? 'flex-row gap-x-2' : 'flex-col'}`}>
-			{#if config && config.prerequisite}
-				<HelpText id={`${merit.name}-${merit.id}`} placement="bottom-start">
-					<span id={`${merit.name}-${merit.id}`} class="whitespace-pre-line">{merit.name}</span>
-					<svelte:fragment slot="helpText">
-						{#if config && config.prerequisite}
-							<p class="whitespace-pre-line">
-								<span class="font-bold">Prerequisite:</span>
-								{#if Array.isArray(config.prerequisite)}
-									{#each config.prerequisite as prerequisite}
-										{#if typeof prerequisite === 'string'}
-											{prerequisite}
-										{:else}
-											{prerequisite.name}
-											{prerequisite.value}
-										{/if}
-									{/each}
-								{:else if typeof config.prerequisite === 'string'}
-									{config.prerequisite}
-								{:else}
-									{config.prerequisite.name}
-									{config.prerequisite.value}
-								{/if}
-							</p>
-						{/if}
-					</svelte:fragment>
-				</HelpText>
-			{:else if config}
-				<HelpText id={`${merit.name}-${merit.id}`} placement="bottom-start">
-					<span id={`${merit.name}-${merit.id}`} class="whitespace-pre-line">{merit.name}</span>
-					<svelte:fragment slot="helpText">
+	<div class={`label flex flex-wrap ${displayFormat === 'row' ? 'flex-row gap-x-2' : 'flex-col'}`}>
+		{#if config && config.prerequisite}
+			<HelpText id={`${merit.name}-${merit.id}`} placement="bottom-start">
+				<span id={`${merit.name}-${merit.id}`} class="whitespace-nowrap">{merit.name}</span>
+				<svelte:fragment slot="helpText">
+					{#if config && config.prerequisite}
 						<p class="whitespace-pre-line">
-							{getMeritValueDescription(merit.name, merit.value)}
+							<span class="font-bold">Prerequisite:</span>
+							{#if Array.isArray(config.prerequisite)}
+								{#each config.prerequisite as prerequisite}
+									{#if typeof prerequisite === 'string'}
+										{prerequisite}
+									{:else}
+										{prerequisite.name}
+										{prerequisite.value}
+									{/if}
+								{/each}
+							{:else if typeof config.prerequisite === 'string'}
+								{config.prerequisite}
+							{:else}
+								{config.prerequisite.name}
+								{config.prerequisite.value}
+							{/if}
 						</p>
-					</svelte:fragment>
-				</HelpText>
-			{:else}
-				<span id={`${merit.name}-${merit.id}`} class="whitespace-pre-line">{merit.name}</span>
-			{/if}
-			{#if merit.value > 0 && !enableEditValue}
-				<HelpText id={`${merit.name}-${merit.id}-value`}>
-					<Ratings
-						id={`${merit.name}-${merit.id}-value`}
-						interactive={$interactiveModeStore}
-						justify="justify-left"
-						bind:value={merit.value}
-					>
-						<svelte:fragment slot="empty">
-							<iconify-icon icon="prime:circle" />
-						</svelte:fragment>
-						<svelte:fragment slot="full">
-							<iconify-icon icon="prime:circle-fill" />
-						</svelte:fragment>
-					</Ratings>
-					<svelte:fragment slot="helpText">
-						<p class="whitespace-pre-line">
-							{getMeritValueDescription(merit.name, merit.value)}
-						</p>
-					</svelte:fragment>
-				</HelpText>
-			{:else if merit.value > 0}
+					{/if}
+				</svelte:fragment>
+			</HelpText>
+		{:else if config}
+			<HelpText id={`${merit.name}-${merit.id}`} placement="bottom-start">
+				<span id={`${merit.name}-${merit.id}`} class="whitespace-nowrap">{merit.name}</span>
+				<svelte:fragment slot="helpText">
+					<p class="whitespace-pre-line">
+						{getMeritValueDescription(merit.name, merit.value)}
+					</p>
+				</svelte:fragment>
+			</HelpText>
+		{:else}
+			<span id={`${merit.name}-${merit.id}`} class="whitespace-nowrap">{merit.name}</span>
+		{/if}
+		{#if merit.value > 0 && !enableEditValue}
+			<HelpText id={`${merit.name}-${merit.id}-value`}>
 				<Ratings
 					id={`${merit.name}-${merit.id}-value`}
-					interactive={true}
+					interactive={$interactiveModeStore}
 					justify="justify-left"
-					max={5}
-					value={merit.value}
-					on:icon={iconClick}
+					bind:value={merit.value}
 				>
 					<svelte:fragment slot="empty">
-						<iconify-icon style="vertical-align: -0.225em" icon="prime:circle" />
+						<iconify-icon icon="prime:circle" />
 					</svelte:fragment>
 					<svelte:fragment slot="full">
-						<iconify-icon style="vertical-align: -0.225em" icon="prime:circle-fill" />
+						<iconify-icon icon="prime:circle-fill" />
 					</svelte:fragment>
 				</Ratings>
-			{/if}
-		</div>
-		{#if showDeleteButton}
-			<button
-				class="variant-filled-primary btn w-4 rounded-lg text-sm"
-				disabled={disableDeleteButton}
-				type="button"
-				on:click={() => {
-					dispatchChange('deleteClick', { id: merit.id });
-				}}
+				<svelte:fragment slot="helpText">
+					<p class="whitespace-pre-line">
+						{getMeritValueDescription(merit.name, merit.value)}
+					</p>
+				</svelte:fragment>
+			</HelpText>
+		{:else if merit.value > 0}
+			<Ratings
+				id={`${merit.name}-${merit.id}-value`}
+				interactive={true}
+				justify="justify-left"
+				max={5}
+				value={merit.value}
+				on:icon={iconClick}
 			>
-				<iconify-icon height="16" icon="mdi:remove" />
-			</button>
+				<svelte:fragment slot="empty">
+					<iconify-icon style="vertical-align: -0.225em" icon="prime:circle" />
+				</svelte:fragment>
+				<svelte:fragment slot="full">
+					<iconify-icon style="vertical-align: -0.225em" icon="prime:circle-fill" />
+				</svelte:fragment>
+			</Ratings>
 		{/if}
 	</div>
+	{#if showDeleteButton}
+		<button
+			class="variant-filled-primary btn w-4 rounded-lg text-sm"
+			disabled={disableDeleteButton}
+			type="button"
+			on:click={() => {
+				dispatchChange('deleteClick', { id: merit.id });
+			}}
+		>
+			<iconify-icon height="16" icon="mdi:remove" />
+		</button>
+	{/if}
 	{#if showDescriptionInput}
 		<input
 			class="input variant-form-material mt-2"

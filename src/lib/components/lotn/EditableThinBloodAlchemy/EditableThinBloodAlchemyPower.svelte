@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
 	import { generateId } from '$lib/util';
+	import type { DisciplinePower } from '$lib/zod/lotn/disciplines/disciplinePower';
 	import { disciplineName, type DisciplineName } from '$lib/zod/lotn/enums/disciplineName';
 	import {
 		type NormalDisciplinePowerUnion,
@@ -8,10 +9,9 @@
 		type RitualDisciplinePowerUnion,
 		type RitualDisciplines
 	} from '$lib/zod/lotn/util';
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
 	import HelpText from '../characterSheet/components/HelpText.svelte';
 	import {
-		getDisciplineForDisciplinePower,
 		getDisciplinePowerConfigForPowerName,
 		getDisciplinePowerConfigsForDiscipline,
 		removeFormula
@@ -20,9 +20,7 @@
 
 	export let dot: number;
 	export let levelThinBloodAlchemy: number;
-
-	export let selectedDiscipline: RitualDisciplines;
-	export let selectedDisciplinePower: RitualDisciplinePowerUnion | undefined;
+	export let disciplinePower: DisciplinePower & { name: RitualDisciplinePowerUnion };
 	export let disableDisciplinePowerSelection: boolean = false;
 	export let showDeleteButton: boolean = false;
 	export let counterfeitDiscipline: DisciplineName | undefined = undefined;
@@ -33,19 +31,11 @@
 	let previousCounterfeitPower: NormalDisciplinePowerUnion | undefined = undefined;
 	export let counterfeitPowerId: string | undefined;
 
-	onMount(() => {
-		previousCounterfeitPower = counterfeitPower;
-		if (counterfeitPower) {
-			counterfeitDiscipline = getDisciplineForDisciplinePower(counterfeitPower);
-		}
-		previousDisciplinePower = selectedDisciplinePower;
-	});
-
-	$: disciplinePowerConfig = getDisciplinePowerConfigsForDiscipline(selectedDiscipline).find(
-		(e) => e.name === selectedDisciplinePower
+	$: disciplinePowerConfig = getDisciplinePowerConfigsForDiscipline('Thin-Blood Alchemy').find(
+		(e) => e.name === disciplinePower.name
 	);
 
-	$: counterfeitLevel = getCounterFeitLevel(selectedDisciplinePower);
+	$: counterfeitLevel = getCounterFeitLevel(disciplinePower.name);
 	$: counterfeitPowerConfig = counterfeitDiscipline
 		? getDisciplinePowerConfigsForDiscipline(counterfeitDiscipline).find(
 				(e) => e.name === counterfeitPower
@@ -77,21 +67,26 @@
 	function addDisciplinePower(
 		discipline: RitualDisciplines,
 		power: RitualDisciplinePowerUnion,
-		previousPower: RitualDisciplinePowerUnion | undefined
+		previousPower: RitualDisciplinePowerUnion | undefined,
+		counterfeitedDisciplinePower: NormalDisciplinePowerUnion | undefined = undefined
 	) {
 		characterCreationStore.update((store) => {
 			let entryToEdit = store.disciplines.find((e) => e.name === discipline);
 			if (!entryToEdit) return store;
-			if (entryToEdit.powers.some((e) => e === power) && !power.match('Counterfeit')) {
-				selectedDisciplinePower = previousPower;
+			if (entryToEdit.powers.some((e) => e.name === power) && !power.match('Counterfeit')) {
 				return store;
 			}
 
 			if (previousPower) {
-				const oldIndex = entryToEdit.powers.findIndex((e) => e === previousPower);
-				entryToEdit.powers[oldIndex] = power;
+				const oldIndex = entryToEdit.powers.findIndex((e) => e.name === previousPower);
+				entryToEdit.powers[oldIndex].name = power;
+				entryToEdit.powers[oldIndex].thinBloodCounterfeitDisciplinePower =
+					counterfeitedDisciplinePower;
 			} else {
-				addValue(entryToEdit.powers, power);
+				entryToEdit.powers.push({
+					name: power,
+					thinBloodCounterfeitDisciplinePower: counterfeitedDisciplinePower
+				});
 			}
 
 			if (!entryToEdit) {
@@ -124,23 +119,25 @@
 		return id;
 	}
 
-	function addCounterfeitPower(counterfeitPower: NormalDisciplinePowerUnion) {
+	function addCounterfeitPower(
+		power: DisciplinePower & { name: RitualDisciplinePowerUnion },
+		counterfeitPower: NormalDisciplinePowerUnion
+	) {
 		characterCreationStore.update((store) => {
 			if (attachFormulaMode === 'Discipline') {
 				let entryToEdit = store.disciplines.find((e) => e.name === 'Thin-Blood Alchemy');
 				if (!entryToEdit) return store;
-				if (!entryToEdit.thinBloodCounterfeitDisciplinePower) {
-					entryToEdit.thinBloodCounterfeitDisciplinePower = [];
-				}
 
-				if (entryToEdit.thinBloodCounterfeitDisciplinePower.some((e) => e === counterfeitPower)) {
+				if (
+					entryToEdit.powers.some((e) => e.thinBloodCounterfeitDisciplinePower === counterfeitPower)
+				) {
 					return store;
 				}
 
-				entryToEdit.thinBloodCounterfeitDisciplinePower = [
-					...entryToEdit.thinBloodCounterfeitDisciplinePower,
-					counterfeitPower
-				];
+				entryToEdit.powers.push({
+					name: power.name,
+					thinBloodCounterfeitDisciplinePower: counterfeitPower
+				});
 			} else {
 				const entryToEdit = store.formulas?.find((e) => e.id === counterfeitPowerId);
 				if (!entryToEdit) return store;
@@ -152,18 +149,18 @@
 		});
 	}
 
-	function removeCounterfeitPower(counterfeitPower: NormalDisciplinePowerUnion) {
+	function removeCounterfeitPower(
+		power: DisciplinePower & { name: RitualDisciplinePowerUnion },
+		counterfeitPower: NormalDisciplinePowerUnion
+	) {
 		characterCreationStore.update((store) => {
 			let entryToEdit = store.disciplines.find((e) => e.name === 'Thin-Blood Alchemy');
 			if (!entryToEdit) return store;
-			if (!entryToEdit.thinBloodCounterfeitDisciplinePower) return store;
 
-			entryToEdit.thinBloodCounterfeitDisciplinePower =
-				entryToEdit.thinBloodCounterfeitDisciplinePower.filter((c) => c !== counterfeitPower);
+			entryToEdit.powers = entryToEdit.powers.filter(
+				(e) => e.name === power.name && e.thinBloodCounterfeitDisciplinePower !== counterfeitPower
+			);
 
-			if (entryToEdit.thinBloodCounterfeitDisciplinePower.length === 0) {
-				entryToEdit.thinBloodCounterfeitDisciplinePower = undefined;
-			}
 			return store;
 		});
 	}
@@ -181,14 +178,6 @@
 		});
 	}
 
-	function addValue<T extends NormalDisciplinePowerUnion | RitualDisciplinePowerUnion>(
-		array: T[],
-		value: T
-	) {
-		array.push(value as T);
-		return;
-	}
-
 	function getDisciplinePowers(
 		discipline: RitualDisciplines | NormalDisciplines,
 		maxLevel: number
@@ -204,13 +193,13 @@
 	<select
 		class="select rounded-lg"
 		disabled={disableDisciplinePowerSelection}
-		bind:value={selectedDisciplinePower}
+		bind:value={disciplinePower}
 		on:change={() => {
-			if (!selectedDisciplinePower || !selectedDiscipline) return;
+			if (!disciplinePower) return;
 
 			if (attachFormulaMode === 'Discipline') {
-				addDisciplinePower(selectedDiscipline, selectedDisciplinePower, previousDisciplinePower);
-				dispatchChange('disciplinePowerChange', { name: selectedDisciplinePower });
+				addDisciplinePower('Thin-Blood Alchemy', disciplinePower.name, previousDisciplinePower);
+				dispatchChange('disciplinePowerChange', { name: disciplinePower.name });
 			} else if (attachFormulaMode === 'AdditionalFormulas') {
 				if (previousDisciplinePower && counterfeitPowerId) {
 					removeFormula(counterfeitPowerId);
@@ -221,42 +210,42 @@
 					});
 					counterfeitPower = undefined;
 				}
-				const id = addFormula(selectedDisciplinePower, counterfeitPower);
+				const id = addFormula(disciplinePower.name, counterfeitPower);
 
 				dispatchChange('newFormula', {
 					id,
-					name: selectedDisciplinePower,
-					level: getDisciplinePowerConfigForPowerName(selectedDisciplinePower)?.level ?? 0
+					name: disciplinePower.name,
+					level: getDisciplinePowerConfigForPowerName(disciplinePower.name)?.level ?? 0
 				});
 			}
 
-			previousDisciplinePower = selectedDisciplinePower;
+			previousDisciplinePower = disciplinePower.name;
 		}}
 	>
 		<option disabled selected value={undefined}> Please select a power for that discipline </option>
 
-		{#each getDisciplinePowers(selectedDiscipline, levelThinBloodAlchemy) as disciplinePower}
-			{#if disciplinePower.data?.level}
+		{#each getDisciplinePowers('Thin-Blood Alchemy', levelThinBloodAlchemy) as disciplinePowerAlchemy}
+			{#if disciplinePowerAlchemy.data?.level}
 				<option
-					selected={selectedDisciplinePower === disciplinePower.name}
-					value={disciplinePower.name}
+					selected={disciplinePower.name === disciplinePowerAlchemy.name}
+					value={disciplinePowerAlchemy.name}
 				>
-					{disciplinePower.name} (Level: {disciplinePower.data?.level})
+					{disciplinePowerAlchemy.name} (Level: {disciplinePowerAlchemy.data?.level})
 				</option>
 			{:else}
 				<option
-					selected={selectedDisciplinePower === disciplinePower.name}
-					value={disciplinePower.name}
+					selected={disciplinePower.name === disciplinePowerAlchemy.name}
+					value={disciplinePowerAlchemy.name}
 				>
-					{disciplinePower.name}
+					{disciplinePowerAlchemy.name}
 				</option>
 			{/if}
 		{/each}
 	</select>
 
-	{#if disciplinePowerConfig && selectedDisciplinePower}
+	{#if disciplinePowerConfig && disciplinePower.name}
 		<div class="flex">
-			<HelpText id={selectedDisciplinePower}>
+			<HelpText id={disciplinePower.name}>
 				<p class="underline decoration-dotted">Power-Description</p>
 				<svelte:fragment slot="helpText">
 					{#if disciplinePowerConfig.amalgam}
@@ -315,13 +304,12 @@
 					class="variant-filled-primary btn ml-auto w-3 rounded-lg"
 					type="button"
 					on:click={() => {
-						if (counterfeitPowerId && selectedDisciplinePower) {
+						if (counterfeitPowerId && disciplinePower.name) {
 							deleteFormula(counterfeitPowerId);
 							dispatchChange('removeFormula', {
 								id: counterfeitPowerId,
-								name: selectedDisciplinePower
+								name: disciplinePower.name
 							});
-							selectedDisciplinePower = undefined;
 							previousDisciplinePower = undefined;
 						}
 					}}
@@ -333,13 +321,13 @@
 	{/if}
 
 	{#key counterfeitDiscipline}
-		{#if selectedDisciplinePower?.match('Counterfeit')}
+		{#if disciplinePower.name?.match('Counterfeit')}
 			<select
 				class="select rounded-lg"
 				bind:value={counterfeitDiscipline}
 				on:change={() => {
 					if (previousCounterfeitPower) {
-						removeCounterfeitPower(previousCounterfeitPower);
+						removeCounterfeitPower(disciplinePower, previousCounterfeitPower);
 					}
 
 					previousCounterfeitPower = undefined;
@@ -355,15 +343,15 @@
 			</select>
 		{/if}
 	{/key}
-	{#if selectedDisciplinePower?.match('Counterfeit') && counterfeitDiscipline}
+	{#if disciplinePower.name.match('Counterfeit') && counterfeitDiscipline}
 		<select
 			class="select rounded-lg"
 			bind:value={counterfeitPower}
 			on:change={() => {
 				if (counterfeitPower) {
-					addCounterfeitPower(counterfeitPower);
+					addCounterfeitPower(disciplinePower, counterfeitPower);
 					if (previousCounterfeitPower) {
-						removeCounterfeitPower(previousCounterfeitPower);
+						removeCounterfeitPower(disciplinePower, previousCounterfeitPower);
 					}
 					previousCounterfeitPower = counterfeitPower;
 				}

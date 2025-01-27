@@ -501,8 +501,8 @@ export async function POST({ locals, request, fetch }) {
 	const healthResult = playerHealth.parse(healthRequestBodyJSON);
 	const willpowerResult = playerWillpower.parse(willpowerRequestBodyJSON);
 	const humanityResult = playerHealth.parse(humanityRequestBodyJSON);
-	const meritsResult = playerMerit.merge(idSchema).array().parse(meritRequestBodyJSON);
-	const flawsResult = playerFlaw.merge(idSchema).array().parse(flawRequestBodyJSON);
+	const meritsResult = playerMerit.merge(idSchema).array().optional().parse(meritRequestBodyJSON);
+	const flawsResult = playerFlaw.merge(idSchema).array().optional().parse(flawRequestBodyJSON);
 	const experienceResult = playerExperience.array().parse(experienceRequestBodyJSON);
 	const loresheetResult = playerLoresheet.optional().parse(loresheetRequestBodyJSON);
 	const itemsResult = playerItem.array().optional().parse(itemRequestBodyJSON);

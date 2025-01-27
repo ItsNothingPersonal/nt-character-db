@@ -319,9 +319,9 @@ export class BackgroundPaymentStore {
 					: entry.name === background
 			);
 
-		if (level1 && get(characterCreationStore).loresheet?.values.includes(1)) return level1;
-		if (level2 && get(characterCreationStore).loresheet?.values.includes(2)) return level2;
-		if (level3 && get(characterCreationStore).loresheet?.values.includes(3)) return level3;
+		if (level1 && get(characterCreationStore).loresheet?.values?.includes(1)) return level1;
+		if (level2 && get(characterCreationStore).loresheet?.values?.includes(2)) return level2;
+		if (level3 && get(characterCreationStore).loresheet?.values?.includes(3)) return level3;
 	}
 
 	getLoresheetPointsLeft(background: BackgroundName) {
