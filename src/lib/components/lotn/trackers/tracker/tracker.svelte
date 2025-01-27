@@ -27,7 +27,7 @@
 		{title}
 	</p>
 
-	<p class="self-start pb-2 text-center text-8xl font-bold">
+	<p class="h-28 self-start pb-2 text-center text-8xl font-bold">
 		{#if value2 && value2 !== value}
 			{value} | {value2}
 		{:else if value}
