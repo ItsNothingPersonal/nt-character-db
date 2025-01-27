@@ -17,9 +17,11 @@
 	export let displayStyle: 'numbers' | 'dots' = 'numbers';
 	export let displayValue: 'below' | 'beside' = 'below';
 	export let editModeEnabled: boolean = false;
+	export let showDeleteButton: boolean = false;
 
 	const dispatchChange = createEventDispatcher<{
 		valueChange: { label: AttributeName; value: number };
+		deleteChange: { label: AttributeName };
 	}>();
 
 	function iconClick(event: CustomEvent<{ index: number }>) {
@@ -34,18 +36,29 @@
 <div class="card rounded-lg">
 	<header class="card-header pb-4">
 		{#if displayValue === 'below'}
-			<HelpText id={attributeName}>
-				<h3 class="h3">{attributeName}</h3>
-				<svelte:fragment slot="helpText">
-					<p class="whitespace-pre-line">
-						{getAttributeHelpText(
-							attributeConfig,
-							mapAttributeNameToAttributeCategory(attributeName),
-							attributeName
-						)}
-					</p>
-				</svelte:fragment>
-			</HelpText>
+			<div class="flex">
+				<HelpText id={attributeName}>
+					<h3 class="h3">{attributeName}</h3>
+					<svelte:fragment slot="helpText">
+						<p class="whitespace-pre-line">
+							{getAttributeHelpText(
+								attributeConfig,
+								mapAttributeNameToAttributeCategory(attributeName),
+								attributeName
+							)}
+						</p>
+					</svelte:fragment>
+				</HelpText>
+				{#if showDeleteButton}
+					<button
+						class="variant-filled-primary btn ml-auto w-3 rounded-lg"
+						type="button"
+						on:click={() => dispatchChange('deleteChange', { label: attributeName })}
+					>
+						<iconify-icon height="12" icon="mdi:remove" />
+					</button>
+				{/if}
+			</div>
 			{#if displayStyle === 'numbers'}
 				<label class="label">
 					{#if editModeEnabled}
@@ -88,18 +101,29 @@
 			{/if}
 		{:else}
 			<div class="grid grid-cols-[45%_auto] grid-rows-1 gap-2">
-				<HelpText id={attributeName}>
-					<h3 class="h3">{attributeName}</h3>
-					<svelte:fragment slot="helpText">
-						<p class="whitespace-pre-line">
-							{getAttributeHelpText(
-								attributeConfig,
-								mapAttributeNameToAttributeCategory(attributeName),
-								attributeName
-							)}
-						</p>
-					</svelte:fragment>
-				</HelpText>
+				<div class="flex">
+					<HelpText id={attributeName}>
+						<h3 class="h3">{attributeName}</h3>
+						<svelte:fragment slot="helpText">
+							<p class="whitespace-pre-line">
+								{getAttributeHelpText(
+									attributeConfig,
+									mapAttributeNameToAttributeCategory(attributeName),
+									attributeName
+								)}
+							</p>
+						</svelte:fragment>
+					</HelpText>
+					{#if showDeleteButton}
+						<button
+							class="variant-filled-primary btn ml-auto w-3 rounded-lg"
+							type="button"
+							on:click={() => dispatchChange('deleteChange', { label: attributeName })}
+						>
+							<iconify-icon height="12" icon="mdi:remove" />
+						</button>
+					{/if}
+				</div>
 				{#if displayStyle === 'numbers'}
 					{#if editModeEnabled}
 						<select

@@ -46,6 +46,23 @@
 		}
 	}
 
+	function deleteAttribute(attribute: AttributeName) {
+		attributesPaidWithDotsStore.attributePaidWithDots = {
+			dots: 1,
+			attributeName: attribute
+		};
+		characterCreationStore.update((store) => {
+			store.attributes[mapAttributeNameToProperty(attribute)] = 1;
+
+			if (attribute === 'Resolve' || attribute === 'Composure') {
+				store.willpower.value =
+					store.attributes['mental_resolve'] + store.attributes['social_composure'];
+			}
+
+			return store;
+		});
+	}
+
 	function getAttributeHelpText(attribute: string) {
 		const [category, attributeName] = attribute.split('_');
 		return getAttributeHelpTextFromConfig(
@@ -160,22 +177,40 @@
 </div>
 <div class="col-span-2 grid grid-cols-2 gap-2 p-2 sm:grid-cols-4">
 	<div class="flex flex-col gap-2">
-		{#each attributesPaidWithDotsStore.store[4].attributeNames as attribute}
-			<EditableAttribute attributeName={attribute} attributeValue={4} displayStyle="dots" />
+		{#each attributesPaidWithDotsStore.store[4].attributeNames.sort() as attribute}
+			<EditableAttribute
+				attributeName={attribute}
+				attributeValue={4}
+				displayStyle="dots"
+				showDeleteButton={true}
+				on:deleteChange={(event) => deleteAttribute(event.detail.label)}
+			/>
 		{/each}
 	</div>
 	<div class="flex flex-col gap-2">
-		{#each attributesPaidWithDotsStore.store[3].attributeNames as attribute}
-			<EditableAttribute attributeName={attribute} attributeValue={3} displayStyle="dots" />
+		{#each attributesPaidWithDotsStore.store[3].attributeNames.sort() as attribute}
+			<EditableAttribute
+				attributeName={attribute}
+				attributeValue={3}
+				displayStyle="dots"
+				showDeleteButton={true}
+				on:deleteChange={(event) => deleteAttribute(event.detail.label)}
+			/>
 		{/each}
 	</div>
 	<div class="flex flex-col gap-2">
-		{#each attributesPaidWithDotsStore.store[2].attributeNames as attribute}
-			<EditableAttribute attributeName={attribute} attributeValue={2} displayStyle="dots" />
+		{#each attributesPaidWithDotsStore.store[2].attributeNames.sort() as attribute}
+			<EditableAttribute
+				attributeName={attribute}
+				attributeValue={2}
+				displayStyle="dots"
+				showDeleteButton={true}
+				on:deleteChange={(event) => deleteAttribute(event.detail.label)}
+			/>
 		{/each}
 	</div>
 	<div class="flex flex-col gap-2">
-		{#each attributesPaidWithDotsStore.store[1].attributeNames as attribute}
+		{#each attributesPaidWithDotsStore.store[1].attributeNames.sort() as attribute}
 			<EditableAttribute attributeName={attribute} attributeValue={1} displayStyle="dots" />
 		{/each}
 	</div>
