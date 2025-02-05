@@ -45,23 +45,32 @@ export async function POST({ locals, request }) {
 
 	if (playerFormulasCreateBodyParsed.success) {
 		// Parsen insgesamt erfolgreich
-		let result: PlayerFormulaRequestBodyDB;
-		try {
-			result = await locals.pb
-				.collection('lotn_player_character_thinblood_formula')
-				.create<PlayerFormulaRequestBodyDB>(playerFormulasCreateBodyParsed.data);
-		} catch (e) {
-			if (e instanceof ClientResponseError) {
-				error(HttpStatusCode.INTERNAL_SERVER_ERROR, `Datenbankupdate fehlgeschlagen: ${e.message}`);
-			} else {
-				error(
-					HttpStatusCode.INTERNAL_SERVER_ERROR,
-					`Unbekannter Fehler aufgetreten: ${JSON.stringify(e)}`
-				);
+		const globalResult: PlayerFormulaRequestBodyDB[] = [];
+		for (const formula of playerFormulasCreateBodyParsed.data.formulas) {
+			try {
+				const formulaResult = await locals.pb
+					.collection('lotn_player_character_thinblood_formula')
+					.create<PlayerFormulaRequestBodyDB>({
+						...formula,
+						character_id: playerFormulasCreateBodyParsed.data.character_id
+					});
+				globalResult.push(formulaResult);
+			} catch (e) {
+				if (e instanceof ClientResponseError) {
+					error(
+						HttpStatusCode.INTERNAL_SERVER_ERROR,
+						`Datenbankupdate fehlgeschlagen: ${e.message}`
+					);
+				} else {
+					error(
+						HttpStatusCode.INTERNAL_SERVER_ERROR,
+						`Unbekannter Fehler aufgetreten: ${JSON.stringify(e)}`
+					);
+				}
 			}
 		}
 
-		return new Response(JSON.stringify(playerFormula.parse(result)), {
+		return new Response(JSON.stringify(playerFormula.array().parse(globalResult)), {
 			status: HttpStatusCode.OK
 		});
 	} else {

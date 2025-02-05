@@ -128,7 +128,7 @@ export function getDefenderTestPool(
 	discipline: NormalDisciplines | RitualDisciplines,
 	power: NormalDisciplinePowerUnion | RitualDisciplinePowerUnion
 ) {
-	const challengePool = getDisciplinePowerConfigEntry(discipline, { name: power })?.challengePool;
+	const challengePool = getDisciplinePowerConfigEntry(discipline, power)?.challengePool;
 	if (isNullOrUndefined(challengePool)) return 0;
 
 	if (typeof challengePool.defender === 'string') {

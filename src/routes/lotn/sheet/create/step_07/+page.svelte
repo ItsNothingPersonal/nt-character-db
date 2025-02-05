@@ -599,7 +599,7 @@
 						{#if Array.isArray(pointsRecordEntry.name)}
 							{#key $paymentStore.backgrounds.filter( (entry) => pointsRecordEntry.name?.includes(entry.name) )}
 								<li>
-									<span class="flex gap-1">
+									<span class="flex gap-1 whitespace-nowrap">
 										{#each pointsRecordEntry.name as key, index}
 											<HelpText id={key}>
 												{key}{index !== pointsRecordEntry.name.length - 1 ? ' / ' : ': '}
@@ -635,7 +635,7 @@
 						{:else if pointsRecordEntry.name}
 							{#key $paymentStore.backgrounds.filter((entry) => entry.name === pointsRecordEntry.name)}
 								<li>
-									<span class="flex gap-2">
+									<span class="flex gap-2 whitespace-nowrap">
 										<HelpText id={pointsRecordEntry.name}>
 											{pointsRecordEntry.name}:
 											<svelte:fragment slot="helpText">

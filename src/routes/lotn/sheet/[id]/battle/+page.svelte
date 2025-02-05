@@ -229,19 +229,19 @@
 
 			<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-6">
 				{#each discipline.powers.sort(sortDisciplinePowerAscending) as power}
-					{#if calculateDisciplinePowerChallengeTestPool(discipline.name, power) > 0}
+					{#if calculateDisciplinePowerChallengeTestPool(discipline.name, power.name) > 0}
 						{#key $characterConditionStore || $bloodSurgeStore}
 							<HelpText id={`${discipline.name}-${power}`}>
 								<Tracker
 									title={power.name}
-									value={calculateDisciplinePowerChallengeTestPool(discipline.name, power)}
+									value={calculateDisciplinePowerChallengeTestPool(discipline.name, power.name)}
 								/>
 								<svelte:fragment slot="helpText">
-									{#if getDisciplinePowerConfigEntry(discipline.name, power)?.challengePool?.defender}
+									{#if getDisciplinePowerConfigEntry(discipline.name, power.name)?.challengePool?.defender}
 										<p class="whitespace-pre-line">
 											<span class="font-bold">Opponent:</span>
-											{#if typeof getDisciplinePowerConfigEntry(discipline.name, power)?.challengePool?.defender === 'string'}
-												{getDisciplinePowerConfigEntry(discipline.name, power)?.challengePool
+											{#if typeof getDisciplinePowerConfigEntry(discipline.name, power.name)?.challengePool?.defender === 'string'}
+												{getDisciplinePowerConfigEntry(discipline.name, power.name)?.challengePool
 													?.defender}
 											{:else}
 												{getDefenderTestPool(discipline.name, power.name)}
@@ -251,13 +251,13 @@
 								</svelte:fragment>
 							</HelpText>
 						{/key}
-					{:else if getDisciplinePowerConfigEntry(discipline.name, power)?.hint}
+					{:else if getDisciplinePowerConfigEntry(discipline.name, power.name)?.hint}
 						<HelpText id={`${discipline.name}-${power}`}>
 							<Tracker title={power.name} />
 							<svelte:fragment slot="helpText">
-								{#if getDisciplinePowerConfigEntry(discipline.name, power)?.hint}
+								{#if getDisciplinePowerConfigEntry(discipline.name, power.name)?.hint}
 									<p class="whitespace-pre-line">
-										{getDisciplinePowerConfigEntry(discipline.name, power)?.hint}
+										{getDisciplinePowerConfigEntry(discipline.name, power.name)?.hint}
 									</p>
 								{/if}
 							</svelte:fragment>

@@ -1,7 +1,7 @@
 import { bloodSurgeStore } from '$lib/stores/bloodSurgeStore';
 import { characterConditionStore } from '$lib/stores/characterConditionStore';
 import { characterCreationStore } from '$lib/stores/characterCreationStore';
-import { isNotNullOrUndefined, isNullOrUndefined } from '$lib/util';
+import { generateId, isNotNullOrUndefined, isNullOrUndefined } from '$lib/util';
 import type { OblivionCeremoniesConfigSchema } from '$lib/zod/lotn/ceremonies/oblivionCeremonies';
 import type { DisciplinePower } from '$lib/zod/lotn/disciplines/disciplinePower';
 import { type BloodSorceryRitualName } from '$lib/zod/lotn/enums/bloodSorceryRitualName';
@@ -153,7 +153,8 @@ export function getDisciplinePower(
 		}
 	} else if (!isNormalDiscipline(discipline)) {
 		const schema = createRitualPowerSchema(discipline);
-		const result = schema.safeParse(config);
+		const result = schema.safeParse(config.powers);
+
 		if (result.success) {
 			const powerParsed = ritualDisciplinePowerUnion.parse(power);
 			return result.data[powerParsed];
@@ -199,7 +200,7 @@ export function getDisciplinePowerConfigsForDiscipline(
 
 export function getDisciplinePowerConfigEntry(
 	discipline: NormalDisciplines | RitualDisciplines,
-	power: DisciplinePower
+	power: NormalDisciplinePowerUnion | RitualDisciplinePowerUnion
 ) {
 	const config = getDisciplineConfig(discipline);
 	if (isNormalDiscipline(discipline)) {
@@ -207,14 +208,14 @@ export function getDisciplinePowerConfigEntry(
 		const result = schema.safeParse(config.powers);
 
 		if (result.success) {
-			const powerParsed = normalDisciplinePowerUnion.parse(power.name);
+			const powerParsed = normalDisciplinePowerUnion.parse(power);
 			return result.data[powerParsed];
 		}
 	} else if (!isNormalDiscipline(discipline)) {
 		const schema = createRitualPowerSchema(discipline);
 		const result = schema.safeParse(config);
 		if (result.success) {
-			const powerParsed = ritualDisciplinePowerUnion.parse(power.name);
+			const powerParsed = ritualDisciplinePowerUnion.parse(power);
 			return result.data[powerParsed];
 		}
 	}
@@ -222,7 +223,7 @@ export function getDisciplinePowerConfigEntry(
 
 export function calculateDisciplinePowerChallengeTestPool(
 	discipline: NormalDisciplines | RitualDisciplines,
-	power: DisciplinePower
+	power: NormalDisciplinePowerUnion | RitualDisciplinePowerUnion
 ) {
 	const disciplinePowerChallengePool = getDisciplinePowerConfigEntry(
 		discipline,
@@ -254,7 +255,7 @@ export function hasDisciplinePowerChallengePool(
 	const hasOneChallengePool = power.map((power) => {
 		const disciplinePowerChallengePool = getDisciplinePowerConfigEntry(
 			discipline,
-			power
+			power.name
 		)?.challengePool;
 		return isNotNullOrUndefined(disciplinePowerChallengePool);
 	});
@@ -267,7 +268,7 @@ export function hasDisciplineHint(
 	power: DisciplinePower[]
 ) {
 	const hasOneHint = power.map((power) => {
-		const config = getDisciplinePowerConfigEntry(discipline, power);
+		const config = getDisciplinePowerConfigEntry(discipline, power.name);
 		return isNotNullOrUndefined(config?.hint);
 	});
 
@@ -507,73 +508,73 @@ export function assignDisciplinePower(
 ) {
 	if (discipline.name === 'Animalism') {
 		if (animalismPowers.safeParse(power).success) {
-			discipline.powers.push({ name: animalismPowers.parse(power) });
+			discipline.powers.push({ id: generateId(), name: animalismPowers.parse(power) });
 		} else {
 			throw new Error('Invalid power for Animalism');
 		}
 	} else if (discipline.name === 'Auspex') {
 		if (auspexPowers.safeParse(power).success) {
-			discipline.powers.push({ name: auspexPowers.parse(power) });
+			discipline.powers.push({ id: generateId(), name: auspexPowers.parse(power) });
 		} else {
 			throw new Error('Invalid power for Auspex');
 		}
 	} else if (discipline.name === 'Blood Sorcery') {
 		if (bloodSorceryPowers.safeParse(power).success) {
-			discipline.powers.push({ name: bloodSorceryPowers.parse(power) });
+			discipline.powers.push({ id: generateId(), name: bloodSorceryPowers.parse(power) });
 		} else {
 			throw new Error('Invalid power for Blood Sorcery');
 		}
 	} else if (discipline.name === 'Celerity') {
 		if (celerityPowers.safeParse(power).success) {
-			discipline.powers.push({ name: celerityPowers.parse(power) });
+			discipline.powers.push({ id: generateId(), name: celerityPowers.parse(power) });
 		} else {
 			throw new Error('Invalid power for Celerity');
 		}
 	} else if (discipline.name === 'Dominate') {
 		if (dominatePowers.safeParse(power).success) {
-			discipline.powers.push({ name: dominatePowers.parse(power) });
+			discipline.powers.push({ id: generateId(), name: dominatePowers.parse(power) });
 		} else {
 			throw new Error('Invalid power for Dominate');
 		}
 	} else if (discipline.name === 'Fortitude') {
 		if (fortitudePowers.safeParse(power).success) {
-			discipline.powers.push({ name: fortitudePowers.parse(power) });
+			discipline.powers.push({ id: generateId(), name: fortitudePowers.parse(power) });
 		} else {
 			throw new Error('Invalid power for Fortitude');
 		}
 	} else if (discipline.name === 'Obfuscate') {
 		if (obfuscatePowers.safeParse(power).success) {
-			discipline.powers.push({ name: obfuscatePowers.parse(power) });
+			discipline.powers.push({ id: generateId(), name: obfuscatePowers.parse(power) });
 		} else {
 			throw new Error('Invalid power for Obfuscate');
 		}
 	} else if (discipline.name === 'Oblivion') {
 		if (oblivionPowers.safeParse(power).success) {
-			discipline.powers.push({ name: oblivionPowers.parse(power) });
+			discipline.powers.push({ id: generateId(), name: oblivionPowers.parse(power) });
 		} else {
 			throw new Error('Invalid power for Oblivion');
 		}
 	} else if (discipline.name === 'Potence') {
 		if (potencePowers.safeParse(power).success) {
-			discipline.powers.push({ name: potencePowers.parse(power) });
+			discipline.powers.push({ id: generateId(), name: potencePowers.parse(power) });
 		} else {
 			throw new Error('Invalid power for Potence');
 		}
 	} else if (discipline.name === 'Presence') {
 		if (presencePowers.safeParse(power).success) {
-			discipline.powers.push({ name: presencePowers.parse(power) });
+			discipline.powers.push({ id: generateId(), name: presencePowers.parse(power) });
 		} else {
 			throw new Error('Invalid power for Presence');
 		}
 	} else if (discipline.name === 'Protean') {
 		if (proteanPowers.safeParse(power).success) {
-			discipline.powers.push({ name: proteanPowers.parse(power) });
+			discipline.powers.push({ id: generateId(), name: proteanPowers.parse(power) });
 		} else {
 			throw new Error('Invalid power for Protean');
 		}
 	} else if (discipline.name === 'Thin-Blood Alchemy') {
 		if (thinBloodAlchemyPowers.safeParse(power).success) {
-			discipline.powers.push({ name: thinBloodAlchemyPowers.parse(power) });
+			discipline.powers.push({ id: generateId(), name: thinBloodAlchemyPowers.parse(power) });
 		} else {
 			throw new Error('Invalid power for Thin-Blood Alchemy');
 		}
@@ -673,4 +674,16 @@ export function removeDisciplinePower(
 	}
 
 	return discipline;
+}
+
+export function getFormulaLevel(formula: RitualDisciplinePowerUnion | undefined) {
+	if (!formula) return 0;
+
+	const formulaEntry = getDisciplinePowerConfigsForDiscipline('Thin-Blood Alchemy').find(
+		(e) => e.name === formula
+	);
+
+	if (!formulaEntry) return 0;
+
+	return formulaEntry.data?.level ?? 0;
 }

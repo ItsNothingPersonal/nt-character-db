@@ -1,5 +1,6 @@
 import HttpStatusCode from '$lib/httpStatusCode';
 import { validateIdParameter } from '$lib/server/util';
+import { parseUnknownError } from '$lib/util';
 import type { Discipline } from '$lib/zod/lotn/disciplines/discipline';
 import { disciplinePower, type DisciplinePower } from '$lib/zod/lotn/disciplines/disciplinePower';
 import {
@@ -89,26 +90,18 @@ export async function POST({ locals, request }) {
 						} else {
 							error(
 								HttpStatusCode.INTERNAL_SERVER_ERROR,
-								`Unknown error occurred: ${JSON.stringify(e)}`
+								`Unknown error occurred: ${JSON.stringify(parseUnknownError(e))}`
 							);
 						}
 					}
 				}
 
-				const result = await locals.pb
-					.collection('lotn_player_character_discipline')
-					.update<Discipline & { expand: { powers: PlayerDisciplinePower[] } }>(
-						disciplineResult.id,
-						{
-							powers: powerResults.map((r) => r.id)
-						},
-						{ expand: 'powers' }
-					);
+				const disciplineCreated: Discipline = {
+					...disciplineResult,
+					powers: powerResults
+				};
 
-				result.powers = result.expand.powers.map((p) => {
-					return disciplinePower.parse(p);
-				});
-				globalResult.push(result);
+				globalResult.push(disciplineCreated);
 			} catch (e) {
 				if (e instanceof ClientResponseError) {
 					error(
@@ -118,7 +111,7 @@ export async function POST({ locals, request }) {
 				} else {
 					error(
 						HttpStatusCode.INTERNAL_SERVER_ERROR,
-						`Unbekannter Fehler aufgetreten: ${JSON.stringify(e)}`
+						`Unbekannter Fehler aufgetreten: ${JSON.stringify(parseUnknownError(e))}`
 					);
 				}
 			}

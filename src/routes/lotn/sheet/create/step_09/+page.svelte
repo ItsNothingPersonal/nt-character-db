@@ -2,7 +2,6 @@
 	import EditableBloodSorceryRitual from '$lib/components/lotn/EditableBloodSorceryRitual/EditableBloodSorceryRitual.svelte';
 	import EditableDiscipline from '$lib/components/lotn/EditableDiscipline/EditableDiscipline.svelte';
 	import EditableOblivionCeremony from '$lib/components/lotn/EditableOblivionCeremony/EditableOblivionCeremony.svelte';
-	import EditableThinBloodAlchemy from '$lib/components/lotn/EditableThinBloodAlchemy/EditableThinBloodAlchemy.svelte';
 	import {
 		addBloodSorceryRitualPowers,
 		addOblivionCeremonyPowers,
@@ -18,6 +17,7 @@
 	import { hasThinBloodAlchemyMerit } from '$lib/components/lotn/util/meritUtil';
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
 	import { disciplineFreebieStore } from '$lib/stores/disciplineFreebieStore';
+	import type { ThinBloodAlchemy } from '$lib/zod/lotn/disciplines/thinBloodAlchemy';
 	import { type DisciplineName } from '$lib/zod/lotn/enums/disciplineName';
 	import type { PlayerDiscipline } from '$lib/zod/lotn/playerCharacter/playerDiscipline';
 	import {
@@ -112,6 +112,9 @@
 	let disciplineA: Writable<PlayerDiscipline | undefined> = writable(undefined);
 	let disciplineB: Writable<PlayerDiscipline | undefined> = writable(undefined);
 	let disciplineC: Writable<PlayerDiscipline | undefined> = writable(undefined);
+	let thinBloodAlchemy: Writable<ThinBloodAlchemy | undefined> = writable(
+		$characterCreationStore.disciplines.find((d) => d.name === 'Thin-Blood Alchemy')
+	);
 
 	$: editModeEnabled =
 		$characterCreationStore.experience.filter((e) => e.reason.match(/Discipline/)).length <= 0;
@@ -337,8 +340,16 @@
 			</p>
 		</div>
 	</aside>
-	{#if hasThinBloodAlchemyMerit()}
-		<EditableThinBloodAlchemy disciplineValue={1} dotList={[1]} selectedValue={1} />
+	{#if hasThinBloodAlchemyMerit() && $thinBloodAlchemy}
+		<div class="grid grid-cols-1 grid-rows-3 gap-2 sm:grid-cols-3 sm:grid-rows-1">
+			<EditableDiscipline
+				disableDisciplineSelection={true}
+				discipline={$thinBloodAlchemy}
+				dotList={[1]}
+				{editModeEnabled}
+				label="Thin-Blood Alchemy"
+			/>
+		</div>
 	{/if}
 {:else}
 	<div class="grid grid-cols-1 grid-rows-3 gap-2 sm:grid-cols-3 sm:grid-rows-1">

@@ -49,44 +49,58 @@
 	for={`${merit.name}-${merit.id}`}
 >
 	<div class={`label flex flex-wrap ${displayFormat === 'row' ? 'flex-row gap-x-2' : 'flex-col'}`}>
-		{#if config && config.prerequisite}
-			<HelpText id={`${merit.name}-${merit.id}`} placement="bottom-start">
-				<span id={`${merit.name}-${merit.id}`} class="whitespace-nowrap">{merit.name}</span>
-				<svelte:fragment slot="helpText">
-					{#if config && config.prerequisite}
+		<div class="flex justify-between">
+			{#if config && config.prerequisite}
+				<HelpText id={`${merit.name}-${merit.id}`} placement="bottom-start">
+					<span id={`${merit.name}-${merit.id}`} class="whitespace-nowrap">{merit.name}</span>
+					<svelte:fragment slot="helpText">
+						{#if config && config.prerequisite}
+							<p class="whitespace-pre-line">
+								<span class="font-bold">Prerequisite:</span>
+								{#if Array.isArray(config.prerequisite)}
+									{#each config.prerequisite as prerequisite}
+										{#if typeof prerequisite === 'string'}
+											{prerequisite}
+										{:else}
+											{prerequisite.name}
+											{prerequisite.value}
+										{/if}
+									{/each}
+								{:else if typeof config.prerequisite === 'string'}
+									{config.prerequisite}
+								{:else}
+									{config.prerequisite.name}
+									{config.prerequisite.value}
+								{/if}
+							</p>
+						{/if}
+					</svelte:fragment>
+				</HelpText>
+			{:else if config}
+				<HelpText id={`${merit.name}-${merit.id}`} placement="bottom-start">
+					<span id={`${merit.name}-${merit.id}`} class="whitespace-nowrap">{merit.name}</span>
+					<svelte:fragment slot="helpText">
 						<p class="whitespace-pre-line">
-							<span class="font-bold">Prerequisite:</span>
-							{#if Array.isArray(config.prerequisite)}
-								{#each config.prerequisite as prerequisite}
-									{#if typeof prerequisite === 'string'}
-										{prerequisite}
-									{:else}
-										{prerequisite.name}
-										{prerequisite.value}
-									{/if}
-								{/each}
-							{:else if typeof config.prerequisite === 'string'}
-								{config.prerequisite}
-							{:else}
-								{config.prerequisite.name}
-								{config.prerequisite.value}
-							{/if}
+							{getMeritValueDescription(merit.name, merit.value)}
 						</p>
-					{/if}
-				</svelte:fragment>
-			</HelpText>
-		{:else if config}
-			<HelpText id={`${merit.name}-${merit.id}`} placement="bottom-start">
+					</svelte:fragment>
+				</HelpText>
+			{:else}
 				<span id={`${merit.name}-${merit.id}`} class="whitespace-nowrap">{merit.name}</span>
-				<svelte:fragment slot="helpText">
-					<p class="whitespace-pre-line">
-						{getMeritValueDescription(merit.name, merit.value)}
-					</p>
-				</svelte:fragment>
-			</HelpText>
-		{:else}
-			<span id={`${merit.name}-${merit.id}`} class="whitespace-nowrap">{merit.name}</span>
-		{/if}
+			{/if}
+			{#if showDeleteButton}
+				<button
+					class="variant-filled-primary btn w-4 justify-self-end rounded-lg text-sm"
+					disabled={disableDeleteButton}
+					type="button"
+					on:click={() => {
+						dispatchChange('deleteClick', { id: merit.id });
+					}}
+				>
+					<iconify-icon height="16" icon="mdi:remove" />
+				</button>
+			{/if}
+		</div>
 		{#if merit.value > 0 && !enableEditValue}
 			<HelpText id={`${merit.name}-${merit.id}-value`}>
 				<Ratings
@@ -126,18 +140,6 @@
 			</Ratings>
 		{/if}
 	</div>
-	{#if showDeleteButton}
-		<button
-			class="variant-filled-primary btn w-4 rounded-lg text-sm"
-			disabled={disableDeleteButton}
-			type="button"
-			on:click={() => {
-				dispatchChange('deleteClick', { id: merit.id });
-			}}
-		>
-			<iconify-icon height="16" icon="mdi:remove" />
-		</button>
-	{/if}
 	{#if showDescriptionInput}
 		<input
 			class="input variant-form-material mt-2"

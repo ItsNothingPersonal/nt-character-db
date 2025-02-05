@@ -30,7 +30,7 @@
 
 <div class="card rounded-lg">
 	<header class="card-header pb-4">
-		<div class="grid grid-cols-2 gap-2">
+		<div class="grid grid-cols-[1fr_auto] gap-2">
 			{#if displayValue === 'below'}
 				<div class="flex flex-col">
 					<HelpText id={skill.name}>
@@ -66,24 +66,26 @@
 							{/if}
 						</label>
 					{:else}
-						<Ratings
-							interactive={editModeEnabled}
-							justify="justify-left"
-							max={5}
-							value={skill.value}
-							on:icon={iconClick}
-						>
-							<svelte:fragment slot="empty">
-								<iconify-icon style="vertical-align: -0.225em" icon="prime:circle" />
-							</svelte:fragment>
-							<svelte:fragment slot="full">
-								<iconify-icon style="vertical-align: -0.225em" icon="prime:circle-fill" />
-							</svelte:fragment>
-						</Ratings>
+						<div class="flex max-w-fit">
+							<Ratings
+								interactive={editModeEnabled}
+								justify="justify-left"
+								max={5}
+								value={skill.value}
+								on:icon={iconClick}
+							>
+								<svelte:fragment slot="empty">
+									<iconify-icon style="vertical-align: -0.225em" icon="prime:circle" />
+								</svelte:fragment>
+								<svelte:fragment slot="full">
+									<iconify-icon style="vertical-align: -0.225em" icon="prime:circle-fill" />
+								</svelte:fragment>
+							</Ratings>
+						</div>
 					{/if}
 				</div>
 			{:else}
-				<div class="flex gap-2">
+				<div class="flex flex-wrap gap-x-2">
 					<HelpText id={skill.name}>
 						<h3 class="h3 text-nowrap">{skill.name}</h3>
 						<svelte:fragment slot="helpText">
@@ -114,20 +116,22 @@
 							<span class="text-2xl">{skill.value}</span>
 						{/if}
 					{:else}
-						<Ratings
-							interactive={editModeEnabled}
-							justify="justify-left"
-							max={5}
-							value={skill.value}
-							on:icon={iconClick}
-						>
-							<svelte:fragment slot="empty">
-								<iconify-icon style="vertical-align: -0.225em" icon="prime:circle" />
-							</svelte:fragment>
-							<svelte:fragment slot="full">
-								<iconify-icon style="vertical-align: -0.225em" icon="prime:circle-fill" />
-							</svelte:fragment>
-						</Ratings>
+						<div class="flex max-w-fit">
+							<Ratings
+								interactive={editModeEnabled}
+								justify="justify-left"
+								max={5}
+								value={skill.value}
+								on:icon={iconClick}
+							>
+								<svelte:fragment slot="empty">
+									<iconify-icon style="vertical-align: -0.225em" icon="prime:circle" />
+								</svelte:fragment>
+								<svelte:fragment slot="full">
+									<iconify-icon style="vertical-align: -0.225em" icon="prime:circle-fill" />
+								</svelte:fragment>
+							</Ratings>
+						</div>
 					{/if}
 				</div>
 			{/if}

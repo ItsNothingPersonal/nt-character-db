@@ -8,7 +8,7 @@
 </script>
 
 <label
-	class="label flex cursor-help flex-col [&>*]:pointer-events-none"
+	class="label flex w-full cursor-help flex-col [&>*]:pointer-events-none"
 	for={id.replaceAll(' ', '_')}
 	use:popup={{
 		event: 'click',

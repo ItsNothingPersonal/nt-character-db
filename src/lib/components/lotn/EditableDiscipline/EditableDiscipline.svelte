@@ -9,6 +9,7 @@
 	} from '$lib/zod/lotn/util';
 	import { Ratings } from '@skeletonlabs/skeleton';
 	import { createEventDispatcher, onMount } from 'svelte';
+	import { writable, type Writable } from 'svelte/store';
 	import HelpText from '../characterSheet/components/HelpText.svelte';
 	import { bloodSorceryRitualConfig } from '../config/bloodSorceryRitualsConfig';
 	import { ceremoniesConfig } from '../config/ceremoniesConfig';
@@ -32,11 +33,12 @@
 	export let showOnlyFirstPower = false;
 	export let editModeEnabled = false;
 	export let initSelectedValue: number | undefined = undefined;
+	export let enableAdditionalFormulas: boolean = false;
 
+	let additionalDotList: Writable<number[]> = writable([]);
 	$: previousDiscipline = discipline;
 	$: selectedDisciplineName = discipline?.name;
 	$: selectedDisciplineValue = discipline?.value ?? 0;
-
 	$: disciplineConfig = discipline ? getDisciplineConfig(discipline.name) : undefined;
 
 	onMount(() => {
@@ -48,6 +50,11 @@
 		}
 
 		selectedDisciplineValue = initSelectedValue ? initSelectedValue : (discipline?.value ?? 1);
+
+		additionalDotList.update((store) => {
+			store = createNumberList($characterCreationStore.formulas?.length);
+			return store;
+		});
 		previousDiscipline = deepClone(discipline);
 	});
 
@@ -58,6 +65,14 @@
 			name: NormalDisciplinePowerUnion | RitualDisciplinePowerUnion | undefined;
 		};
 		disciplineDelete: { name: DisciplineName | undefined };
+		newFormula: {
+			id: string;
+			name: RitualDisciplinePowerUnion;
+			level: number;
+		};
+		removeFormula: {
+			id: string;
+		};
 	}>();
 
 	function changeDiscipline(disciplineName: DisciplineName | undefined) {
@@ -158,6 +173,12 @@
 			return store;
 		});
 	}
+
+	function getFormulaByIndex(index: number) {
+		if (!$characterCreationStore.formulas) return;
+
+		return $characterCreationStore.formulas[index];
+	}
 </script>
 
 {#if editModeEnabled}
@@ -216,6 +237,9 @@
 			{#if discipline && (!disableDisciplinePowerSelection || (disableDisciplinePowerSelection && discipline.powers[dot - 1] !== undefined)) && selectedDisciplineName}
 				{#key discipline.powers[Number(dot)]}
 					<EditableDisciplinePower
+						counterfeitDisciplinePower={discipline.powers[dot - 1]
+							?.thinBloodCounterfeitDisciplinePower}
+						description={discipline.powers[dot - 1]?.description}
 						disableDisciplinePowerSelection={disableDisciplinePowerSelection ||
 							(selectedDisciplinePowers && selectedDisciplinePowers.length >= 2)}
 						dot={Number(dot)}
@@ -224,17 +248,66 @@
 						selectedDisciplinePower={discipline.powers.length >= dot
 							? discipline.powers[dot - 1].name
 							: undefined}
+						selectedDisciplinePowerId={discipline.powers.length >= dot
+							? discipline.powers[dot - 1].id
+							: undefined}
+						selectedProteanShapechangeOption={discipline.powers[dot - 1]?.proteanShapechangeOption}
 						showDeleteButton={showDisciplinePowerDeleteButton}
 					/>
 				{/key}
 			{/if}
 		{/each}
+
+		{#if enableAdditionalFormulas}
+			<hr class="my-4" />
+
+			<button
+				class="variant-filled-primary btn rounded-lg"
+				type="button"
+				on:click={() => {
+					additionalDotList.update((store) => {
+						store = [...store, store.length + 1];
+						return store;
+					});
+				}}
+			>
+				Add Extra Formula
+			</button>
+
+			{#each $additionalDotList as dot}
+				{#await Promise.resolve(getFormulaByIndex(dot - 1)) then formulaResult}
+					<EditableDisciplinePower
+						attachFormulaMode="AdditionalFormulas"
+						counterfeitDisciplinePower={formulaResult?.counterfeitPower}
+						description={formulaResult?.description}
+						disableDisciplinePowerSelection={disableDisciplinePowerSelection ||
+							(selectedDisciplinePowers && selectedDisciplinePowers.length >= 2)}
+						{dot}
+						{editModeEnabled}
+						maxDisciplineLevelToShow={selectedDisciplineValue}
+						selectedDiscipline="Thin-Blood Alchemy"
+						selectedDisciplinePower={formulaResult?.formula}
+						selectedDisciplinePowerId={formulaResult?.id}
+						selectedProteanShapechangeOption={formulaResult?.proteanShapechangeOption}
+						showDeleteButton={true}
+						on:newFormula={(e) => dispatchChange('newFormula', e.detail)}
+						on:removeFormula={(e) => {
+							dispatchChange('removeFormula', e.detail);
+							additionalDotList.update((store) => {
+								store = createNumberList($characterCreationStore.formulas?.length);
+								return store;
+							});
+						}}
+					/>
+				{/await}
+			{/each}
+		{/if}
 	</div>
 {:else if discipline && disciplineConfig}
 	<div class="card flex flex-col rounded-lg p-4">
-		<label class="label grid w-full grid-cols-2 grid-rows-1" for={discipline.name}>
+		<label class="label grid w-full grid-cols-[1fr_auto] grid-rows-1" for={discipline.name}>
 			<HelpText id={discipline.name} placement={isMobileScreen() ? 'bottom' : 'right'}>
-				<span id={discipline.name} class="font-bold">{discipline.name}</span>
+				<span id={discipline.name} class="whitespace-nowrap font-bold">{discipline.name}</span>
 				<svelte:fragment slot="helpText">
 					<p class="whitespace-pre-line">
 						<span class="font-bold">Typ:</span>
@@ -274,15 +347,21 @@
 					</svelte:fragment>
 				</Ratings>
 			</p>
-			<ol class="list col-span-2">
+			<ol class="list col-span-2 space-y-2">
 				{#each createNumberList(showOnlyFirstPower ? 1 : discipline.value) as dot}
 					<li>
 						<EditableDisciplinePower
+							counterfeitDisciplinePower={discipline.powers[dot - 1]
+								?.thinBloodCounterfeitDisciplinePower}
+							description={discipline.powers[dot - 1]?.description}
 							disableDisciplinePowerSelection={disableDisciplinePowerSelection ||
 								(selectedDisciplinePowers && selectedDisciplinePowers.length >= 2)}
 							dot={Number(dot)}
 							selectedDiscipline={discipline.name}
-							selectedDisciplinePower={discipline.powers[dot - 1].name}
+							selectedDisciplinePower={discipline.powers[dot - 1]?.name}
+							selectedDisciplinePowerId={discipline.powers[dot - 1]?.id}
+							selectedProteanShapechangeOption={discipline.powers[dot - 1]
+								?.proteanShapechangeOption}
 							showDeleteButton={showDisciplinePowerDeleteButton}
 						/>
 					</li>

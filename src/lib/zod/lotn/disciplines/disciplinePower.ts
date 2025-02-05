@@ -1,7 +1,9 @@
 import { z } from 'zod';
+import { proteanShapechangeOption } from '../enums/proteanShapechangeOption';
 import { normalDisciplinePowerUnion, ritualDisciplinePowerUnion } from '../util';
 
 export const disciplinePower = z.object({
+	id: z.string(),
 	name: normalDisciplinePowerUnion.or(ritualDisciplinePowerUnion),
 	thinBloodCounterfeitDisciplinePower: z
 		.string()
@@ -13,11 +15,7 @@ export const disciplinePower = z.object({
 		.optional(),
 	proteanShapechangeOption: z
 		.string()
-		.transform((e) =>
-			e === ''
-				? undefined
-				: z.enum(['Fast', 'Slippery', 'Climber', 'Swimmer', 'Night Vision']).parse(e)
-		)
+		.transform((e) => (e === '' ? undefined : proteanShapechangeOption.parse(e)))
 		.optional()
 });
 
