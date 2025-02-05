@@ -173,7 +173,9 @@ export function createRitualPowerEntrySchema() {
 			.optional(),
 		system: z.string(),
 		duration: z.string(),
-		amalgam: z.object({ name: disciplineName, value: z.number() }).optional()
+		amalgam: z.object({ name: disciplineName, value: z.number() }).optional(),
+		hint: z.string().optional(),
+		hasDescription: z.boolean().default(false).optional()
 	});
 }
 
@@ -209,7 +211,9 @@ export function createNormalDisciplinePowerEntrySchema(disciplineNameValue: Norm
 				hint: z.string().optional()
 			})
 			.optional(),
-		system: z.string()
+		system: z.string(),
+		hint: z.string().optional(),
+		hasDescription: z.boolean().default(false).optional()
 	});
 }
 

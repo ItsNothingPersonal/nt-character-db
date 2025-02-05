@@ -33,13 +33,13 @@ export type PlayerBackgroundSingleRequestBodyDB = z.infer<
 
 export const playerBackgroundRequestBodyDB = z.object({
 	character_id: z.string(),
-	backgrounds: playerBackground.merge(idSchema).array().nonempty()
+	backgrounds: playerBackground.merge(idSchema).array().optional()
 });
 export type PlayerBackgroundRequestBodyDB = z.infer<typeof playerBackgroundRequestBodyDB>;
 
 export const playerBackgroundCreateRequestBodyDB = z.object({
 	character_id: z.string(),
-	backgrounds: playerBackground.merge(idSchema).array().nonempty()
+	backgrounds: playerBackground.merge(idSchema).array().optional()
 });
 export type PlayerBackgroundCreateRequestBodyDB = z.infer<
 	typeof playerBackgroundCreateRequestBodyDB

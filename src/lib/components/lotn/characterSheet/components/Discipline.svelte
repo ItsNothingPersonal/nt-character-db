@@ -79,7 +79,7 @@
 		</p>
 		{#each discipline.powers as power}
 			<div class="col-span-2 grid w-full auto-rows-auto grid-cols-1">
-				<DisciplinePower discipline={discipline.name} {power} />
+				<DisciplinePower discipline={discipline.name} power={power.name} />
 			</div>
 		{/each}
 	</label>

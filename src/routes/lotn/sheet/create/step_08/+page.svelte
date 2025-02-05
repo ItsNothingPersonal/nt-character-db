@@ -103,6 +103,14 @@
 				name: selectedMerit,
 				value: selectedMeritValue
 			});
+
+			if (selectedMerit === 'Thin-Blood Alchemist' && store.clan === 'Thin-Blooded') {
+				store.disciplines.push({
+					name: 'Thin-Blood Alchemy',
+					value: 1,
+					powers: []
+				});
+			}
 			return store;
 		});
 		selectedMerit = getValidMerits()[0];
@@ -120,6 +128,12 @@
 			const meritToRemove = store.merits.find((merit) => merit.id === id);
 			if (meritToRemove?.name === 'Catenating Blood') {
 				$characterCreationStore.ghoul = false;
+			}
+
+			if (meritToRemove?.name === 'Thin-Blood Alchemist' && store.clan === 'Thin-Blooded') {
+				store.disciplines = store.disciplines.filter(
+					(discipline) => discipline.name !== 'Thin-Blood Alchemy'
+				);
 			}
 
 			store.merits = store.merits.filter((merit) => merit.id !== id);

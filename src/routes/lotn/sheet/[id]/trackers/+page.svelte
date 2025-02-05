@@ -181,8 +181,8 @@
 		<h2 class="h2">Health</h2>
 		<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-4">
 			<div class="grid auto-rows-auto grid-cols-2 gap-2 sm:grid-cols-3">
-				<Tracker title="Health Total" value={getHealthTotal()} />
-				<Tracker title="Health Remaining" value={healthRemaining} />
+				<Tracker title="Total" value={getHealthTotal()} />
+				<Tracker title="Remaining" value={healthRemaining} />
 				<div class="col-span-2 sm:col-span-1">
 					<p class="text-center font-bold">Status</p>
 					{#key healthRemaining}
@@ -229,7 +229,7 @@
 		<h2 class="h2">Willpower</h2>
 		<div class="mb-4 mt-2 grid grid-cols-1 grid-rows-1 gap-4">
 			<div class="grid grid-cols-2 grid-rows-1 gap-2 sm:grid-cols-3">
-				<Tracker title="Willpower Total" value={getWillpowerTotal()} />
+				<Tracker title="Total" value={getWillpowerTotal()} />
 
 				<Tracker
 					buttonsConfig={{
@@ -238,7 +238,7 @@
 						updating,
 						max: getWillpowerTotal()
 					}}
-					title="Willpower Remaining"
+					title="Remaining"
 					value={$characterStore.willpower.value}
 				/>
 

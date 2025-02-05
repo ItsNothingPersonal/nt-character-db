@@ -6,10 +6,14 @@
 	import Tracker from '$lib/components/lotn/trackers/tracker/tracker.svelte';
 	import {
 		calculateDisciplinePowerChallengeTestPool,
-		getDisciplinePowerChallengePool,
+		getDisciplinePowerConfigEntry,
+		hasDisciplineHint,
 		hasDisciplinePowerChallengePool
 	} from '$lib/components/lotn/util/disciplines';
-	import { sortStringAscending } from '$lib/components/lotn/util/generalUtils.js';
+	import {
+		sortDisciplinePowerAscending,
+		sortStringAscending
+	} from '$lib/components/lotn/util/generalUtils.js';
 	import { getItemQualityDescription } from '$lib/components/lotn/util/itemUtil.js';
 	import Checkbox from '$lib/components/typography/checkbox.svelte';
 	import CheckBoxWithHelpText from '$lib/components/typography/checkBoxWithHelpText.svelte';
@@ -217,39 +221,53 @@
 	{/key}
 </div>
 
-<h3 class="h3">Disziplinen</h3>
-{#each $characterStore.disciplines.sort( (a, b) => sortStringAscending(a.name, b.name) ) as discipline}
-	{#if hasDisciplinePowerChallengePool(discipline.name, discipline.powers)}
-		<h4 class="h4">{discipline.name}</h4>
+{#if $characterStore.disciplines.length > 0}
+	<h3 class="h3">Disziplinen</h3>
+	{#each $characterStore.disciplines.sort( (a, b) => sortStringAscending(a.name, b.name) ) as discipline}
+		{#if hasDisciplinePowerChallengePool(discipline.name, discipline.powers) || hasDisciplineHint(discipline.name, discipline.powers)}
+			<h4 class="h4">{discipline.name}</h4>
 
-		<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-6">
-			{#each discipline.powers.sort(sortStringAscending) as power}
-				{#if calculateDisciplinePowerChallengeTestPool(discipline.name, power) > 0}
-					{#key $characterConditionStore || $bloodSurgeStore}
-						<HelpText id={`${discipline.name}-${power}`}>
-							<Tracker
-								title={power}
-								value={calculateDisciplinePowerChallengeTestPool(discipline.name, power)}
-							/>
+			<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-6">
+				{#each discipline.powers.sort(sortDisciplinePowerAscending) as power}
+					{#if calculateDisciplinePowerChallengeTestPool(discipline.name, power.name) > 0}
+						{#key $characterConditionStore || $bloodSurgeStore}
+							<HelpText id={`${discipline.name}-${power.id}`}>
+								<Tracker
+									title={power.name}
+									value={calculateDisciplinePowerChallengeTestPool(discipline.name, power.name)}
+								/>
+								<svelte:fragment slot="helpText">
+									{#if getDisciplinePowerConfigEntry(discipline.name, power.name)?.challengePool?.defender}
+										<p class="whitespace-pre-line">
+											<span class="font-bold">Opponent:</span>
+											{#if typeof getDisciplinePowerConfigEntry(discipline.name, power.name)?.challengePool?.defender === 'string'}
+												{getDisciplinePowerConfigEntry(discipline.name, power.name)?.challengePool
+													?.defender}
+											{:else}
+												{getDefenderTestPool(discipline.name, power.name)}
+											{/if}
+										</p>
+									{/if}
+								</svelte:fragment>
+							</HelpText>
+						{/key}
+					{:else if getDisciplinePowerConfigEntry(discipline.name, power.name)?.hint}
+						<HelpText id={`${discipline.name}-${power.id}`}>
+							<Tracker title={power.name} />
 							<svelte:fragment slot="helpText">
-								{#if getDisciplinePowerChallengePool(discipline.name, power)?.defender}
+								{#if getDisciplinePowerConfigEntry(discipline.name, power.name)?.hint}
 									<p class="whitespace-pre-line">
-										<span class="font-bold">Opponent:</span>
-										{#if typeof getDisciplinePowerChallengePool(discipline.name, power)?.defender === 'string'}
-											{getDisciplinePowerChallengePool(discipline.name, power)?.defender}
-										{:else}
-											{getDefenderTestPool(discipline.name, power)}
-										{/if}
+										{getDisciplinePowerConfigEntry(discipline.name, power.name)?.hint}
 									</p>
 								{/if}
 							</svelte:fragment>
 						</HelpText>
-					{/key}
-				{/if}
-			{/each}
-		</div>
-	{/if}
-{/each}
+					{/if}
+				{/each}
+			</div>
+		{/if}
+	{/each}
+{/if}
 
 <h3 class="h3">Blood Potency</h3>
 <div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-6">

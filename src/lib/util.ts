@@ -159,3 +159,14 @@ export function deepClone<T>(obj: T): T {
 
 	return clonedObj as T;
 }
+
+export function parseUnknownError(error: unknown) {
+	const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+	const errorStack = error instanceof Error ? error.stack : 'No stack trace available';
+	const errorDetails = {
+		message: errorMessage,
+		stack: errorStack
+	};
+
+	return errorDetails;
+}

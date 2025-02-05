@@ -1,3 +1,5 @@
+import type { DisciplinePower } from '$lib/zod/lotn/disciplines/disciplinePower';
+
 export function joinWithOr(arr: string[]): string {
 	if (arr.length === 0) return '';
 	if (arr.length === 1) return arr[0];
@@ -10,6 +12,10 @@ export function joinWithOr(arr: string[]): string {
 
 export function sortStringAscending(a: string, b: string) {
 	return a.localeCompare(b);
+}
+
+export function sortDisciplinePowerAscending(a: DisciplinePower, b: DisciplinePower) {
+	return a.name.localeCompare(b.name);
 }
 
 export function createNumberList(max: number | undefined, min: number = 1) {

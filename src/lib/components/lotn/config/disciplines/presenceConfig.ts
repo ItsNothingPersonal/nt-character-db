@@ -26,6 +26,7 @@ export const presenceConfig: PresenceConfigSchema = {
 			cost: 'One Rouse check',
 			system:
 				'To activate Daunt, make a Rouse check and expend a simple action. For the remainder of the scene, you seem overtly threatening. Your aura of menace causes the affected to think twice about acting against you. Mortals affected by Daunt must succeed in a static challenge using their Resolve + Composure vs. a difficulty of 3 prior to physically attacking you. If you attack or use a Discipline on a character affected by Daunt, they become immune to this power for ten minutes. Thin-blood vampires are immune to Daunt.',
+			hint: 'Only vs mortals, they must check Resolve + Composure vs. a difficulty of 3 prior to physically attacking you. Thin-Bloods are immune.',
 			duration: 'Scene'
 		},
 		'Eyes of the Serpent': {

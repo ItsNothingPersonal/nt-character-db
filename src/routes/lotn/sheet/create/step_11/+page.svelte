@@ -33,7 +33,9 @@
 					responseMessage = JSON.stringify(result.error.errors, undefined, 2);
 				}
 			} else {
-				responseMessage = 'Failed to submit data';
+				responseMessage =
+					'Failed to submit data, got the following errors back: ' +
+					(await response.json()).message;
 			}
 		} catch (error) {
 			responseMessage = 'Network error occurred';

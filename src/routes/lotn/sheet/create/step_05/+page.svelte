@@ -88,6 +88,24 @@
 		}
 	}
 
+	function handleDeleteSkill(event: Event) {
+		const customEvent = event as CustomEvent<{ label: string }>;
+		const labelParsed = skillName.safeParse(customEvent.detail.label);
+		if (!labelParsed.success) {
+			return;
+		}
+
+		characterCreationStore.update((store) => {
+			store.skills = store.skills.filter((s) => s.name !== labelParsed.data);
+			return store;
+		});
+
+		const dotsValue = skillsPaidWithDotsStore.getSkillsPaidWithDotsByName(labelParsed.data);
+		if (dotsValue) {
+			skillsPaidWithDotsStore.removeSkillsPaidWithDots(labelParsed.data, dotsValue);
+		}
+	}
+
 	function getAvailableSkills() {
 		return skillName.options.sort();
 	}
@@ -214,8 +232,10 @@
 				displayStyle="dots"
 				displayValue={innerWidth < ScreenSize.SM ? 'below' : 'beside'}
 				minValue={skill.value}
+				showDeleteButton={true}
 				{skill}
 				on:specializationChange={(event) => handleUpdateSpecialization(event)}
+				on:deleteChange={(event) => handleDeleteSkill(event)}
 			/>
 		{/each}
 	</div>
@@ -225,8 +245,10 @@
 				displayStyle="dots"
 				displayValue={innerWidth < ScreenSize.SM ? 'below' : 'beside'}
 				minValue={skill.value}
+				showDeleteButton={true}
 				{skill}
 				on:specializationChange={(event) => handleUpdateSpecialization(event)}
+				on:deleteChange={(event) => handleDeleteSkill(event)}
 			/>
 		{/each}
 	</div>
@@ -236,8 +258,10 @@
 				displayStyle="dots"
 				displayValue={innerWidth < ScreenSize.SM ? 'below' : 'beside'}
 				minValue={skill.value}
+				showDeleteButton={true}
 				{skill}
 				on:specializationChange={(event) => handleUpdateSpecialization(event)}
+				on:deleteChange={(event) => handleDeleteSkill(event)}
 			/>
 		{/each}
 	</div>

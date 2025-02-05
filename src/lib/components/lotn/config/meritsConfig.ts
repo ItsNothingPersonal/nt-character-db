@@ -105,8 +105,7 @@ export const meritConfig: MeritsConfigSchema = {
 		name: 'Loremaster',
 		level2:
 			'You are an encyclopedia of supernatural knowledge. You gain a +2 bonus to all Lore checks (page 89).',
-		category: 'Mythical',
-		hasSpecificDescription: true
+		category: 'Mythical'
 	},
 	Medium: {
 		name: 'Medium',

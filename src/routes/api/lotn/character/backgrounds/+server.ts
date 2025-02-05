@@ -81,7 +81,7 @@ export async function POST({ locals, request, fetch }) {
 	if (playerBackgroundCreateBodyParsed.success) {
 		// Parsen insgesamt erfolgreich
 		const globalResult: (PlayerBackgroundSingleRequestBodyDB & { id: string })[] = [];
-		for (const background of playerBackgroundCreateBodyParsed.data.backgrounds) {
+		for (const background of playerBackgroundCreateBodyParsed.data.backgrounds ?? []) {
 			try {
 				const result = await locals.pb
 					.collection('lotn_player_character_background')

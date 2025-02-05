@@ -12,7 +12,6 @@
 	import EditableMerit from '$lib/components/lotn/EditableMerit/EditableMerit.svelte';
 	import EditableOblivionCeremony from '$lib/components/lotn/EditableOblivionCeremony/EditableOblivionCeremony.svelte';
 	import EditableSkill from '$lib/components/lotn/EditableSkill/EditableSkill.svelte';
-	import EditableThinBloodAlchemy from '$lib/components/lotn/EditableThinBloodAlchemy/EditableThinBloodAlchemy.svelte';
 	import Tracker from '$lib/components/lotn/trackers/tracker/tracker.svelte';
 	import { mapAttributeNameToProperty } from '$lib/components/lotn/util/attributesUtil';
 	import {
@@ -28,7 +27,6 @@
 		getBloodSorceryLevel,
 		getBloodSorceryRitualLevel,
 		getDisciplineCostFactor,
-		getDisciplineValue,
 		getInClanDisciplines,
 		getOblivionCeremonyLevel,
 		getOblivionLevel,
@@ -58,6 +56,7 @@
 	import { disciplineFreebieStore } from '$lib/stores/disciplineFreebieStore';
 	import { skillsPaidWithDotsStore } from '$lib/stores/skillsPaidWithDotsStore';
 	import { generateId, isNotNullOrUndefined } from '$lib/util';
+	import type { ThinBloodAlchemy } from '$lib/zod/lotn/disciplines/thinBloodAlchemy';
 	import { attributeName, type AttributeName } from '$lib/zod/lotn/enums/attributeName';
 	import { backgroundName, type BackgroundName } from '$lib/zod/lotn/enums/backgroundName';
 	import {
@@ -85,6 +84,7 @@
 	import type { PlayerMerit } from '$lib/zod/lotn/playerCharacter/playerMerit';
 	import type { PlayerSkill } from '$lib/zod/lotn/playerCharacter/playerSkill';
 	import { type RitualDisciplinePowerUnion } from '$lib/zod/lotn/util';
+	import { type Writable, writable } from 'svelte/store';
 
 	let selectedKindIncreaseOption: CharacterElementTypeName | undefined = undefined;
 	let selectedWhatIncreaseOption:
@@ -120,6 +120,9 @@
 	}, 0);
 
 	$: xpLeft = xpGained - xpSpent;
+	let thinBloodAlchemy: Writable<ThinBloodAlchemy | undefined> = writable(
+		$characterCreationStore.disciplines.find((d) => d.name === 'Thin-Blood Alchemy')
+	);
 
 	let amountInWhatIncreaseOption = getListToIncrease()?.length ?? 0;
 	let innerWidth = 0;
@@ -753,7 +756,7 @@
 			event.detail.level === 1 ? 'level1' : event.detail.level === 2 ? 'level2' : 'level3'
 		);
 
-		if (fixedLoresheetBackgrounds.length > 0) {
+		if (fixedLoresheetBackgrounds.length > 0 && $characterCreationStore.loresheet?.values) {
 			if ($characterCreationStore.loresheet?.values.includes(event.detail.level)) {
 				fixedLoresheetBackgrounds.forEach((change) => {
 					backgroundPaymentStore.addFixedBackground(
@@ -776,7 +779,7 @@
 			event.detail.level === 1 ? 'level1' : event.detail.level === 2 ? 'level2' : 'level3'
 		);
 
-		if (merits.length > 0) {
+		if (merits.length > 0 && $characterCreationStore.loresheet?.values) {
 			if ($characterCreationStore.loresheet?.values.includes(event.detail.level)) {
 				merits.forEach((merit) => {
 					const id = generateId();
@@ -959,16 +962,25 @@
 		}>
 	) {
 		characterCreationStore.update((store) => {
-			store.experience = [
-				...store.experience,
-				{
-					element_id: event.detail.id,
-					reason: `Added Thin-Blood Alchemy Formula ${event.detail.name}`,
-					type: 'substract',
-					value: 4 * event.detail.level,
-					date: new Date()
-				}
-			];
+			if (store.experience.some((exp) => exp.element_id === event.detail.id)) {
+				const entryToEdit = store.experience.find((exp) => exp.element_id === event.detail.id);
+				if (!entryToEdit) return store;
+
+				entryToEdit.reason = `Added Thin-Blood Alchemy Formula ${event.detail.name}`;
+				entryToEdit.value = 4 * event.detail.level;
+				entryToEdit.date = new Date();
+			} else {
+				store.experience = [
+					...store.experience,
+					{
+						element_id: event.detail.id,
+						reason: `Added Thin-Blood Alchemy Formula ${event.detail.name}`,
+						type: 'substract',
+						value: 4 * event.detail.level,
+						date: new Date()
+					}
+				];
+			}
 
 			return store;
 		});
@@ -979,7 +991,6 @@
 	function removeThinBloodFormula(
 		event: CustomEvent<{
 			id: string;
-			name: RitualDisciplinePowerUnion;
 		}>
 	) {
 		characterCreationStore.update((store) => {
@@ -1617,27 +1628,6 @@
 					<p>You need to have a clan to know your in-clan disciplines!</p>
 				</div>
 			</aside>
-		{:else if $characterCreationStore.clan === 'Thin-Blooded'}
-			<aside class="alert variant-filled-warning col-span-2 mb-4 rounded-lg">
-				<div>
-					<iconify-icon height="48" icon="mdi:warning" />
-				</div>
-				<div class="alert-message">
-					<h3 class="h3">Thin-Bloods do not learn Disciplines (the usual way)!</h3>
-					<p>
-						Thin-blooded characters do not learn Disciplines in the usual way. Whenever a thin-blood
-						feeds, they gain one dot in one Discipline associated with the Resonance of the blood
-						consumed, together with one level-one power in that Discipline. No additional powers can
-						be gained in this way nor can the rating increase with XP. This Discipline choice lasts
-						until the thin-blood’s Hunger reaches 5 or the next time the thin-blood feeds.
-						Thin-bloods can also learn Thin-Blood Alchemy by purchasing a merit and then spending
-						XP. See Thin-Blood Merits, page 187 for more information.
-					</p>
-				</div>
-			</aside>
-			{#if hasThinBloodAlchemyMerit()}
-				<EditableThinBloodAlchemy disciplineValue={1} dotList={[1]} selectedValue={1} />
-			{/if}
 		{:else}
 			<div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-3">
 				{#each $characterCreationStore.disciplines as discipline, index}
@@ -1780,14 +1770,21 @@
 					</p>
 				</div>
 			</aside>
-		{:else}
+		{:else if hasThinBloodAlchemyMerit() && $thinBloodAlchemy}
 			<div class="grid grid-cols-3 gap-2">
-				<EditableThinBloodAlchemy
-					disciplineValue={getDisciplineValue('Thin-Blood Alchemy')}
+				<EditableDiscipline
+					disableDisciplineSelection={true}
+					discipline={$thinBloodAlchemy}
+					dotList={createNumberList(
+						5,
+						disciplineFreebieStore.getDiscipline('Thin-Blood Alchemy')?.value ?? 1
+					)}
+					editModeEnabled={true}
 					enableAdditionalFormulas={true}
-					selectedValue={getDisciplineValue('Thin-Blood Alchemy')}
-					showDisciplinePowerDeleteButton={true}
+					label="Thin-Blood Alchemy"
+					on:disciplineChange={(e) => updateDiscipline(e)}
 					on:disciplineValueChange={(e) => updateDisciplineValue(e)}
+					on:disciplineDelete={(e) => deleteDiscipline(e)}
 					on:newFormula={(e) => addThinBloodFormula(e)}
 					on:removeFormula={(e) => removeThinBloodFormula(e)}
 				/>
@@ -1802,7 +1799,6 @@
 					disciplines={getValidDisciplines($characterCreationStore.clan, true)}
 					dotList={createNumberList(5)}
 					label={`Discipline ${index + 1}`}
-					showDeleteButton={isNotFreebieDiscipline(discipline.name)}
 					on:disciplineChange={(e) => updateDiscipline(e)}
 					on:disciplineValueChange={(e) => updateDisciplineValue(e)}
 					on:disciplineDelete={(e) => deleteDiscipline(e)}

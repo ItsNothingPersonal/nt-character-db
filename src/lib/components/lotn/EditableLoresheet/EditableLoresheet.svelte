@@ -63,6 +63,7 @@
 				{#key $characterCreationStore.loresheet}
 					<select
 						class="select rounded-lg"
+						value={selectedLoresheet?.name}
 						on:change={(event) =>
 							dispatchChange('loresheetChange', {
 								name: loresheetName.parse(event.currentTarget.value)
@@ -100,7 +101,7 @@
 		<div class="mt-4 flex flex-col gap-3">
 			<div class="rounded-lg">
 				<button
-					class={`variant-filled-primary btn float-left mr-4 flex h-24 w-24 items-center justify-center rounded-lg bg-primary-500 ${$characterCreationStore.loresheet?.values.includes(1) ? 'ring-2 ring-black dark:ring-white' : ''}`}
+					class={`variant-filled-primary btn float-left mr-4 flex h-24 w-24 items-center justify-center rounded-lg bg-primary-500 ${$characterCreationStore.loresheet?.values?.includes(1) ? 'ring-2 ring-black dark:ring-white' : ''}`}
 					disabled={disableFirstOption}
 					on:click={() => dispatchChange('toggleLoreSheetLevel', { level: 1 })}
 				>
@@ -123,7 +124,7 @@
 
 			<div class="rounded-lg">
 				<button
-					class={`variant-filled-primary btn float-left mr-4 flex h-24 w-24 items-center justify-center rounded-lg bg-primary-500 ${$characterCreationStore.loresheet?.values.includes(2) ? 'ring-2 ring-black dark:ring-white' : ''}`}
+					class={`variant-filled-primary btn float-left mr-4 flex h-24 w-24 items-center justify-center rounded-lg bg-primary-500 ${$characterCreationStore.loresheet?.values?.includes(2) ? 'ring-2 ring-black dark:ring-white' : ''}`}
 					disabled={disableSecondOption}
 					on:click={() => dispatchChange('toggleLoreSheetLevel', { level: 2 })}
 				>
@@ -146,7 +147,7 @@
 
 			<div class="rounded-lg">
 				<button
-					class={`variant-filled-primary btn float-left mr-4 flex h-24 w-24 items-center justify-center rounded-lg bg-primary-500 ${$characterCreationStore.loresheet?.values.includes(3) ? 'ring-2 ring-black dark:ring-white' : ''}`}
+					class={`variant-filled-primary btn float-left mr-4 flex h-24 w-24 items-center justify-center rounded-lg bg-primary-500 ${$characterCreationStore.loresheet?.values?.includes(3) ? 'ring-2 ring-black dark:ring-white' : ''}`}
 					disabled={disableThirdOption}
 					on:click={() => dispatchChange('toggleLoreSheetLevel', { level: 3 })}
 				>
@@ -192,50 +193,52 @@
 		</HelpText>
 
 		<div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5">
-			{#each selectedLoresheet.values.sort() as loreSheetLevel}
-				<div class="card rounded-lg p-4">
-					<label
-						class="label grid w-full grid-cols-[3fr_1fr] grid-rows-1 gap-x-2"
-						for={`${selectedLoresheet.name}-${loreSheetLevel}-name`}
-					>
-						<HelpText id={`${selectedLoresheet.name}-${loreSheetLevel}-name`}>
-							<span
-								id={`${selectedLoresheet.name}-${loreSheetLevel}`}
-								class="text-nowrap font-bold"
-							>
-								{getValueDescription(loreSheetLevel)?.title}
-							</span>
-							<svelte:fragment slot="helpText">
-								<p class="whitespace-pre-line">
-									{getValueDescription(loreSheetLevel)?.description}
-								</p>
-							</svelte:fragment>
-						</HelpText>
+			{#if selectedLoresheet.values}
+				{#each selectedLoresheet.values.sort() as loreSheetLevel}
+					<div class="card rounded-lg p-4">
+						<label
+							class="label grid w-full grid-cols-[3fr_1fr] grid-rows-1 gap-x-2"
+							for={`${selectedLoresheet.name}-${loreSheetLevel}-name`}
+						>
+							<HelpText id={`${selectedLoresheet.name}-${loreSheetLevel}-name`}>
+								<span
+									id={`${selectedLoresheet.name}-${loreSheetLevel}`}
+									class="text-nowrap font-bold"
+								>
+									{getValueDescription(loreSheetLevel)?.title}
+								</span>
+								<svelte:fragment slot="helpText">
+									<p class="whitespace-pre-line">
+										{getValueDescription(loreSheetLevel)?.description}
+									</p>
+								</svelte:fragment>
+							</HelpText>
 
-						<HelpText id={`${selectedLoresheet.name}-${loreSheetLevel}-value`}>
-							<Ratings
-								id={`${selectedLoresheet.name}-${loreSheetLevel}-value`}
-								interactive={$interactiveModeStore}
-								justify="justify-left"
-								max={3}
-								bind:value={loreSheetLevel}
-							>
-								<svelte:fragment slot="empty">
-									<iconify-icon icon="prime:circle" />
+							<HelpText id={`${selectedLoresheet.name}-${loreSheetLevel}-value`}>
+								<Ratings
+									id={`${selectedLoresheet.name}-${loreSheetLevel}-value`}
+									interactive={$interactiveModeStore}
+									justify="justify-left"
+									max={3}
+									bind:value={loreSheetLevel}
+								>
+									<svelte:fragment slot="empty">
+										<iconify-icon icon="prime:circle" />
+									</svelte:fragment>
+									<svelte:fragment slot="full">
+										<iconify-icon icon="prime:circle-fill" />
+									</svelte:fragment>
+								</Ratings>
+								<svelte:fragment slot="helpText">
+									<p class="whitespace-pre-line">
+										{getValueDescription(loreSheetLevel)?.description}
+									</p>
 								</svelte:fragment>
-								<svelte:fragment slot="full">
-									<iconify-icon icon="prime:circle-fill" />
-								</svelte:fragment>
-							</Ratings>
-							<svelte:fragment slot="helpText">
-								<p class="whitespace-pre-line">
-									{getValueDescription(loreSheetLevel)?.description}
-								</p>
-							</svelte:fragment>
-						</HelpText>
-					</label>
-				</div>
-			{/each}
+							</HelpText>
+						</label>
+					</div>
+				{/each}
+			{/if}
 		</div>
 	</label>
 {/if}
