@@ -231,7 +231,7 @@
 				{#each discipline.powers.sort(sortDisciplinePowerAscending) as power}
 					{#if calculateDisciplinePowerChallengeTestPool(discipline.name, power.name) > 0}
 						{#key $characterConditionStore || $bloodSurgeStore}
-							<HelpText id={`${discipline.name}-${power}`}>
+							<HelpText id={`${discipline.name}-${power.id}`}>
 								<Tracker
 									title={power.name}
 									value={calculateDisciplinePowerChallengeTestPool(discipline.name, power.name)}
@@ -252,7 +252,7 @@
 							</HelpText>
 						{/key}
 					{:else if getDisciplinePowerConfigEntry(discipline.name, power.name)?.hint}
-						<HelpText id={`${discipline.name}-${power}`}>
+						<HelpText id={`${discipline.name}-${power.id}`}>
 							<Tracker title={power.name} />
 							<svelte:fragment slot="helpText">
 								{#if getDisciplinePowerConfigEntry(discipline.name, power.name)?.hint}
