@@ -21,11 +21,11 @@ import { playerStatus } from './playerStatus';
 import { playerWillpower } from './playerWillpower';
 
 export const playerCharacter = playerCharacterBase.extend({
-	name: z.string(),
+	name: z.string().min(1).max(50),
 	attributes: playerAttribute,
-	skills: playerSkill.array(),
+	skills: playerSkill.array().min(1),
 	disciplines: playerDiscipline.array(),
-	morality: playerMorality.array(),
+	morality: playerMorality.array().min(1),
 	formulas: playerFormula.array().optional(),
 	rituals: bloodSorceryRitualName.array().optional(),
 	ceremonies: oblivionCeremonyName.array().optional(),
