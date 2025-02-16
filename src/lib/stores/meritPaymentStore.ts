@@ -1,15 +1,47 @@
 import { generateId } from '$lib/util';
 import { meritName, type MeritName } from '$lib/zod/lotn/enums/meritName';
+import cloneDeep from 'lodash/cloneDeep';
 import { get, type Writable, writable } from 'svelte/store';
 import { z } from 'zod';
 import { characterCreationStore } from './characterCreationStore';
 
 export class MeritPaymentStore {
+	private _initialMeritStoreValues: MeritPaymentStoreEntrySchema[] = [];
+	_meritStoreInternal: Writable<MeritPaymentStoreEntrySchema[]> = writable(
+		cloneDeep(this._initialMeritStoreValues)
+	);
+	private unsubscribe: () => void;
+
 	constructor() {
-		this._meritStoreInternal = writable(meritPaymentStoreEntrySchema.array().parse([]));
+		let initialValue: MeritPaymentStoreEntrySchema[];
+
+		if (typeof localStorage !== 'undefined') {
+			const storedValue = localStorage.getItem('meritPaymentStore');
+			initialValue = storedValue
+				? JSON.parse(storedValue)
+				: cloneDeep(this._initialMeritStoreValues);
+		} else {
+			initialValue = cloneDeep(this._initialMeritStoreValues);
+		}
+
+		this._meritStoreInternal.set(initialValue);
+
+		if (typeof localStorage !== 'undefined') {
+			this.unsubscribe = this._meritStoreInternal.subscribe((value) => {
+				localStorage.setItem('meritPaymentStore', JSON.stringify(value));
+			});
+		} else {
+			this.unsubscribe = () => {};
+		}
 	}
 
-	_meritStoreInternal: Writable<MeritPaymentStoreEntrySchema[]>;
+	destroy() {
+		this.unsubscribe();
+	}
+
+	reset() {
+		this._meritStoreInternal.set(cloneDeep(this._initialMeritStoreValues));
+	}
 
 	addPredatorMerit(name: MeritName, value: number) {
 		const id = generateId();
@@ -138,6 +170,39 @@ export class MeritPaymentStore {
 		this._meritStoreInternal.update((store) => {
 			return store.filter((merit) => merit.id !== id);
 		});
+	}
+
+	getMerit(id: string) {
+		return get(this._meritStoreInternal).find((merit) => merit.id === id);
+	}
+
+	getSelectivePaidValues(
+		id: string,
+		{
+			freebies,
+			loresheet,
+			predator,
+			experience
+		}: { freebies: boolean; loresheet: boolean; predator: boolean; experience: boolean }
+	) {
+		const meritInStore = this.getMerit(id);
+		if (!meritInStore) return 0;
+
+		let result = 0;
+		if (freebies) {
+			result += meritInStore.freebies;
+		}
+		if (loresheet) {
+			result += meritInStore.loresheet;
+		}
+		if (predator) {
+			result += meritInStore.predator;
+		}
+		if (experience) {
+			result += meritInStore.xp;
+		}
+
+		return result;
 	}
 }
 

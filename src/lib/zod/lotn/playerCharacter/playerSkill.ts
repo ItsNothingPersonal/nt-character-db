@@ -6,7 +6,9 @@ export const playerSkill = z.object({
 	name: physicalSkill.or(socialSkill).or(mentalSkill),
 	value: z.number().min(1).max(5),
 	specialization: z
-		.union([z.string().min(1), z.string().max(30)])
+		.string()
+		.min(1)
+		.max(30)
 		.optional()
 		.nullable()
 		.transform((e) => (e === '' ? undefined : e))

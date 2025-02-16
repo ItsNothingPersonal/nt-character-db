@@ -29,7 +29,7 @@
 </script>
 
 <div class="card rounded-lg">
-	<header class="card-header pb-4">
+	<header class="card-header p-2">
 		<div class="grid grid-cols-[1fr_auto] gap-2">
 			{#if displayValue === 'below'}
 				<div class="flex flex-col">
@@ -137,7 +137,7 @@
 			{/if}
 			{#if showDeleteButton}
 				<button
-					class="variant-filled-primary btn ml-auto w-3 rounded-lg"
+					class="variant-filled-primary btn ml-auto max-h-8 max-w-8 rounded-lg"
 					type="button"
 					on:click={() => dispatchChange('deleteChange', { label: skill.name })}
 				>
@@ -154,6 +154,7 @@
 							id="name"
 							class="input variant-form-material"
 							disabled={!editModeEnabled}
+							maxlength="30"
 							type="text"
 							value={skill.specialization ?? ''}
 							on:blur={(event) =>

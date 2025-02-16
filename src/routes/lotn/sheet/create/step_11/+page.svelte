@@ -28,6 +28,7 @@
 				if (result.success) {
 					submitting = false;
 					characterStore.set(result.data);
+					characterCreationStore.clear();
 					goto(`${base}/lotn/sheet/${result.data.id}`, { replaceState: true });
 				} else {
 					responseMessage = JSON.stringify(result.error.errors, undefined, 2);

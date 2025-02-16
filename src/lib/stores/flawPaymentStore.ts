@@ -1,17 +1,81 @@
 import { flawConfig } from '$lib/components/lotn/config/flawsConfig';
 import { generateId } from '$lib/util';
 import { type FlawName, flawName } from '$lib/zod/lotn/enums/flawName';
+import cloneDeep from 'lodash/cloneDeep';
 import { get, type Writable, writable } from 'svelte/store';
 import { z } from 'zod';
 import { characterCreationStore } from './characterCreationStore';
 
 export class FlawPaymentStore {
+	private _initialFlawStoreValues: FlawPaymentStoreEntrySchema[] = [];
+	_flawStoreInternal: Writable<FlawPaymentStoreEntrySchema[]> = writable(
+		cloneDeep(this._initialFlawStoreValues)
+	);
+	private unsubscribeFlawPaymentStore: () => void;
+
+	private _initialMythicalCounterValue = 0;
+	_mythicalCounterStoreInternal: Writable<number> = writable(
+		cloneDeep(this._initialMythicalCounterValue)
+	);
+	private unsubscribeMythicalCounterStore: () => void;
+
 	constructor() {
-		this._flawStoreInternal = writable(flawPaymentStoreEntrySchema.array().parse([]));
+		// Flaw Store
+		let initialValueFlawPaymentStore: FlawPaymentStoreEntrySchema[];
+
+		if (typeof localStorage !== 'undefined') {
+			const storedValue = localStorage.getItem('flawPaymentStore');
+			initialValueFlawPaymentStore = storedValue
+				? JSON.parse(storedValue)
+				: cloneDeep(this._initialFlawStoreValues);
+		} else {
+			initialValueFlawPaymentStore = cloneDeep(this._initialFlawStoreValues);
+		}
+
+		this._flawStoreInternal.set(initialValueFlawPaymentStore);
+
+		if (typeof localStorage !== 'undefined') {
+			this.unsubscribeFlawPaymentStore = this._flawStoreInternal.subscribe((value) => {
+				localStorage.setItem('flawPaymentStore', JSON.stringify(value));
+			});
+		} else {
+			this.unsubscribeFlawPaymentStore = () => {};
+		}
+
+		// Mythical Counter Store
+		let initialValueMythicalCounterStore: number;
+
+		if (typeof localStorage !== 'undefined') {
+			const storedValue = localStorage.getItem('mythicalCounterStore');
+			initialValueMythicalCounterStore = storedValue
+				? JSON.parse(storedValue)
+				: cloneDeep(this._initialMythicalCounterValue);
+		} else {
+			initialValueMythicalCounterStore = cloneDeep(this._initialMythicalCounterValue);
+		}
+
+		this._mythicalCounterStoreInternal.set(initialValueMythicalCounterStore);
+
+		if (typeof localStorage !== 'undefined') {
+			this.unsubscribeMythicalCounterStore = this._mythicalCounterStoreInternal.subscribe(
+				(value) => {
+					localStorage.setItem('mythicalCounterStore', JSON.stringify(value));
+				}
+			);
+		} else {
+			this.unsubscribeMythicalCounterStore = () => {};
+		}
 	}
 
-	_flawStoreInternal: Writable<FlawPaymentStoreEntrySchema[]>;
-	_mythicalCounter: Writable<number> = writable(0);
+	destroy() {
+		this.unsubscribeFlawPaymentStore();
+		this.unsubscribeMythicalCounterStore();
+	}
+
+	reset() {
+		this._flawStoreInternal.set(cloneDeep(this._initialFlawStoreValues));
+		this._mythicalCounterStoreInternal.set(0);
+	}
 
 	addPredatorFlaw(name: FlawName, value: number, hasPredeterminedDescription: boolean = false) {
 		const id = generateId();
@@ -65,11 +129,11 @@ export class FlawPaymentStore {
 	}
 
 	addRequiredMythicalFlaws(value: number) {
-		this._mythicalCounter.update((store) => store + value);
+		this._mythicalCounterStoreInternal.update((store) => store + value);
 	}
 
 	getRequiredMythicalFlaws() {
-		return get(this._mythicalCounter);
+		return get(this._mythicalCounterStoreInternal);
 	}
 
 	getPredatorFlaws() {
@@ -86,7 +150,7 @@ export class FlawPaymentStore {
 		const flawsToDelete = this.getPredatorFlaws();
 		const deleteIds = flawsToDelete.map((flaw) => flaw.id);
 
-		this._mythicalCounter.update((store) => {
+		this._mythicalCounterStoreInternal.update((store) => {
 			store = 0;
 			return store;
 		});

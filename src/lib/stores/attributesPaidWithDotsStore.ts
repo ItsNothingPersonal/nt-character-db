@@ -1,80 +1,81 @@
 import type { AttributeDotCategory } from '$lib/zod/lotn/enums/attributDotCategory';
 import { attributeName, type AttributeName } from '$lib/zod/lotn/enums/attributeName';
-import { derived, get, writable, type Writable } from 'svelte/store';
+import cloneDeep from 'lodash/cloneDeep';
+import { get, writable, type Writable } from 'svelte/store';
 import { z } from 'zod';
 
 export class AttributesPaidWithDotsStore {
+	readonly _defaultValues: AttributesPaidWithDotsStoreEntrySchema = {
+		4: { max: 1, attributeNames: [] },
+		3: { max: 3, attributeNames: [] },
+		2: { max: 4, attributeNames: [] },
+		1: { max: 1, attributeNames: attributeName.options }
+	};
+
+	private _attributesPaidWithDotsStoreInternal: Writable<AttributesPaidWithDotsStoreEntrySchema> =
+		writable(cloneDeep(this._defaultValues));
+	private unsubscribe: () => void;
+
 	constructor() {
-		this._attributesPaidWithDotsStoreInternal = writable(
-			attributesPaidWithDotsStoreEntrySchema.parse({
-				4: { max: 1, attributeNames: [] },
-				3: { max: 3, attributeNames: [] },
-				2: { max: 4, attributeNames: [] },
-				1: { max: 1, attributeNames: attributeName.options }
-			})
-		);
+		let initialValue: AttributesPaidWithDotsStoreEntrySchema;
+
+		if (typeof localStorage !== 'undefined') {
+			const storedValue = localStorage.getItem('attributesPaidWithDotsStore');
+			initialValue = storedValue ? JSON.parse(storedValue) : cloneDeep(this._defaultValues);
+		} else {
+			initialValue = cloneDeep(this._defaultValues);
+		}
+
+		this._attributesPaidWithDotsStoreInternal.set(initialValue);
+
+		if (typeof localStorage !== 'undefined') {
+			this.unsubscribe = this._attributesPaidWithDotsStoreInternal.subscribe((value) => {
+				localStorage.setItem('attributesPaidWithDotsStore', JSON.stringify(value));
+			});
+		} else {
+			this.unsubscribe = () => {};
+		}
 	}
 
-	private _attributesPaidWithDotsStoreInternal: Writable<AttributesPaidWithDotsStoreEntrySchema>;
+	destroy() {
+		this.unsubscribe();
+	}
+
+	subscribe = this._attributesPaidWithDotsStoreInternal.subscribe;
 
 	get store() {
 		return get(this._attributesPaidWithDotsStoreInternal);
 	}
 
+	reset() {
+		this._attributesPaidWithDotsStoreInternal.set(cloneDeep(this._defaultValues));
+	}
+
 	set attributePaidWithDots(value: { dots: AttributeDotCategory; attributeName: AttributeName }) {
 		this.removeAttributePaidWithDots(value.attributeName);
 		this._attributesPaidWithDotsStoreInternal.update((store) => {
-			store[value.dots].attributeNames = [...store[value.dots].attributeNames, value.attributeName];
+			store[value.dots].attributeNames = [
+				...store[value.dots].attributeNames,
+				value.attributeName
+			].sort();
 			return store;
 		});
 	}
 
-	get amount4Dots() {
-		return derived(this._attributesPaidWithDotsStoreInternal, ($store) => {
-			return $store[4].attributeNames.length;
-		});
-	}
-
 	get max4Dots() {
-		return derived(this._attributesPaidWithDotsStoreInternal, ($store) => {
-			return $store[4].max;
-		});
-	}
-
-	get amount3Dots() {
-		return derived(this._attributesPaidWithDotsStoreInternal, ($store) => {
-			return $store[3].attributeNames.length;
-		});
+		return this.store[4].max;
 	}
 
 	get max3Dots() {
-		return derived(this._attributesPaidWithDotsStoreInternal, ($store) => {
-			return $store[3].max;
-		});
-	}
-
-	get amount2Dots() {
-		return derived(this._attributesPaidWithDotsStoreInternal, ($store) => {
-			return $store[2].attributeNames.length;
-		});
+		return this.store[3].max;
 	}
 
 	get max2Dots() {
-		return derived(this._attributesPaidWithDotsStoreInternal, ($store) => {
-			return $store[2].max;
-		});
-	}
-
-	get amount1Dots() {
-		return derived(this._attributesPaidWithDotsStoreInternal, ($store) => {
-			return $store[1].attributeNames.length;
-		});
+		return this.store[2].max;
 	}
 
 	get max1Dots() {
-		return derived(this._attributesPaidWithDotsStoreInternal, ($store) => {
-			return $store[1].max;
-		});
+		return this.store[1].max;
 	}
 
 	getAmountDots(value: AttributeDotCategory) {
@@ -115,14 +116,25 @@ export class AttributesPaidWithDotsStore {
 
 	haveAllAttributeFreebiesBeenUsed() {
 		if (
-			get(this.amount1Dots) === get(this.max1Dots) &&
-			get(this.amount2Dots) === get(this.max2Dots) &&
-			get(this.amount3Dots) === get(this.max3Dots) &&
-			get(this.amount4Dots) === get(this.max4Dots)
+			this.store[1].attributeNames.length === this.max1Dots &&
+			this.store[2].attributeNames.length === this.max2Dots &&
+			this.store[3].attributeNames.length === this.max3Dots &&
+			this.store[4].attributeNames.length === this.max4Dots
 		) {
 			return true;
 		}
 		return false;
+	}
+
+	sortAttributeNames(index: number) {
+		this._attributesPaidWithDotsStoreInternal.update((store) => {
+			const newStore = { ...store };
+
+			newStore[index as AttributeDotCategory].attributeNames =
+				newStore[index as AttributeDotCategory].attributeNames.sort();
+
+			return newStore;
+		});
 	}
 }
 

@@ -45,7 +45,9 @@
 		getValidMerits,
 		hasBeenGrantedByLoresheet,
 		hasBeenPaidWithDots,
-		hasThinBloodAlchemyMerit
+		hasMultipleMeritLevels,
+		hasThinBloodAlchemyMerit,
+		isPredatorMerit
 	} from '$lib/components/lotn/util/meritUtil';
 	import { ScreenSize } from '$lib/sceenSize';
 	import { attributesPaidWithDotsStore } from '$lib/stores/attributesPaidWithDotsStore';
@@ -54,6 +56,7 @@
 		characterCreationStore
 	} from '$lib/stores/characterCreationStore';
 	import { disciplineFreebieStore } from '$lib/stores/disciplineFreebieStore';
+	import { meritPaymentStore } from '$lib/stores/meritPaymentStore';
 	import { skillsPaidWithDotsStore } from '$lib/stores/skillsPaidWithDotsStore';
 	import { generateId, isNotNullOrUndefined } from '$lib/util';
 	import type { ThinBloodAlchemy } from '$lib/zod/lotn/disciplines/thinBloodAlchemy';
@@ -663,7 +666,7 @@
 			const index = store.merits.findIndex((m) => m.id === event.detail.id);
 			if (index === -1) return store;
 
-			store.merits[index].description = event.detail.description;
+			store.merits[index].description = event.detail.description?.replace(/[\r\n]+/g, ' ');
 
 			return store;
 		});
@@ -1581,13 +1584,23 @@
 			{/each}
 		</div>
 	{:else if selectedKindIncreaseOption === 'Merit' && $characterCreationStore.merits && $characterCreationStore.merits.length > 0}
-		<div class="grid grid-cols-1 grid-rows-1 gap-2 sm:grid-cols-3">
+		<div class="grid grid-cols-1 grid-rows-1 gap-2 sm:grid-cols-4">
 			{#each $characterCreationStore.merits as merit}
 				<EditableMerit
-					enableEditValue={getApplicableMeritLevels(merit.name).length > 1}
+					displayFormat="column"
+					enableEditLinkedSkill={true}
+					enableEditValue={hasMultipleMeritLevels(merit.name)}
 					{merit}
-					showDeleteButton={!hasBeenPaidWithDots(merit) && !hasBeenGrantedByLoresheet(merit)}
+					showDeleteButton={!isPredatorMerit(merit) &&
+						!hasBeenPaidWithDots(merit) &&
+						!hasBeenGrantedByLoresheet(merit)}
 					showDescriptionInput={displaySpecificMeritDescription(merit)}
+					startValue={meritPaymentStore.getSelectivePaidValues(merit.id, {
+						freebies: true,
+						loresheet: true,
+						predator: true,
+						experience: false
+					})}
 					on:linkedSkillChange={(e) => updateMeritLinkedSkill(e)}
 					on:descriptionChange={(e) => updateMeritDescription(e)}
 					on:valueChange={(e) => updateMeritValue(e)}

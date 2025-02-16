@@ -6,12 +6,12 @@
 	import { flawPaymentStore } from '$lib/stores/flawPaymentStore';
 	import { meritPaymentStore } from '$lib/stores/meritPaymentStore';
 	import { onMount } from 'svelte';
-	import { get } from 'svelte/store';
+	import { get, writable } from 'svelte/store';
 
 	const validGenerations = [9, 10, 11, 12, 13, 14, 15, 16];
-	$: selectedGeneration = 16;
-	$: selectedBloodPotency = 0;
-	$: selectedBloodPotencyConfig = getBloodPotencies(selectedGeneration);
+	const selectedGeneration = writable(get(characterCreationStore).generation);
+	$: selectedBloodPotency = get(characterCreationStore).bloodPotency;
+	$: selectedBloodPotencyConfig = getBloodPotencies($selectedGeneration);
 
 	const validBloodPotencyPerGeneration: { [k: number]: { min: number; max: number } } = {
 		9: { min: 2, max: 5 },
@@ -33,17 +33,17 @@
 		if (!$characterCreationStore.clan) {
 			$characterCreationStore.clan = 'Banu Haqim';
 		}
-		selectedBloodPotency = $characterCreationStore.bloodPotency;
-		selectedGeneration = $characterCreationStore.generation;
+
+		selectedGeneration.set($characterCreationStore.generation);
 	});
 
 	function updateGeneration() {
 		characterCreationStore.update((store) => {
-			store.generation = selectedGeneration;
+			store.generation = $selectedGeneration;
 			return store;
 		});
 
-		selectedBloodPotency = validBloodPotencyPerGeneration[selectedGeneration].min;
+		selectedBloodPotency = validBloodPotencyPerGeneration[$selectedGeneration].min;
 		updateBloodPotency();
 	}
 
@@ -82,11 +82,11 @@
 			<span>Generation</span>
 			<select
 				class="select rounded-lg"
-				bind:value={selectedGeneration}
+				bind:value={$selectedGeneration}
 				on:change={updateGeneration}
 			>
 				{#each validGenerations as generation}
-					<option selected={selectedGeneration === generation} value={generation}>
+					<option selected={$selectedGeneration === generation} value={generation}>
 						{generation}
 					</option>
 				{/each}
@@ -126,9 +126,7 @@
 	</div>
 {/if}
 {#if $characterCreationStore.clan !== 'Thin-Blooded' || ($characterCreationStore.clan === 'Thin-Blooded' && $characterCreationStore.merits?.some((e) => e.name === 'Catenating Blood'))}
-	<Checkbox checked={get(characterCreationStore).ghoul} onChange={updateGhoulStatus}>
-		Ghoul
-	</Checkbox>
+	<Checkbox checked={$characterCreationStore.ghoul} onChange={updateGhoulStatus}>Ghoul</Checkbox>
 {/if}
 {#if !$characterCreationStore.ghoul}
 	<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-4">

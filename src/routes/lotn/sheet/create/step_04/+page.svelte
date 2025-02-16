@@ -12,14 +12,6 @@
 	import { Ratings } from '@skeletonlabs/skeleton';
 
 	let selectedAttribute: AttributeName | undefined = undefined;
-	$: amount4Dots = attributesPaidWithDotsStore.amount4Dots;
-	$: max4Dots = attributesPaidWithDotsStore.max4Dots;
-	$: amount3Dots = attributesPaidWithDotsStore.amount3Dots;
-	$: max3Dots = attributesPaidWithDotsStore.max3Dots;
-	$: amount2Dots = attributesPaidWithDotsStore.amount2Dots;
-	$: max2Dots = attributesPaidWithDotsStore.max2Dots;
-	$: amount1Dots = attributesPaidWithDotsStore.amount1Dots;
-	$: max1Dots = attributesPaidWithDotsStore.max1Dots;
 
 	let spendingPoints: AttributeDotCategory = 4;
 
@@ -163,21 +155,25 @@
 <hr class="mt-4" />
 <div class="col-span-2 grid grid-cols-2 gap-2 p-2 sm:grid-cols-4">
 	<div>
-		Used 4 dots: {$amount4Dots}/{$max4Dots}
+		Used 4 dots: {$attributesPaidWithDotsStore[4].attributeNames
+			.length}/{attributesPaidWithDotsStore.max4Dots}
 	</div>
 	<div>
-		Used 3 dots: {$amount3Dots}/{$max3Dots}
+		Used 3 dots: {$attributesPaidWithDotsStore[3].attributeNames
+			.length}/{attributesPaidWithDotsStore.max3Dots}
 	</div>
 	<div>
-		Used 2 dots: {$amount2Dots}/{$max2Dots}
+		Used 2 dots: {$attributesPaidWithDotsStore[2].attributeNames
+			.length}/{attributesPaidWithDotsStore.max2Dots}
 	</div>
 	<div>
-		Used 1 dots: {$amount1Dots}/{$max1Dots}
+		Used 1 dots: {$attributesPaidWithDotsStore[1].attributeNames
+			.length}/{attributesPaidWithDotsStore.max1Dots}
 	</div>
 </div>
 <div class="col-span-2 grid grid-cols-2 gap-2 p-2 sm:grid-cols-4">
 	<div class="flex flex-col gap-2">
-		{#each attributesPaidWithDotsStore.store[4].attributeNames.sort() as attribute}
+		{#each $attributesPaidWithDotsStore[4].attributeNames as attribute}
 			<EditableAttribute
 				attributeName={attribute}
 				attributeValue={4}
@@ -188,7 +184,7 @@
 		{/each}
 	</div>
 	<div class="flex flex-col gap-2">
-		{#each attributesPaidWithDotsStore.store[3].attributeNames.sort() as attribute}
+		{#each $attributesPaidWithDotsStore[3].attributeNames as attribute}
 			<EditableAttribute
 				attributeName={attribute}
 				attributeValue={3}
@@ -199,7 +195,7 @@
 		{/each}
 	</div>
 	<div class="flex flex-col gap-2">
-		{#each attributesPaidWithDotsStore.store[2].attributeNames.sort() as attribute}
+		{#each $attributesPaidWithDotsStore[2].attributeNames as attribute}
 			<EditableAttribute
 				attributeName={attribute}
 				attributeValue={2}
@@ -210,7 +206,7 @@
 		{/each}
 	</div>
 	<div class="flex flex-col gap-2">
-		{#each attributesPaidWithDotsStore.store[1].attributeNames.sort() as attribute}
+		{#each $attributesPaidWithDotsStore[1].attributeNames as attribute}
 			<EditableAttribute attributeName={attribute} attributeValue={1} displayStyle="dots" />
 		{/each}
 	</div>

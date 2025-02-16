@@ -6,7 +6,7 @@ import { idSchema } from '../util';
 export const playerFlaw = z.object({
 	name: flawName,
 	value: z.number().int().min(0).max(5),
-	description: z.string().max(50).optional(),
+	description: z.string().max(100).optional(),
 	sphereOfInfluence: spheresOfInfluenceName
 		.or(z.literal(''))
 		.default('')

@@ -27,6 +27,10 @@ export function getApplicableMeritLevels(meritName: MeritName) {
 	}
 }
 
+export function hasMultipleMeritLevels(meritName: MeritName) {
+	return getApplicableMeritLevels(meritName).length > 1;
+}
+
 export function getMeritValueDescription(meritName: MeritName, value: number) {
 	const config = meritConfig[meritName];
 	if (!config) return undefined;
@@ -168,52 +172,54 @@ export function getValidMerits() {
 
 export function getValidFlaws() {
 	const isThinBlood = get(characterCreationStore).clan === 'Thin-Blooded';
-	return flawName.options.filter((flaw) => {
-		const config = flawConfig[flaw];
-		if (!config) return false;
+	return flawName.options
+		.filter((flaw) => {
+			const config = flawConfig[flaw];
+			if (!config) return false;
 
-		if (!get(characterCreationStore).ghoul && config.category === 'Ghoul') {
-			return false;
-		}
-		if (!isThinBlood && config.category === 'Thin-Blood') {
-			return false;
-		}
-		if (
-			get(characterCreationStore).ghoul &&
-			config.category === 'Feeding' &&
-			config.ghoulAllowed !== true
-		) {
-			return false;
-		}
-
-		const multiPurchase = config.multiPurchase ?? false;
-		if (
-			get(characterCreationStore).flaws?.some(
-				(existingFlaw) => existingFlaw.name === flaw && !multiPurchase
-			)
-		) {
-			return false;
-		}
-
-		if (config.prerequisite) {
-			const prereq = config.prerequisite;
+			if (!get(characterCreationStore).ghoul && config.category === 'Ghoul') {
+				return false;
+			}
+			if (!isThinBlood && config.category === 'Thin-Blood') {
+				return false;
+			}
 			if (
-				prereq &&
-				prereq.name === 'Blood Potency' &&
-				get(characterCreationStore).bloodPotency > prereq.value
+				get(characterCreationStore).ghoul &&
+				config.category === 'Feeding' &&
+				config.ghoulAllowed !== true
 			) {
 				return false;
-			} else if (prereq) {
-				const background = get(characterCreationStore).backgrounds.find(
-					(e) => e.name === prereq.name && e.value >= prereq.value
-				);
-				if (background) return false;
-				return true;
 			}
-		}
 
-		return true;
-	});
+			const multiPurchase = config.multiPurchase ?? false;
+			if (
+				get(characterCreationStore).flaws?.some(
+					(existingFlaw) => existingFlaw.name === flaw && !multiPurchase
+				)
+			) {
+				return false;
+			}
+
+			if (config.prerequisite) {
+				const prereq = config.prerequisite;
+				if (
+					prereq &&
+					prereq.name === 'Blood Potency' &&
+					get(characterCreationStore).bloodPotency > prereq.value
+				) {
+					return false;
+				} else if (prereq) {
+					const background = get(characterCreationStore).backgrounds.find(
+						(e) => e.name === prereq.name && e.value >= prereq.value
+					);
+					if (background) return false;
+					return true;
+				}
+			}
+
+			return true;
+		})
+		.toSorted();
 }
 
 export function getValidMythicalFlaws() {
@@ -272,4 +278,20 @@ export function isPredatorMerit(merit: PlayerMerit & { id: string }) {
 
 export function isLoresheetMerit(merit: PlayerMerit & { id: string }) {
 	return backgroundPaymentStore.isLoresheetMerit(merit.id);
+}
+
+export function hasBeenPaidWithExperience(merit: PlayerMerit & { id: string }) {
+	const experienceLogEntry = get(characterCreationStore).experience.find(
+		(e) => e.element_id === merit.id && e.type === 'substract'
+	);
+	return experienceLogEntry !== undefined;
+}
+
+export function getMeritValue(merit: PlayerMerit & { id: string }) {
+	return get(characterCreationStore).merits?.find((e) => e.id === merit.id)?.value;
+}
+
+export function getMeritsTotal() {
+	const paidMerits = meritPaymentStore.getChosenMerits();
+	return paidMerits.reduce((acc, merit) => acc + merit.freebies, 0);
 }

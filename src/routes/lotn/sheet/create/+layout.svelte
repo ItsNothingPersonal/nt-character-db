@@ -1,14 +1,42 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
-	import { detectTouchscreen, isDesktopSize } from '$lib/util';
+	import { detectTouchscreen, generateId, isDesktopSize } from '$lib/util';
+	import { onMount } from 'svelte';
 
 	let innerWidth: number = 0;
+
+	onMount(() => {
+		characterCreationStore.update((store) => {
+			if (!store.merits?.find((merit) => merit.name === 'Linguistics')) {
+				if (!store.merits) store.merits = [];
+
+				store.merits.push({
+					id: generateId(),
+					name: 'Linguistics',
+					value: 0
+				});
+			}
+			return store;
+		});
+	});
+
+	function resetStore() {
+		characterCreationStore.clear();
+	}
 </script>
 
 <svelte:window bind:innerWidth />
 
-<h1 class="h1">Character-Creation</h1>
+<div class="flex justify-between">
+	<h1 class="h1">Character-Creation</h1>
+
+	<button class="btn" type="button" on:click={resetStore}>
+		<iconify-icon height="24" icon="mdi:restart" width="24"></iconify-icon>
+		Reset
+	</button>
+</div>
+
 <div
 	class={`mt-4 grid gap-2 ${isDesktopSize(innerWidth) && !detectTouchscreen() ? 'grid-cols-1 sm:grid-cols-[auto_2fr]' : 'grid-cols-1'}`}
 >
@@ -96,6 +124,8 @@
 		</div>
 	{/if}
 	<div class="card rounded-lg p-4">
-		<slot />
+		{#key $characterCreationStore}
+			<slot />
+		{/key}
 	</div>
 </div>
