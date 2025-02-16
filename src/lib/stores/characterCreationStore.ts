@@ -10,13 +10,14 @@ import type { SpheresOfInfluenceName } from '$lib/zod/lotn/enums/spheresOfInflue
 import type { PlayerBackgroundAdvantage } from '$lib/zod/lotn/playerCharacter/playerBackgroundAdvantage';
 import { playerCharacterCreate } from '$lib/zod/lotn/playerCharacter/playerCharacter';
 import type { AssociatedAdvantage } from '$lib/zod/lotn/types/loresheetSchema';
+import cloneDeep from 'lodash/cloneDeep';
 import { derived, get, writable, type Readable, type Writable } from 'svelte/store';
 import { z } from 'zod';
-import { localStorageStore } from './localStorageStore';
+import { localStorageCharacterCreationStore } from './localStorageCharacterCreationStore';
 
 export const initialCharacterStoreObject = Object.freeze(playerCharacterCreate.parse({}));
 
-export const characterCreationStore = localStorageStore('characterCreationStore');
+export const characterCreationStore = localStorageCharacterCreationStore('characterCreationStore');
 
 const paymentStoreEntrySchema = z.object({
 	predator: z.number(),
@@ -52,12 +53,40 @@ const paymentStoreSchema = z.object({
 type PaymentStoreSchema = z.infer<typeof paymentStoreSchema>;
 
 export class BackgroundPaymentStore {
+	private _initialPaymentStoreValues: PaymentStoreSchema = {
+		backgrounds: [],
+		associatedAdvantage: [],
+		loresheet: []
+	};
+	private _paymentStoreInternal: Writable<PaymentStoreSchema> = writable(
+		cloneDeep(this._initialPaymentStoreValues)
+	);
+	private unsubscribePaymentStore: () => void;
+
+	private _usedFreebiePointsInternal: Readable<number>;
+	private _maxFreebiePointsInternal: Readable<number>;
+
 	constructor() {
-		this._paymentStoreInternal = writable({
-			backgrounds: [],
-			associatedAdvantage: [],
-			loresheet: []
-		});
+		let initialValue: PaymentStoreSchema;
+
+		if (typeof localStorage !== 'undefined') {
+			const storedValue = localStorage.getItem('paymentStore');
+			initialValue = storedValue
+				? JSON.parse(storedValue)
+				: cloneDeep(this._initialPaymentStoreValues);
+		} else {
+			initialValue = cloneDeep(this._initialPaymentStoreValues);
+		}
+
+		this._paymentStoreInternal.set(initialValue);
+
+		if (typeof localStorage !== 'undefined') {
+			this.unsubscribePaymentStore = this._paymentStoreInternal.subscribe((value) => {
+				localStorage.setItem('paymentStore', JSON.stringify(value));
+			});
+		} else {
+			this.unsubscribePaymentStore = () => {};
+		}
 
 		this._usedFreebiePointsInternal = derived(
 			this._paymentStoreInternal,
@@ -84,17 +113,13 @@ export class BackgroundPaymentStore {
 		});
 	}
 
-	private _usedFreebiePointsInternal: Readable<number>;
-	private _maxFreebiePointsInternal: Readable<number>;
-	private _paymentStoreInternal: Writable<PaymentStoreSchema>;
+	destroy() {
+		this.unsubscribePaymentStore();
+	}
 
 	reset() {
 		this._usedFreebiePointsInternal = writable(0);
-		this._paymentStoreInternal.set({
-			backgrounds: [],
-			associatedAdvantage: [],
-			loresheet: []
-		});
+		this._paymentStoreInternal.set(cloneDeep(this._initialPaymentStoreValues));
 	}
 
 	get usedFreebiePoints() {

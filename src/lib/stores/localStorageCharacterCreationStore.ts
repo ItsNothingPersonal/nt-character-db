@@ -7,7 +7,7 @@ import { backgroundPaymentStore, initialCharacterStoreObject } from './character
 import { flawPaymentStore } from './flawPaymentStore';
 import { meritPaymentStore } from './meritPaymentStore';
 
-export function localStorageStore(
+export function localStorageCharacterCreationStore(
 	key: string
 ): Writable<PlayerCharacterCreate> & { clear: () => void } {
 	let storedValue: PlayerCharacterCreate;

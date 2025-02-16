@@ -14,11 +14,41 @@ export class AttributesPaidWithDotsStore {
 
 	private _attributesPaidWithDotsStoreInternal: Writable<AttributesPaidWithDotsStoreEntrySchema> =
 		writable(cloneDeep(this._defaultValues));
+	private unsubscribe: () => void;
+
+	constructor() {
+		let initialValue: AttributesPaidWithDotsStoreEntrySchema;
+
+		if (typeof localStorage !== 'undefined') {
+			const storedValue = localStorage.getItem('attributesPaidWithDotsStore');
+			initialValue = storedValue ? JSON.parse(storedValue) : cloneDeep(this._defaultValues);
+		} else {
+			initialValue = cloneDeep(this._defaultValues);
+		}
+
+		this._attributesPaidWithDotsStoreInternal.set(initialValue);
+
+		if (typeof localStorage !== 'undefined') {
+			this.unsubscribe = this._attributesPaidWithDotsStoreInternal.subscribe((value) => {
+				localStorage.setItem('attributesPaidWithDotsStore', JSON.stringify(value));
+			});
+		} else {
+			this.unsubscribe = () => {};
+		}
+	}
+
+	destroy() {
+		this.unsubscribe();
+	}
 
 	subscribe = this._attributesPaidWithDotsStoreInternal.subscribe;
 
 	get store() {
 		return get(this._attributesPaidWithDotsStoreInternal);
+	}
+
+	reset() {
+		this._attributesPaidWithDotsStoreInternal.set(cloneDeep(this._defaultValues));
 	}
 
 	set attributePaidWithDots(value: { dots: AttributeDotCategory; attributeName: AttributeName }) {
@@ -94,10 +124,6 @@ export class AttributesPaidWithDotsStore {
 			return true;
 		}
 		return false;
-	}
-
-	reset() {
-		this._attributesPaidWithDotsStoreInternal.set(cloneDeep(this._defaultValues));
 	}
 
 	sortAttributeNames(index: number) {
