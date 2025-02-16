@@ -29,7 +29,7 @@
 </script>
 
 <div class="card rounded-lg">
-	<header class="card-header p-2">
+	<header class="card-header p-4">
 		<div class="grid grid-cols-[1fr_auto] gap-2">
 			{#if displayValue === 'below'}
 				<div class="flex flex-col">

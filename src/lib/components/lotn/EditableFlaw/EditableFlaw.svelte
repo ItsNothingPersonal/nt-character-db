@@ -187,67 +187,71 @@
 {:else}
 	<label class="card flex flex-col rounded-lg p-4" for={`${flaw.name}-${flaw.id}`}>
 		<div
-			class={`label flex flex-wrap ${displayFormat === 'row' ? 'flex-row gap-x-2' : 'flex-col'}`}
+			class={`label flex flex-wrap ${displayFormat === 'row' ? 'w-full flex-row justify-between' : 'flex-col'}`}
 		>
-			{#if config && config.prerequisite}
-				<HelpText id={`${flaw.name}-${flaw.id}`}>
-					<span id={`${flaw.name}-${flaw.id}`} class="whitespace-nowrap">{flaw.name}</span>
-					<svelte:fragment slot="helpText">
-						{#if config && config.prerequisite}
+			<div class="w-fit">
+				{#if config && config.prerequisite}
+					<HelpText id={`${flaw.name}-${flaw.id}`}>
+						<span id={`${flaw.name}-${flaw.id}`} class="whitespace-nowrap">{flaw.name}</span>
+						<svelte:fragment slot="helpText">
+							{#if config && config.prerequisite}
+								<p class="whitespace-pre-line">
+									<span class="font-bold">Prerequisite:</span>
+									{#if Array.isArray(config.prerequisite)}
+										{#each config.prerequisite as prerequisite}
+											{#if typeof prerequisite === 'string'}
+												{prerequisite}
+											{:else}
+												{prerequisite.name}
+												{prerequisite.value}
+											{/if}
+										{/each}
+									{:else if typeof config.prerequisite === 'string'}
+										{config.prerequisite}
+									{:else}
+										{config.prerequisite.name}
+										{config.prerequisite.value}
+									{/if}
+								</p>
+							{/if}
+						</svelte:fragment>
+					</HelpText>
+				{:else if config}
+					<HelpText id={`${flaw.name}-${flaw.id}`}>
+						<span id={`${flaw.name}-${flaw.id}`} class="whitespace-nowrap">{flaw.name}</span>
+						<svelte:fragment slot="helpText">
 							<p class="whitespace-pre-line">
-								<span class="font-bold">Prerequisite:</span>
-								{#if Array.isArray(config.prerequisite)}
-									{#each config.prerequisite as prerequisite}
-										{#if typeof prerequisite === 'string'}
-											{prerequisite}
-										{:else}
-											{prerequisite.name}
-											{prerequisite.value}
-										{/if}
-									{/each}
-								{:else if typeof config.prerequisite === 'string'}
-									{config.prerequisite}
-								{:else}
-									{config.prerequisite.name}
-									{config.prerequisite.value}
-								{/if}
+								{getFlawValueDescription(flaw.name, flaw.value)}
 							</p>
-						{/if}
-					</svelte:fragment>
-				</HelpText>
-			{:else if config}
-				<HelpText id={`${flaw.name}-${flaw.id}`}>
+						</svelte:fragment>
+					</HelpText>
+				{:else}
 					<span id={`${flaw.name}-${flaw.id}`} class="whitespace-nowrap">{flaw.name}</span>
-					<svelte:fragment slot="helpText">
-						<p class="whitespace-pre-line">
-							{getFlawValueDescription(flaw.name, flaw.value)}
-						</p>
-					</svelte:fragment>
-				</HelpText>
-			{:else}
-				<span id={`${flaw.name}-${flaw.id}`} class="whitespace-nowrap">{flaw.name}</span>
-			{/if}
-			{#if flaw.value > 0}
-				<HelpText id={`${flaw.name}-${flaw.id}-value`}>
-					<Ratings
-						id={`${flaw.name}-${flaw.id}-value`}
-						justify="justify-left"
-						bind:value={flaw.value}
-					>
-						<svelte:fragment slot="empty">
-							<iconify-icon icon="prime:circle" />
+				{/if}
+			</div>
+			<div>
+				{#if flaw.value > 0}
+					<HelpText id={`${flaw.name}-${flaw.id}-value`}>
+						<Ratings
+							id={`${flaw.name}-${flaw.id}-value`}
+							justify="justify-left"
+							bind:value={flaw.value}
+						>
+							<svelte:fragment slot="empty">
+								<iconify-icon icon="prime:circle" />
+							</svelte:fragment>
+							<svelte:fragment slot="full">
+								<iconify-icon icon="prime:circle-fill" />
+							</svelte:fragment>
+						</Ratings>
+						<svelte:fragment slot="helpText">
+							<p class="whitespace-pre-line">
+								{getFlawValueDescription(flaw.name, flaw.value)}
+							</p>
 						</svelte:fragment>
-						<svelte:fragment slot="full">
-							<iconify-icon icon="prime:circle-fill" />
-						</svelte:fragment>
-					</Ratings>
-					<svelte:fragment slot="helpText">
-						<p class="whitespace-pre-line">
-							{getFlawValueDescription(flaw.name, flaw.value)}
-						</p>
-					</svelte:fragment>
-				</HelpText>
-			{/if}
+					</HelpText>
+				{/if}
+			</div>
 		</div>
 		{#if flaw.description}
 			<p class="whitespace-pre-line text-sm">

@@ -7,11 +7,12 @@ export const playerSkill = z.object({
 	value: z.number().min(1).max(5),
 	specialization: z
 		.string()
-		.min(1)
-		.max(30)
-		.optional()
-		.nullable()
 		.transform((e) => (e === '' ? undefined : e))
+		.refine((e) => e === undefined || (typeof e === 'string' && e.length >= 1 && e.length <= 30), {
+			message: 'Specialization must be between 1 and 30 characters'
+		})
+		.nullable()
+		.optional()
 });
 
 export type PlayerSkill = z.infer<typeof playerSkill>;
