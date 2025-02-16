@@ -11,11 +11,14 @@
 			if (!store.merits?.find((merit) => merit.name === 'Linguistics')) {
 				if (!store.merits) store.merits = [];
 
-				store.merits.push({
-					id: generateId(),
-					name: 'Linguistics',
-					value: 0
-				});
+				store.merits = [
+					...store.merits,
+					{
+						id: generateId(),
+						name: 'Linguistics',
+						value: 0
+					}
+				];
 			}
 			return store;
 		});
