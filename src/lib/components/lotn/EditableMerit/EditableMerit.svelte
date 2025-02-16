@@ -51,7 +51,7 @@
 </script>
 
 <label
-	class={`row card grid w-full grid-cols-1 grid-rows-[min-content] rounded-lg p-2`}
+	class={`row card grid w-full grid-cols-1 grid-rows-[min-content] rounded-lg p-4`}
 	for={`${merit.name}-${merit.id}`}
 >
 	<div class="flex justify-between gap-x-4">

@@ -135,7 +135,7 @@
 </script>
 
 <label
-	class={`card grid w-full grid-cols-1 ${!showDescriptionInput ? 'grid-rows-1' : 'grid-rows-2'} rounded-lg p-2`}
+	class={`card grid w-full grid-cols-1 ${!showDescriptionInput ? 'grid-rows-1' : 'grid-rows-2'} rounded-lg p-4`}
 	for={`${flaw.name}-${flaw.id}`}
 >
 	<div
