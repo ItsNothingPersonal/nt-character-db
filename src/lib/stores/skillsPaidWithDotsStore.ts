@@ -1,21 +1,53 @@
 import type { SkillDotCategory } from '$lib/zod/lotn/enums/skillDotsCategory';
 import { skillName, type SkillName } from '$lib/zod/lotn/enums/skillName';
+import cloneDeep from 'lodash/cloneDeep';
 import { derived, get, type Writable, writable } from 'svelte/store';
 import { z } from 'zod';
 import { characterCreationStore } from './characterCreationStore';
 
 export class SkillsPaidWithDotsStore {
+	private _initialSkillsPaidWithDotsStoreValues: SkillsPaidWithDotsStoreEntrySchema = {
+		3: { max: 3, skillNames: [] },
+		2: { max: 5, skillNames: [] },
+		1: { max: 7, skillNames: [] }
+	};
+	_skillsPaidWithDotsStoreInternal: Writable<SkillsPaidWithDotsStoreEntrySchema> = writable(
+		cloneDeep(this._initialSkillsPaidWithDotsStoreValues)
+	);
+	private unsubscribe: () => void;
+
 	constructor() {
-		this._skillsPaidWithDotsStoreInternal = writable(
-			skillsPaidWithDotsStoreEntrySchema.parse({
-				3: { max: 3, skillNames: [] },
-				2: { max: 5, skillNames: [] },
-				1: { max: 7, skillNames: [] }
-			})
-		);
+		let initialValue: SkillsPaidWithDotsStoreEntrySchema;
+
+		if (typeof localStorage !== 'undefined') {
+			const storedValue = localStorage.getItem('skillsPaidWithDotsStore');
+			initialValue = storedValue
+				? JSON.parse(storedValue)
+				: cloneDeep(this._initialSkillsPaidWithDotsStoreValues);
+		} else {
+			initialValue = cloneDeep(this._initialSkillsPaidWithDotsStoreValues);
+		}
+
+		this._skillsPaidWithDotsStoreInternal.set(initialValue);
+
+		if (typeof localStorage !== 'undefined') {
+			this.unsubscribe = this._skillsPaidWithDotsStoreInternal.subscribe((value) => {
+				localStorage.setItem('skillsPaidWithDotsStore', JSON.stringify(value));
+			});
+		} else {
+			this.unsubscribe = () => {};
+		}
 	}
 
-	private _skillsPaidWithDotsStoreInternal: Writable<SkillsPaidWithDotsStoreEntrySchema>;
+	destroy() {
+		this.unsubscribe();
+	}
+
+	reset() {
+		this._skillsPaidWithDotsStoreInternal.set(
+			cloneDeep(this._initialSkillsPaidWithDotsStoreValues)
+		);
+	}
 
 	get store() {
 		return get(this._skillsPaidWithDotsStoreInternal);

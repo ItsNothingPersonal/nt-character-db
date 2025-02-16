@@ -6,6 +6,7 @@ import { attributesPaidWithDotsStore } from './attributesPaidWithDotsStore';
 import { backgroundPaymentStore, initialCharacterStoreObject } from './characterCreationStore';
 import { flawPaymentStore } from './flawPaymentStore';
 import { meritPaymentStore } from './meritPaymentStore';
+import { skillsPaidWithDotsStore } from './skillsPaidWithDotsStore';
 
 export function localStorageCharacterCreationStore(
 	key: string
@@ -41,6 +42,7 @@ export function localStorageCharacterCreationStore(
 				return store;
 			});
 			attributesPaidWithDotsStore.reset();
+			skillsPaidWithDotsStore.reset();
 			backgroundPaymentStore.reset();
 			meritPaymentStore.reset();
 			flawPaymentStore.reset();

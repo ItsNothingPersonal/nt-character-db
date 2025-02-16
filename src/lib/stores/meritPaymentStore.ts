@@ -40,7 +40,7 @@ export class MeritPaymentStore {
 	}
 
 	reset() {
-		this._meritStoreInternal.set([]);
+		this._meritStoreInternal.set(cloneDeep(this._initialMeritStoreValues));
 	}
 
 	addPredatorMerit(name: MeritName, value: number) {
