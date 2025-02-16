@@ -1,3 +1,4 @@
+import { flawPaymentStore } from '$lib/stores/flawPaymentStore';
 import type { FlawName } from '$lib/zod/lotn/enums/flawName';
 import { flawConfig } from '../config/flawsConfig';
 import { createNumberList } from './generalUtils';
@@ -17,6 +18,20 @@ export function getApplicableFlawLevels(flawName: FlawName) {
 		if ('level5' in config) numberList.push(5);
 		return numberList;
 	}
+}
+
+export function hasMultipleFlawLevels(flawName: FlawName) {
+	return getApplicableFlawLevels(flawName).length > 1;
+}
+
+export function getMinFlawLevel(flawName: FlawName) {
+	const numbersList = getApplicableFlawLevels(flawName);
+	return Math.min(...numbersList);
+}
+
+export function getMaxFlawLevel(flawName: FlawName) {
+	const numbersList = getApplicableFlawLevels(flawName);
+	return Math.max(...numbersList);
 }
 
 export function getFlawValueDescription(flawName: FlawName, value: number) {
@@ -73,4 +88,9 @@ export function isThinBloodFlaw(flawName: FlawName) {
 	if (!config) return false;
 
 	return config.category === 'Thin-Blood';
+}
+
+export function getFlawsTotal() {
+	const chosenFlaws = flawPaymentStore.getChosenFlaws();
+	return chosenFlaws.reduce((acc, flaw) => acc + flaw.freebies, 0);
 }

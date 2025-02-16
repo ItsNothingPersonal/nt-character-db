@@ -8,17 +8,15 @@ import {
 import { backgroundName, type BackgroundName } from '$lib/zod/lotn/enums/backgroundName';
 import type { SpheresOfInfluenceName } from '$lib/zod/lotn/enums/spheresOfInfluenceName';
 import type { PlayerBackgroundAdvantage } from '$lib/zod/lotn/playerCharacter/playerBackgroundAdvantage';
-import {
-	playerCharacterCreate,
-	type PlayerCharacterCreate
-} from '$lib/zod/lotn/playerCharacter/playerCharacter';
+import { playerCharacterCreate } from '$lib/zod/lotn/playerCharacter/playerCharacter';
 import type { AssociatedAdvantage } from '$lib/zod/lotn/types/loresheetSchema';
 import { derived, get, writable, type Readable, type Writable } from 'svelte/store';
 import { z } from 'zod';
+import { localStorageStore } from './localStorageStore';
 
-export const characterCreationStore: Writable<PlayerCharacterCreate> = writable(
-	playerCharacterCreate.parse({})
-);
+export const initialCharacterStoreObject = Object.freeze(playerCharacterCreate.parse({}));
+
+export const characterCreationStore = localStorageStore('characterCreationStore');
 
 const paymentStoreEntrySchema = z.object({
 	predator: z.number(),
@@ -89,6 +87,15 @@ export class BackgroundPaymentStore {
 	private _usedFreebiePointsInternal: Readable<number>;
 	private _maxFreebiePointsInternal: Readable<number>;
 	private _paymentStoreInternal: Writable<PaymentStoreSchema>;
+
+	reset() {
+		this._usedFreebiePointsInternal = writable(0);
+		this._paymentStoreInternal.set({
+			backgrounds: [],
+			associatedAdvantage: [],
+			loresheet: []
+		});
+	}
 
 	get usedFreebiePoints() {
 		return this._usedFreebiePointsInternal;

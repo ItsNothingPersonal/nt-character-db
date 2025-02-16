@@ -11,6 +11,10 @@ export class MeritPaymentStore {
 
 	_meritStoreInternal: Writable<MeritPaymentStoreEntrySchema[]>;
 
+	reset() {
+		this._meritStoreInternal.set([]);
+	}
+
 	addPredatorMerit(name: MeritName, value: number) {
 		const id = generateId();
 		this._meritStoreInternal.update((store) => {
@@ -138,6 +142,39 @@ export class MeritPaymentStore {
 		this._meritStoreInternal.update((store) => {
 			return store.filter((merit) => merit.id !== id);
 		});
+	}
+
+	getMerit(id: string) {
+		return get(this._meritStoreInternal).find((merit) => merit.id === id);
+	}
+
+	getSelectivePaidValues(
+		id: string,
+		{
+			freebies,
+			loresheet,
+			predator,
+			experience
+		}: { freebies: boolean; loresheet: boolean; predator: boolean; experience: boolean }
+	) {
+		const meritInStore = this.getMerit(id);
+		if (!meritInStore) return 0;
+
+		let result = 0;
+		if (freebies) {
+			result += meritInStore.freebies;
+		}
+		if (loresheet) {
+			result += meritInStore.loresheet;
+		}
+		if (predator) {
+			result += meritInStore.predator;
+		}
+		if (experience) {
+			result += meritInStore.xp;
+		}
+
+		return result;
 	}
 }
 

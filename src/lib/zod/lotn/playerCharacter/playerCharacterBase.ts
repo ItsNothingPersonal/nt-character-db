@@ -18,7 +18,7 @@ export const playerCharacterBase = z.object({
 export type PlayerCharacterBase = z.infer<typeof playerCharacterBase>;
 
 export const playerCharacterBaseCreate = z.object({
-	clan: clanName.optional(),
+	clan: clanName.default('Banu Haqim'),
 	generation: z.number().min(9).max(16).default(12),
 	predatorType: predatorType.optional(),
 	bloodPotency: z.number().min(0).max(7).default(1),

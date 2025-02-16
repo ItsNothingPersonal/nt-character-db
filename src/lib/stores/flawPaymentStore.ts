@@ -13,6 +13,11 @@ export class FlawPaymentStore {
 	_flawStoreInternal: Writable<FlawPaymentStoreEntrySchema[]>;
 	_mythicalCounter: Writable<number> = writable(0);
 
+	reset() {
+		this._flawStoreInternal.set([]);
+		this._mythicalCounter.set(0);
+	}
+
 	addPredatorFlaw(name: FlawName, value: number, hasPredeterminedDescription: boolean = false) {
 		const id = generateId();
 		this._flawStoreInternal.update((store) => {

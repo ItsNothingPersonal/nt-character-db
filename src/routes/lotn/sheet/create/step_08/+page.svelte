@@ -7,21 +7,25 @@
 	import EditableMerit from '$lib/components/lotn/EditableMerit/EditableMerit.svelte';
 	import {
 		getApplicableFlawLevels,
+		getFlawsTotal,
 		getFlawValueDescription,
+		hasMultipleFlawLevels,
 		isThinBloodFlaw
 	} from '$lib/components/lotn/util/flawUtil';
 	import {
 		displaySpecificMeritDescription,
 		getApplicableMeritLevels,
+		getMeritsTotal,
 		getMeritValueDescription,
 		getValidFlaws,
 		getValidMerits,
 		getValidMythicalFlaws,
-		isLoresheetMerit,
+		hasBeenGrantedByLoresheet,
+		hasBeenPaidWithExperience,
+		hasMultipleMeritLevels,
 		isPredatorMerit,
 		isThinBloodMerit
 	} from '$lib/components/lotn/util/meritUtil';
-	import { ScreenSize } from '$lib/sceenSize';
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
 	import { flawPaymentStore } from '$lib/stores/flawPaymentStore';
 	import { meritPaymentStore } from '$lib/stores/meritPaymentStore';
@@ -54,21 +58,11 @@
 		mythicalFlawButtonDisabled = disableMythicalFlawButton();
 	});
 
-	function getMeritsTotal() {
-		const paidMerits = meritPaymentStore.getChosenMerits();
-		return paidMerits.reduce((acc, merit) => acc + merit.freebies, 0);
-	}
-
 	function getNumberOfThinBloodMerits() {
 		return (
 			get(characterCreationStore).merits?.filter((merit) => isThinBloodMerit(merit.name)).length ??
 			0
 		);
-	}
-
-	function getFlawsTotal() {
-		const chosenFlaws = flawPaymentStore.getChosenFlaws();
-		return chosenFlaws.reduce((acc, flaw) => acc + flaw.freebies, 0);
 	}
 
 	function getNumberOfThinBloodFlaws() {
@@ -150,6 +144,37 @@
 		meritButtonDisabled = disableMeritButton();
 	}
 
+	function updateMeritValue(event: CustomEvent<{ id: string; label: MeritName; value: number }>) {
+		const currentValue =
+			get(characterCreationStore).merits?.find((merit) => merit.id === event.detail.id)?.value ?? 0;
+		const costTooMuch =
+			getFlawsTotal() - (getMeritsTotal() - currentValue) - event.detail.value < 0;
+
+		if (costTooMuch) {
+			return;
+		}
+
+		meritPaymentStore.deleteMerit(event.detail.id);
+		const id = meritPaymentStore.addGenericMerit(event.detail.label, event.detail.value, 0);
+
+		characterCreationStore.update((store) => {
+			if (!store.merits) store.merits = [];
+
+			const entryIndex = store.merits.findIndex((merit) => merit.id === event.detail.id);
+
+			if (entryIndex === -1) return store;
+			const entryToEdit = store.merits[entryIndex];
+			entryToEdit.id = id;
+			entryToEdit.value = event.detail.value;
+
+			store.merits[entryIndex] = entryToEdit;
+
+			return store;
+		});
+
+		meritButtonDisabled = disableMeritButton();
+	}
+
 	function addFlaw() {
 		const id = flawPaymentStore.addGenericFlaw(selectedFlaw, selectedFlawValue, 0);
 		characterCreationStore.update((store) => {
@@ -196,6 +221,29 @@
 			if (store.flaws.length === 0) {
 				store.flaws = undefined;
 			}
+
+			return store;
+		});
+
+		flawButtonDisabled = disableFlawButton();
+		mythicalFlawButtonDisabled = disableMythicalFlawButton();
+	}
+
+	function updateFlawValue(event: CustomEvent<{ id: string; label: FlawName; value: number }>) {
+		flawPaymentStore.deleteFlaw(event.detail.id);
+		const id = flawPaymentStore.addGenericFlaw(event.detail.label, event.detail.value, 0);
+
+		characterCreationStore.update((store) => {
+			if (!store.flaws) store.flaws = [];
+
+			const entryIndex = store.flaws.findIndex((flaw) => flaw.id === event.detail.id);
+
+			if (entryIndex === -1) return store;
+			const entryToEdit = store.flaws[entryIndex];
+			entryToEdit.id = id;
+			entryToEdit.value = event.detail.value;
+
+			store.flaws[entryIndex] = entryToEdit;
 
 			return store;
 		});
@@ -272,7 +320,7 @@
 			const flaw = store.flaws.find((flaw) => flaw.id === id);
 			if (!flaw) return store;
 
-			flaw.description = description;
+			flaw.description = description.replace(/[\r\n]+/g, ' ');
 			return store;
 		});
 	}
@@ -286,15 +334,9 @@
 			const merit = store.merits.find((merit) => merit.id === id);
 			if (!merit) return store;
 
-			merit.description = description;
+			merit.description = description.replace(/[\r\n]+/g, ' ');
 			return store;
 		});
-	}
-
-	function disableFlawDescriptionInput(flaw: PlayerFlaw & { id: string }) {
-		return flawPaymentStore
-			.getPredatorFlaws()
-			.some((e) => e.id === flaw.id && e.hasPredeterminedDescription);
 	}
 
 	function updateMeritLinkedSkill(id: string, linkedSkill: SkillName | undefined) {
@@ -354,7 +396,7 @@
 						<span>Dots</span>
 						<select
 							class="select rounded-lg"
-							disabled={(getApplicableMeritLevels(selectedMerit) ?? []).length < 2}
+							disabled={!hasMultipleMeritLevels(selectedMerit)}
 							bind:value={selectedMeritValue}
 						>
 							{#each getApplicableMeritLevels(selectedMerit) ?? [] as point}
@@ -384,16 +426,22 @@
 				<div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-4">
 					{#each $characterCreationStore.merits as merit}
 						<EditableMerit
+							disableDeleteButton={hasBeenPaidWithExperience(merit)}
 							displayFormat="column"
 							enableEditLinkedSkill={true}
+							enableEditValue={hasMultipleMeritLevels(merit.name) &&
+								!hasBeenPaidWithExperience(merit)}
 							{merit}
-							showDeleteButton={!isPredatorMerit(merit) && !isLoresheetMerit(merit)}
+							showDeleteButton={!isPredatorMerit(merit) &&
+								!hasBeenGrantedByLoresheet(merit) &&
+								!hasBeenPaidWithExperience(merit)}
 							showDescriptionInput={displaySpecificMeritDescription(merit)}
 							on:deleteClick={(event) => deleteMerit(event.detail.id)}
 							on:descriptionChange={(event) =>
 								updateMeritDescription(event.detail.id, event.detail.description)}
 							on:linkedSkillChange={(event) =>
 								updateMeritLinkedSkill(event.detail.id, event.detail.linkedSkill)}
+							on:valueChange={(e) => updateMeritValue(e)}
 						/>
 					{/each}
 				</div>
@@ -401,9 +449,7 @@
 		{/if}
 	</div>
 
-	{#if innerWidth < ScreenSize.SM}
-		<hr />
-	{/if}
+	<hr />
 
 	<div class="flex flex-col gap-2">
 		<div class="flex flex-col gap-2">
@@ -460,14 +506,15 @@
 					{#each $characterCreationStore.flaws as flaw}
 						<Flaw
 							disableDeleteButton={disableDeleteFlaw(flaw)}
-							disableDescriptionInput={disableFlawDescriptionInput(flaw)}
 							displayFormat="column"
+							enableEditValue={hasMultipleFlawLevels(flaw.name)}
 							{flaw}
 							showDeleteButton={!isPredatorFlaw(flaw) || isMythicalPredatorFlaw(flaw)}
 							showDescriptionInput={displaySpecificFlawDescription(flaw)}
 							on:deleteClick={(event) => deleteFlaw(event.detail.id)}
 							on:descriptionChange={(event) =>
 								updateFlawDescription(event.detail.id, event.detail.description)}
+							on:valueChange={(e) => updateFlawValue(e)}
 						/>
 					{/each}
 				</div>

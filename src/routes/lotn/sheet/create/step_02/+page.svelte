@@ -7,7 +7,10 @@
 
 	onMount(() => {
 		if (!$characterCreationStore.clan) {
-			$characterCreationStore.clan = 'Banu Haqim';
+			characterCreationStore.update((store) => {
+				store.clan = 'Banu Haqim';
+				return store;
+			});
 		}
 	});
 
