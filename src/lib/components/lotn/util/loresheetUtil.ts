@@ -25,3 +25,11 @@ export function checkForMerits(loresheet: LoresheetName, level: 'level1' | 'leve
 		(e) => e.kind === 'Merit' && meritName.safeParse(e.name).success
 	);
 }
+
+export function getLoresheetChanges(
+	loresheet: LoresheetName,
+	kind: 'Background' | 'Merit' | 'Skill',
+	level: 'level1' | 'level2' | 'level3'
+) {
+	return (loresheetConfig[loresheet][level].changes ?? []).filter((e) => e.kind === kind);
+}

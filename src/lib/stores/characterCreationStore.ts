@@ -1,5 +1,6 @@
 import { loresheetConfig } from '$lib/components/lotn/config/loresheetConfig';
 import { predatorTypeConfig } from '$lib/components/lotn/config/predatorTypeConfig';
+import { getLoresheetChanges } from '$lib/components/lotn/util/loresheetUtil';
 import { generateId } from '$lib/util';
 import {
 	backgroundAdvantageName,
@@ -184,8 +185,10 @@ export class BackgroundPaymentStore {
 		return get(this._paymentStoreInternal).loresheet.some((e) => e.value === level);
 	}
 
-	getBackgroundByName(name: BackgroundName) {
-		return get(this._paymentStoreInternal).backgrounds.filter((entry) => entry.name === name);
+	getBackgroundByName(name: BackgroundName | BackgroundName[]) {
+		return get(this._paymentStoreInternal).backgrounds.filter((entry) =>
+			Array.isArray(name) ? name.includes(entry.name) : entry.name === name
+		);
 	}
 
 	getBackgroundByNameArray(names: BackgroundName[]) {
@@ -378,13 +381,47 @@ export class BackgroundPaymentStore {
 	}
 
 	getLoresheetPointsLeft(background: BackgroundName) {
+		const loresheetSelected = get(characterCreationStore).loresheet;
+		if (!loresheetSelected) return 0;
+
+		let changeEntries: BackgroundName[] = [];
+		if (loresheetSelected) {
+			loresheetSelected.values?.forEach((value) => {
+				const level = value === 1 ? 'level1' : value === 2 ? 'level2' : 'level3';
+				const changesForLevel = getLoresheetChanges(loresheetSelected.name, 'Background', level);
+				if (changesForLevel) {
+					const backgrounds = backgroundName
+						.array()
+						.parse(
+							changesForLevel
+								.map((entry) => (Array.isArray(entry.name) ? entry.name : [entry.name]))
+								.flat()
+						);
+					changeEntries = [...changeEntries, ...backgrounds];
+				}
+			});
+		}
+
+		if (changeEntries.length <= 0) return 0;
+		if (!changeEntries.includes(background)) {
+			return 0;
+		}
+
+		let allSimilarBackgrounds: PaymentStoreEntrySchema[] = [];
+		let allSimilarBackgroundsAdvantages: PaymentStoreAdvantageEntrySchema[] = [];
+
+		for (const entry of changeEntries) {
+			allSimilarBackgrounds = [...allSimilarBackgrounds, ...this.getBackgroundByName(entry)];
+			allSimilarBackgroundsAdvantages = [
+				...allSimilarBackgroundsAdvantages,
+				...this.getBackgroundAdvantageByBackgroundName(entry)
+			];
+		}
+
 		const configEntry = this.getLoresheetChange(background);
 		if (!configEntry) return 0;
 
-		const allSimilarBackgrounds = this.getBackgroundByName(background);
 		const totalPoints = allSimilarBackgrounds.reduce((acc, entry) => acc + entry.loresheet, 0);
-
-		const allSimilarBackgroundsAdvantages = this.getBackgroundAdvantageByBackgroundName(background);
 		const totalPointsAdvantages = allSimilarBackgroundsAdvantages.reduce(
 			(acc, entry) => acc + entry.loresheet,
 			0
