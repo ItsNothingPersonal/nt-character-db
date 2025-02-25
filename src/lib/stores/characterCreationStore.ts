@@ -33,6 +33,7 @@ const paymentStoreAdvantageEntrySchema = z.object({
 	predator: z.number(),
 	loresheet: z.number(),
 	freebies: z.number(),
+	haven: z.number(),
 	fixed: z.number(),
 	id: z.string(),
 	name: backgroundName,
@@ -48,14 +49,14 @@ const paymentStoreSchema = z.object({
 			value: z.literal(1).or(z.literal(2)).or(z.literal(3))
 		})
 		.array(),
-	associatedAdvantage: paymentStoreAdvantageEntrySchema.array()
+	associatedAdvantages: paymentStoreAdvantageEntrySchema.array()
 });
 type PaymentStoreSchema = z.infer<typeof paymentStoreSchema>;
 
 export class BackgroundPaymentStore {
 	private _initialPaymentStoreValues: PaymentStoreSchema = {
 		backgrounds: [],
-		associatedAdvantage: [],
+		associatedAdvantages: [],
 		loresheet: []
 	};
 	private _paymentStoreInternal: Writable<PaymentStoreSchema> = writable(
@@ -65,6 +66,8 @@ export class BackgroundPaymentStore {
 
 	private _usedFreebiePointsInternal: Readable<number>;
 	private _maxFreebiePointsInternal: Readable<number>;
+	private _usedHavenFreebiePointsInternal: Readable<number>;
+	private _maxHavenFreebiePointsInternal: Readable<number>;
 
 	constructor() {
 		let initialValue: PaymentStoreSchema;
@@ -94,7 +97,7 @@ export class BackgroundPaymentStore {
 				$store.backgrounds.reduce((acc, curr) => {
 					return acc + curr.freebies;
 				}, 0) +
-				$store.associatedAdvantage.reduce((acc, curr) => {
+				$store.associatedAdvantages.reduce((acc, curr) => {
 					return acc + curr.freebies;
 				}, 0) +
 				$store.loresheet.reduce((acc, curr) => {
@@ -111,6 +114,21 @@ export class BackgroundPaymentStore {
 				}, 0);
 			return Math.min(7 + additionalFreebiePoints, 12);
 		});
+
+		this._usedHavenFreebiePointsInternal = derived(this._paymentStoreInternal, ($store) =>
+			$store.associatedAdvantages.reduce((acc, curr) => {
+				return acc + curr.haven;
+			}, 0)
+		);
+
+		this._maxHavenFreebiePointsInternal = derived(characterCreationStore, ($store) => {
+			return $store.backgrounds
+				.filter((bg) => bg.name === 'Haven' && bg.value >= 2)
+				.reduce((acc, curr) => {
+					// as we only count values >=2 we need to subtract 1 from the value to get the correct amount of freebies
+					return acc + curr.value - 1;
+				}, 0);
+		});
 	}
 
 	destroy() {
@@ -118,7 +136,6 @@ export class BackgroundPaymentStore {
 	}
 
 	reset() {
-		this._usedFreebiePointsInternal = writable(0);
 		this._paymentStoreInternal.set(cloneDeep(this._initialPaymentStoreValues));
 	}
 
@@ -132,6 +149,10 @@ export class BackgroundPaymentStore {
 
 	get paymentStore() {
 		return this._paymentStoreInternal;
+	}
+
+	get maxHavenFreebiePoints() {
+		return this._maxHavenFreebiePointsInternal;
 	}
 
 	addLoresheetLevel(id: string, level: 1 | 2 | 3) {
@@ -176,7 +197,7 @@ export class BackgroundPaymentStore {
 	}
 
 	getBackgroundAdvantageByBackgroundName(name: BackgroundName) {
-		return get(this._paymentStoreInternal).associatedAdvantage.filter(
+		return get(this._paymentStoreInternal).associatedAdvantages.filter(
 			(entry) => entry.name === name && entry.fixed === 0
 		);
 	}
@@ -186,7 +207,7 @@ export class BackgroundPaymentStore {
 		names.map((name) => {
 			result = [
 				...result,
-				...get(this._paymentStoreInternal).associatedAdvantage.filter(
+				...get(this._paymentStoreInternal).associatedAdvantages.filter(
 					(entry) => entry.name === name
 				)
 			];
@@ -195,7 +216,7 @@ export class BackgroundPaymentStore {
 	}
 
 	getBackgroundAdvantage(name: BackgroundName, advantage: BackgroundAdvantageName) {
-		return get(this._paymentStoreInternal).associatedAdvantage.filter(
+		return get(this._paymentStoreInternal).associatedAdvantages.filter(
 			(entry) => entry.name === name && entry.advantageName === advantage
 		);
 	}
@@ -313,7 +334,7 @@ export class BackgroundPaymentStore {
 		return (
 			get(this._maxFreebiePointsInternal) -
 			get(this._paymentStoreInternal).backgrounds.reduce((acc, entry) => acc + entry.freebies, 0) -
-			get(this._paymentStoreInternal).associatedAdvantage.reduce(
+			get(this._paymentStoreInternal).associatedAdvantages.reduce(
 				(acc, entry) => acc + entry.freebies,
 				0
 			) -
@@ -440,7 +461,7 @@ export class BackgroundPaymentStore {
 
 	getPredatorAdvantagePointsForBackground(name: BackgroundName) {
 		return get(this._paymentStoreInternal)
-			.associatedAdvantage.filter((entry) => entry.name === name)
+			.associatedAdvantages.filter((entry) => entry.name === name)
 			.reduce((acc, curr) => {
 				return acc + curr.predator;
 			}, 0);
@@ -478,11 +499,12 @@ export class BackgroundPaymentStore {
 	}
 
 	getTotalAdvantagePoints(id: string, advantage: BackgroundAdvantageName) {
-		const existingEntry = get(this._paymentStoreInternal).associatedAdvantage.find(
+		const existingEntry = get(this._paymentStoreInternal).associatedAdvantages.find(
 			(entry) => entry.id === id && entry.advantageName === advantage
 		);
 		if (!existingEntry) return 0;
 		return (
+			existingEntry.haven +
 			existingEntry.predator +
 			existingEntry.loresheet +
 			existingEntry.freebies +
@@ -491,7 +513,9 @@ export class BackgroundPaymentStore {
 	}
 
 	increaseBackground(id: string, background: BackgroundName, value: number) {
-		const { associatedAdvantage, backgrounds } = get(this._paymentStoreInternal);
+		const { associatedAdvantages: associatedAdvantage, backgrounds } = get(
+			this._paymentStoreInternal
+		);
 
 		const predatorPointsLeft = this.getPredatorPointsLeft(background);
 		const loresheetPointsLeft = this.getLoresheetPointsLeft(background);
@@ -559,12 +583,11 @@ export class BackgroundPaymentStore {
 				const index = store.backgrounds.findIndex((item) => item.id === id);
 
 				if (index !== -1) {
-					const updatedArray = [...store.backgrounds];
-					updatedArray[index] = { ...updatedArray[index], ...paymentStoreEntry };
-
 					return {
 						...store,
-						backgrounds: updatedArray
+						backgrounds: store.backgrounds.map((item, i) =>
+							i === index ? { ...item, ...paymentStoreEntry } : item
+						)
 					};
 				}
 
@@ -623,11 +646,11 @@ export class BackgroundPaymentStore {
 		if (pointsToRegain !== 0) return false;
 
 		this._paymentStoreInternal.update((store) => {
-			const index = store.backgrounds.findIndex((item) => item.id === id);
+			const indexBackground = store.backgrounds.findIndex((background) => background.id === id);
 
-			if (index !== -1) {
+			if (indexBackground !== -1) {
 				const updatedArray = [...store.backgrounds];
-				updatedArray[index] = { ...updatedArray[index], ...existingEntry };
+				updatedArray[indexBackground] = { ...updatedArray[indexBackground], ...existingEntry };
 
 				return {
 					...store,
@@ -649,7 +672,9 @@ export class BackgroundPaymentStore {
 			if (index !== -1) {
 				updatedArray = [...store.backgrounds];
 				updatedArray.splice(index, 1);
-				if (!get(this._paymentStoreInternal).associatedAdvantage.some((entry) => entry.id === id)) {
+				if (
+					!get(this._paymentStoreInternal).associatedAdvantages.some((entry) => entry.id === id)
+				) {
 					return {
 						...store,
 						backgrounds: updatedArray
@@ -657,10 +682,10 @@ export class BackgroundPaymentStore {
 				}
 			}
 
-			if (get(this._paymentStoreInternal).associatedAdvantage.some((entry) => entry.id === id)) {
-				const updatedArrayAdvantages = [...store.associatedAdvantage];
+			if (get(this._paymentStoreInternal).associatedAdvantages.some((entry) => entry.id === id)) {
+				const updatedArrayAdvantages = [...store.associatedAdvantages];
 				get(this._paymentStoreInternal)
-					.associatedAdvantage.map((item, index) => (item.id === id ? index : -1))
+					.associatedAdvantages.map((item, index) => (item.id === id ? index : -1))
 					.filter((index) => index !== -1)
 					.sort((a, b) => b - a)
 					.forEach((index) => updatedArrayAdvantages.splice(index, 1));
@@ -668,13 +693,13 @@ export class BackgroundPaymentStore {
 				if (updatedArray) {
 					return {
 						backgrounds: updatedArray,
-						associatedAdvantage: updatedArrayAdvantages,
+						associatedAdvantages: updatedArrayAdvantages,
 						loresheet: store.loresheet
 					};
 				}
 				return {
 					...store,
-					associatedAdvantage: updatedArrayAdvantages
+					associatedAdvantages: updatedArrayAdvantages
 				};
 			}
 
@@ -688,13 +713,15 @@ export class BackgroundPaymentStore {
 		backgroundAdvantage: BackgroundAdvantageName,
 		value: number
 	) {
-		const { associatedAdvantage, backgrounds } = get(this._paymentStoreInternal);
+		const { associatedAdvantages: associatedAdvantage, backgrounds } = get(
+			this._paymentStoreInternal
+		);
 
+		const havenFreebiesLeft = this.getHavenFreebiesMax() - this.getHavenFreebiesUsed();
 		const predatorPointsLeft = this.getPredatorAssociatedAdvantagePointsLeft(
 			background,
 			backgroundAdvantage
 		);
-
 		const loresheetPointsLeft = this.getLoresheetPointsLeft(background);
 		const freebiePointsLeft =
 			get(this._maxFreebiePointsInternal) -
@@ -711,6 +738,7 @@ export class BackgroundPaymentStore {
 		if (existingEntry) {
 			pointsToPay =
 				value -
+				existingEntry.haven -
 				existingEntry.predator -
 				existingEntry.loresheet -
 				existingEntry.freebies -
@@ -722,6 +750,7 @@ export class BackgroundPaymentStore {
 				id: id,
 				name: background,
 				advantageName: backgroundAdvantage,
+				haven: 0,
 				predator: 0,
 				loresheet: 0,
 				freebies: 0,
@@ -736,6 +765,16 @@ export class BackgroundPaymentStore {
 			} else {
 				pointsToPay -= predatorPointsLeft;
 				paymentStoreEntry.predator += predatorPointsLeft;
+			}
+		}
+
+		if (havenFreebiesLeft > 0 && pointsToPay > 0 && background === 'Haven') {
+			if (pointsToPay <= havenFreebiesLeft) {
+				paymentStoreEntry.haven += pointsToPay;
+				pointsToPay = 0;
+			} else {
+				pointsToPay -= havenFreebiesLeft;
+				paymentStoreEntry.haven += havenFreebiesLeft;
 			}
 		}
 
@@ -760,16 +799,16 @@ export class BackgroundPaymentStore {
 
 		if (existingEntry) {
 			this._paymentStoreInternal.update((store) => {
-				const index = store.associatedAdvantage.findIndex(
+				const index = store.associatedAdvantages.findIndex(
 					(item) => item.id === id && item.advantageName === backgroundAdvantage
 				);
 
 				if (index !== -1) {
-					const updatedArray = [...store.associatedAdvantage];
-					updatedArray[index] = paymentStoreEntry;
 					return {
 						...store,
-						associatedAdvantage: updatedArray
+						associatedAdvantages: store.associatedAdvantages.map((item, i) =>
+							i === index ? paymentStoreEntry : item
+						)
 					};
 				}
 
@@ -779,7 +818,7 @@ export class BackgroundPaymentStore {
 			this._paymentStoreInternal.update((store) => {
 				return {
 					...store,
-					associatedAdvantage: [...store.associatedAdvantage, paymentStoreEntry]
+					associatedAdvantages: [...store.associatedAdvantages, paymentStoreEntry]
 				};
 			});
 		}
@@ -792,7 +831,7 @@ export class BackgroundPaymentStore {
 		backgroundAdvantage: BackgroundAdvantageName,
 		value: number
 	) {
-		const { associatedAdvantage } = get(this._paymentStoreInternal);
+		const { associatedAdvantages: associatedAdvantage } = get(this._paymentStoreInternal);
 
 		const existingEntry = associatedAdvantage.find(
 			(entry) => entry.id === id && entry.advantageName === backgroundAdvantage
@@ -831,20 +870,30 @@ export class BackgroundPaymentStore {
 			}
 		}
 
+		if (pointsToRegain > 0 && existingEntry.haven > 0) {
+			if (pointsToRegain <= existingEntry.haven) {
+				existingEntry.haven -= pointsToRegain;
+				pointsToRegain = 0;
+			} else {
+				pointsToRegain -= existingEntry.haven;
+				existingEntry.haven = 0;
+			}
+		}
+
 		if (pointsToRegain !== 0) return false;
 
 		this._paymentStoreInternal.update((store) => {
-			const index = store.associatedAdvantage.findIndex(
-				(item) => item.id === id && existingEntry.advantageName === backgroundAdvantage
+			const index = store.associatedAdvantages.findIndex(
+				(item) => item.id === id && item.advantageName === backgroundAdvantage
 			);
 
 			if (index !== -1) {
-				const updatedArray = [...store.associatedAdvantage];
+				const updatedArray = [...store.associatedAdvantages];
 				updatedArray[index] = { ...updatedArray[index], ...existingEntry };
 
 				return {
 					...store,
-					associatedAdvantage: updatedArray
+					associatedAdvantages: updatedArray
 				};
 			}
 
@@ -856,16 +905,16 @@ export class BackgroundPaymentStore {
 
 	deleteBackgroundAdvantage(id: string, backgroundAdvantage: BackgroundAdvantageName) {
 		this._paymentStoreInternal.update((store) => {
-			const index = store.associatedAdvantage.findIndex(
+			const index = store.associatedAdvantages.findIndex(
 				(item) => item.id === id && item.advantageName === backgroundAdvantage
 			);
 
 			if (index !== -1) {
-				const updatedArrayAdvantages = [...store.associatedAdvantage];
+				const updatedArrayAdvantages = [...store.associatedAdvantages];
 				updatedArrayAdvantages.splice(index, 1);
 				return {
 					...store,
-					associatedAdvantage: updatedArrayAdvantages
+					associatedAdvantages: updatedArrayAdvantages
 				};
 			}
 
@@ -892,6 +941,21 @@ export class BackgroundPaymentStore {
 		return predatorPointsLeft + loresheetPointsLeft + freebiePointsLeft > 0;
 	}
 
+	canRemoveBackground(backgroundId: string) {
+		const associatedAdvantage = get(this._paymentStoreInternal).associatedAdvantages;
+		const associatedAdvantageEntries = associatedAdvantage.filter(
+			(entry) => entry.id === backgroundId
+		);
+		const isAdvantageFixed = associatedAdvantageEntries.some((entry) => entry.fixed > 0);
+
+		const backgroundEntry = get(this._paymentStoreInternal).backgrounds.find(
+			(entry) => entry.id === backgroundId
+		);
+		const isBackgroundFixed = backgroundEntry?.fixed && backgroundEntry.fixed > 0;
+
+		return !isBackgroundFixed && !isAdvantageFixed;
+	}
+
 	canAddBackgroundAdvantage(
 		id: string | undefined,
 		background: BackgroundName,
@@ -903,6 +967,7 @@ export class BackgroundPaymentStore {
 			const predatorPointsLeft = this.getPredatorPointsLeft(background);
 			const loresheetPointsLeft = this.getLoresheetPointsLeft(background);
 			const freebiePointsLeft = this.getFreebiePointsLeft();
+			const havenFreebiesLeft = this.getHavenFreebiesMax() - this.getHavenFreebiesUsed();
 
 			const predatorAdvantagePointsLeft = this.getPredatorAssociatedAdvantagePointsLeft(
 				background,
@@ -916,17 +981,28 @@ export class BackgroundPaymentStore {
 					.backgrounds.find((b) => b.id === id)
 					?.advantages?.find((a) => a.name === advantage)?.value ?? 0;
 
-			return (
+			const availablePoints =
 				predatorPointsLeft +
-					loresheetPointsLeft +
-					freebiePointsLeft +
-					predatorAdvantagePointsLeft +
-					loresheetAdvantagePointsLeft >=
-				value - valueAlreadyPaid
-			);
+				(background === 'Haven' ? havenFreebiesLeft : 0) +
+				loresheetPointsLeft +
+				freebiePointsLeft +
+				predatorAdvantagePointsLeft +
+				loresheetAdvantagePointsLeft;
+
+			return availablePoints > 0 && availablePoints >= value - valueAlreadyPaid;
 		} else {
 			return true;
 		}
+	}
+
+	canRemoveBackgroundAdvantage(backgroundId: string, advantageName: BackgroundAdvantageName) {
+		const associatedAdvantage = get(this._paymentStoreInternal).associatedAdvantages;
+		const associatedAdvantageEntries = associatedAdvantage.filter(
+			(entry) => entry.id === backgroundId && entry.advantageName === advantageName
+		);
+		const isAdvantageFixed = associatedAdvantageEntries.some((entry) => entry.fixed > 0);
+
+		return !isAdvantageFixed;
 	}
 
 	addFixedBackground(
@@ -984,19 +1060,20 @@ export class BackgroundPaymentStore {
 
 		advantages.forEach((advantage) => {
 			this.paymentStore.update((store) => {
-				const advantages = store.associatedAdvantage;
+				const advantages = store.associatedAdvantages;
 				advantages.push({
 					id: backgroundId,
 					name: background,
 					advantageName: advantage.name,
 					fixed: advantage.value,
+					haven: 0,
 					predator: 0,
 					loresheet: 0,
 					freebies: 0
 				});
 				return {
 					...store,
-					associatedAdvantage: advantages
+					associatedAdvantages: advantages
 				};
 			});
 		});
@@ -1040,7 +1117,7 @@ export class BackgroundPaymentStore {
 
 		const backgroundAdvantagesPaymentStore = get(
 			this._paymentStoreInternal
-		).associatedAdvantage.find((e) => e.name === background && e.loresheet > 0);
+		).associatedAdvantages.find((e) => e.name === background && e.loresheet > 0);
 		if (backgroundAdvantagesPaymentStore) {
 			let backgrounds = get(characterCreationStore).backgrounds;
 			backgrounds = backgrounds.filter((e) => e.id !== backgroundAdvantagesPaymentStore.id);
@@ -1056,6 +1133,61 @@ export class BackgroundPaymentStore {
 				backgroundAdvantageName.parse(backgroundAdvantagesPaymentStore.advantageName)
 			);
 		}
+	}
+
+	getHavenFreebiesMax() {
+		return get(characterCreationStore)
+			.backgrounds.filter((e) => e.value >= 2)
+			.map((e) => e.value)
+			.reduce((acc, curr) => {
+				return acc + curr - 1; // the first dot needs to be removed as it does not give freebies
+			}, 0);
+	}
+
+	getHavenFreebiesUsed() {
+		return get(this._paymentStoreInternal)
+			.associatedAdvantages.filter((e) => e.haven > 0)
+			.reduce((acc, curr) => acc + curr.haven, 0);
+	}
+
+	isFixedBackgroundAdvantage(backgroundId: string, advantage: BackgroundAdvantageName) {
+		return get(this._paymentStoreInternal).associatedAdvantages.some(
+			(entry) => entry.id === backgroundId && entry.advantageName === advantage && entry.fixed > 0
+		);
+	}
+
+	getFixedBackgroundAdvantageValue(backgroundId: string, advantage: BackgroundAdvantageName) {
+		return get(this._paymentStoreInternal).associatedAdvantages.find(
+			(entry) => entry.id === backgroundId && entry.advantageName === advantage
+		)?.fixed;
+	}
+
+	isLoresheetBackgroundAdvantage(backgroundId: string, advantage: BackgroundAdvantageName) {
+		return get(this._paymentStoreInternal).associatedAdvantages.some(
+			(entry) =>
+				entry.id === backgroundId && entry.advantageName === advantage && entry.loresheet > 0
+		);
+	}
+
+	isHavenBackgroundAdvantage(backgroundId: string, advantage: BackgroundAdvantageName) {
+		return get(this._paymentStoreInternal).associatedAdvantages.some(
+			(entry) => entry.id === backgroundId && entry.advantageName === advantage && entry.haven > 0
+		);
+	}
+
+	removeHavenBackgroundAdvantage(backgroundId: string, advantage: BackgroundAdvantageName) {
+		this._paymentStoreInternal.update((store) => {
+			const indexEdit = store.associatedAdvantages.findIndex(
+				(entry) => entry.id === backgroundId && entry.advantageName === advantage
+			);
+			if (indexEdit === -1) {
+				return store;
+			}
+
+			store.associatedAdvantages[indexEdit].haven = 0;
+
+			return store;
+		});
 	}
 }
 

@@ -159,35 +159,16 @@
 		return (
 			store.backgrounds.some(
 				(background) => background.id === id && background.fixed && background.fixed > 0
-			) || store.associatedAdvantage.some((advantage) => advantage.id === id && advantage.fixed > 0)
+			) ||
+			store.associatedAdvantages.some((advantage) => advantage.id === id && advantage.fixed > 0)
 		);
 	}
 
 	function isFixedBackgroundAdvantage(id: string, advantageName: BackgroundAdvantageName) {
 		const store = get(backgroundPaymentStore.paymentStore);
-		const result = store.associatedAdvantage.some(
+		const result = store.associatedAdvantages.some(
 			(advantage) =>
 				advantage.id === id && advantage.advantageName === advantageName && advantage.fixed > 0
-		);
-
-		return result;
-	}
-
-	function hasBackgroundBeenPaidWithFreebieDotsOnly(id: string) {
-		const store = get(backgroundPaymentStore.paymentStore);
-
-		const result = store.backgrounds.some(
-			(background) =>
-				background.id === id && !background.fixed && !background.loresheet && !background.predator
-		);
-
-		return result;
-	}
-
-	function hasAdvantageBeenPaidWithDots(id: string, advantageName: BackgroundAdvantageName) {
-		const store = get(backgroundPaymentStore.paymentStore);
-		const result = store.associatedAdvantage.some(
-			(advantage) => advantage.id === id && advantage.advantageName === advantageName
 		);
 
 		return result;
@@ -207,7 +188,7 @@
 		advantageName: BackgroundAdvantageName
 	) {
 		const store = get(backgroundPaymentStore.paymentStore);
-		const advantage = store.associatedAdvantage.find(
+		const advantage = store.associatedAdvantages.find(
 			(advantage) => advantage.id === id && advantage.advantageName === advantageName
 		);
 
@@ -246,7 +227,7 @@
 				{background.name}
 			</h4>
 
-			{#if hasBackgroundBeenPaidWithFreebieDotsOnly(background.id) && editModeEnabledAdvantages}
+			{#if backgroundPaymentStore.canRemoveBackground(background.id)}
 				<button
 					class="variant-filled-primary btn ml-auto rounded-lg"
 					type="button"
@@ -273,14 +254,14 @@
 					isFixedBackground(background.id) ? getMinValueForFixedBackground(background.id) : 1
 				).length === 1 || !editModeEnabledAdvantages}
 				bind:value
-				on:change={() => {
+				on:change={(event) => {
+					const intValue = Number(event.currentTarget.value);
 					dispatchChange('change', {
 						id: background.id,
 						label: background.name,
 						type: 'value',
-						value: value
+						value: intValue
 					});
-					value = background.value;
 				}}
 			>
 				{#each createNumberList(3, isFixedBackground(background.id) ? getMinValueForFixedBackground(background.id) : 1) as point}
@@ -392,8 +373,6 @@
 								name: selectedBackgroundAdvantage,
 								value: backgroundAdvantageValue
 							});
-							value = background.value;
-							background.advantages = background.advantages;
 						}}
 					>
 						Add Advantage
@@ -404,20 +383,19 @@
 				<div class="col-span-2 flex flex-col">
 					<span class="underline underline-offset-1">Advantages</span>
 					{#each background.advantages as advantage}
-						{#key advantage}
-							<BackgroundAdvantage
-								{advantage}
-								{background}
-								config={getBackgroundConfig(background.name)}
-								showDeleteButton={!isFixedBackgroundAdvantage(background.id, advantage.name) &&
-									!hasAdvantageBeenPaidWithDots(background.id, advantage.name) &&
-									editModeEnabledAdvantages}
-								on:deleteClick={(event) => {
-									dispatchChange('advantageDeleteClick', event.detail);
-									background.advantages = background.advantages;
-								}}
-							/>
-						{/key}
+						<BackgroundAdvantage
+							{advantage}
+							{background}
+							config={getBackgroundConfig(background.name)}
+							showDeleteButton={backgroundPaymentStore.canRemoveBackgroundAdvantage(
+								background.id,
+								advantage.name
+							) && editModeEnabledAdvantages}
+							on:deleteClick={(event) => {
+								dispatchChange('advantageDeleteClick', event.detail);
+								background.advantages = background.advantages;
+							}}
+						/>
 					{/each}
 				</div>
 			{/if}
