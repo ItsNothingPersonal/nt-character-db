@@ -567,7 +567,8 @@ export class BackgroundPaymentStore {
 		const freebiePointsLeft =
 			get(this._maxFreebiePointsInternal) -
 			backgrounds.reduce((acc, entry) => acc + entry.freebies, 0) -
-			associatedAdvantage.reduce((acc, entry) => acc + entry.freebies, 0);
+			associatedAdvantage.reduce((acc, entry) => acc + entry.freebies, 0) -
+			(get(characterCreationStore).loresheet?.values?.reduce((acc, entry) => acc + entry, 0) ?? 0);
 
 		const existingEntry = backgrounds.find((entry) => entry.id === id);
 
