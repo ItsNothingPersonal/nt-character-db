@@ -33,7 +33,7 @@
 	export let placement: Placement = 'right-start';
 
 	const description = getDescription(advantage.name);
-	const valueDescription = getValueDescription(advantage.name, advantage.value);
+	$: valueDescription = getValueDescription(advantage.name, advantage.value);
 
 	const dispatchChange = createEventDispatcher<{
 		deleteClick: BackgroundAdvantageDeleteEvent;
@@ -101,8 +101,9 @@
 			{advantage.name}
 		</span>
 	{/if}
+
 	<p id={`${background.id}-${advantage.name}-value`}>
-		<HelpText id={`${background.id}-${advantage.name}-value`}>
+		<HelpText id={`${background.id}-${advantage.name}-value-${advantage.value}`}>
 			<Ratings
 				interactive={$interactiveModeStore}
 				justify="justify-left"
