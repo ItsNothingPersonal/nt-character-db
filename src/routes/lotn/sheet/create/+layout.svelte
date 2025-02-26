@@ -127,8 +127,6 @@
 		</div>
 	{/if}
 	<div class="card rounded-lg p-4">
-		{#key $characterCreationStore}
-			<slot />
-		{/key}
+		<slot />
 	</div>
 </div>

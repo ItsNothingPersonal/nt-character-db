@@ -175,7 +175,7 @@
 			disabled={!backgroundPaymentStore.canRemoveBackgroundDisadvantage(
 				disadvantage.value,
 				$paymentStore.backgrounds.reduce((acc, entry) => acc + entry.freebies, 0),
-				$paymentStore.associatedAdvantage.reduce((acc, entry) => acc + entry.freebies, 0)
+				$paymentStore.associatedAdvantages.reduce((acc, entry) => acc + entry.freebies, 0)
 			)}
 			type="button"
 			on:click={() => {

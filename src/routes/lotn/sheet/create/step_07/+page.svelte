@@ -11,18 +11,21 @@
 	import {
 		addBackground,
 		canOnlyBeBoughtOnce,
-		getBackgroundConfig
+		getBackgroundConfig,
+		updateBackgroundAdvantageValue
 	} from '$lib/components/lotn/util/backgroundUtil';
 	import {
 		checkForDotBonusBackgrounds,
 		checkForFixedBackgrounds,
-		checkForMerits
+		checkForMerits,
+		getLoresheetChanges
 	} from '$lib/components/lotn/util/loresheetUtil';
 	import { ScreenSize } from '$lib/sceenSize';
 	import {
 		backgroundPaymentStore,
 		characterCreationStore
 	} from '$lib/stores/characterCreationStore';
+	import { skillsPaidWithDotsStore } from '$lib/stores/skillsPaidWithDotsStore';
 	import { generateId } from '$lib/util';
 	import {
 		backgroundAdvantageName,
@@ -32,12 +35,14 @@
 	import { backgroundName, type BackgroundName } from '$lib/zod/lotn/enums/backgroundName';
 	import { type LoresheetName } from '$lib/zod/lotn/enums/loresheetName';
 	import { meritName } from '$lib/zod/lotn/enums/meritName';
+	import { skillName } from '$lib/zod/lotn/enums/skillName';
 	import { spheresOfInfluenceName } from '$lib/zod/lotn/enums/spheresOfInfluenceName';
 	import { playerLoresheet } from '$lib/zod/lotn/playerCharacter/playerLoresheet';
 	import type { LoresheetChangeEntry } from '$lib/zod/lotn/types/loresheetSchema';
 	import { get } from 'svelte/store';
 
-	let { maxFreebiePoints, usedFreebiePoints, paymentStore } = backgroundPaymentStore;
+	let { maxFreebiePoints, usedFreebiePoints, paymentStore, maxHavenFreebiePoints } =
+		backgroundPaymentStore;
 	let selectedBackground: BackgroundName;
 	let innerWidth = 0;
 
@@ -46,36 +51,79 @@
 		: undefined;
 
 	function handleChange(event: CustomEvent<BackgroundChangeEvent>) {
-		const background = $characterCreationStore.backgrounds.find((e) => e.id === event.detail.id);
-		if (!background) return;
+		const backgroundIndex = $characterCreationStore.backgrounds.findIndex(
+			(e) => e.id === event.detail.id
+		);
+		if (backgroundIndex === -1) return;
 
 		switch (event.detail.type) {
 			case 'value':
 				if (typeof event.detail.value === 'number') {
-					const total = backgroundPaymentStore.getTotalPoints(background.id);
+					const total = backgroundPaymentStore.getTotalPoints(
+						$characterCreationStore.backgrounds[backgroundIndex].id
+					);
 					let result = false;
 
 					if (event.detail.value > total) {
 						result = backgroundPaymentStore.increaseBackground(
 							event.detail.id,
-							background.name,
+							$characterCreationStore.backgrounds[backgroundIndex].name,
 							event.detail.value
 						);
 					} else {
 						result = backgroundPaymentStore.decreaseBackground(event.detail.id, event.detail.value);
 					}
 					if (result) {
-						background.value = event.detail.value;
+						characterCreationStore.update((store) => {
+							store.backgrounds[backgroundIndex].value = Number(event.detail.value);
+
+							store.backgrounds[backgroundIndex].advantages?.forEach((advantage) => {
+								if (store.backgrounds[backgroundIndex].name === 'Haven') {
+									if (
+										backgroundPaymentStore.isFixedBackgroundAdvantage(
+											store.backgrounds[backgroundIndex].id,
+											advantage.name
+										)
+									) {
+										updateBackgroundAdvantageValue(
+											store.backgrounds[backgroundIndex].id,
+											advantage.id,
+											advantage.name,
+											backgroundPaymentStore.getFixedBackgroundAdvantageValue(
+												store.backgrounds[backgroundIndex].id,
+												advantage.name
+											) ?? 0
+										);
+										backgroundPaymentStore.removeHavenBackgroundAdvantage(
+											store.backgrounds[backgroundIndex].id,
+											advantage.name
+										);
+									} else if (
+										Number(event.detail.value) < total &&
+										backgroundPaymentStore.isHavenBackgroundAdvantage(
+											store.backgrounds[backgroundIndex].id,
+											advantage.name
+										)
+									) {
+										store.backgrounds[backgroundIndex].advantages = store.backgrounds[
+											backgroundIndex
+										].advantages?.filter((e) => e.name !== advantage.name);
+										backgroundPaymentStore.deleteBackgroundAdvantage(
+											store.backgrounds[backgroundIndex].id,
+											advantage.name
+										);
+									}
+								}
+							});
+							return store;
+						});
 					}
 				}
 				break;
 			case 'description':
 				if (typeof event.detail.value === 'string') {
 					characterCreationStore.update((store) => {
-						const index = store.backgrounds.findIndex((item) => item.id === event.detail.id);
-
-						if (index === -1) return store;
-						store.backgrounds[index].description = event.detail.value?.toString();
+						store.backgrounds[backgroundIndex].description = event.detail.value?.toString();
 
 						return store;
 					});
@@ -83,7 +131,12 @@
 				break;
 			case 'sphereOfInfluence':
 				if (typeof event.detail.value === 'string') {
-					background.sphereOfInfluence = spheresOfInfluenceName.parse(event.detail.value);
+					characterCreationStore.update((store) => {
+						store.backgrounds[backgroundIndex].sphereOfInfluence = spheresOfInfluenceName.parse(
+							event.detail.value
+						);
+						return store;
+					});
 				}
 				break;
 		}
@@ -108,17 +161,20 @@
 	}
 
 	function handleBackgroundAdvantageClick(event: CustomEvent<BackgroundAdvantageChangeEvent>) {
-		const background = $characterCreationStore.backgrounds.find(
+		const backgroundIndex = $characterCreationStore.backgrounds.findIndex(
 			(e) => e.id === event.detail.backgroundId
 		);
-		if (!background) return;
+		if (backgroundIndex === -1) return;
 		if (!event.detail.name) return;
 		if (!event.detail.value) return;
 
 		const advantageName: BackgroundAdvantageName = event.detail.name;
 		const advantageValue: number = event.detail.value;
 
-		const total = backgroundPaymentStore.getTotalAdvantagePoints(background.id, advantageName);
+		const total = backgroundPaymentStore.getTotalAdvantagePoints(
+			$characterCreationStore.backgrounds[backgroundIndex].id,
+			advantageName
+		);
 		let result = false;
 
 		if (event.detail.value > total) {
@@ -137,21 +193,32 @@
 		}
 
 		if (result) {
-			if (!background.advantages) {
-				background.advantages = [];
-			}
+			characterCreationStore.update((store) => {
+				if (!store.backgrounds[backgroundIndex].advantages) {
+					store.backgrounds[backgroundIndex].advantages = [];
+				}
 
-			if (!background.advantages?.find((e) => e.name === advantageName)) {
-				background.advantages.push({
-					id: generateId(),
-					name: advantageName,
-					value: advantageValue
-				});
-			} else {
-				background.advantages = background.advantages?.map((e) =>
-					e.name === advantageName ? { id: generateId(), name: e.name, value: advantageValue } : e
+				const advantageIndex = store.backgrounds[backgroundIndex].advantages.findIndex(
+					(e) => e.name === advantageName
 				);
-			}
+
+				if (advantageIndex === -1) {
+					store.backgrounds[backgroundIndex].advantages = [
+						...store.backgrounds[backgroundIndex].advantages,
+						{
+							id: generateId(),
+							name: advantageName,
+							value: advantageValue
+						}
+					];
+				} else {
+					const advantage = store.backgrounds[backgroundIndex].advantages[advantageIndex];
+					advantage.value = advantageValue;
+					store.backgrounds[backgroundIndex].advantages[advantageIndex] = advantage;
+				}
+
+				return store;
+			});
 		}
 	}
 
@@ -253,7 +320,7 @@
 				!backgroundPaymentStore.canRemoveBackgroundDisadvantage(
 					event.detail.value,
 					get(paymentStore).backgrounds.reduce((acc, entry) => acc + entry.freebies, 0),
-					get(paymentStore).associatedAdvantage.reduce((acc, entry) => acc + entry.freebies, 0)
+					get(paymentStore).associatedAdvantages.reduce((acc, entry) => acc + entry.freebies, 0)
 				)
 			)
 				return store;
@@ -515,6 +582,65 @@
 				backgroundPaymentStore.removeLoresheetLevel(level);
 			}
 		}
+
+		const skills = getLoresheetChanges(
+			loresheet.name,
+			'Skill',
+			level === 1 ? 'level1' : level === 2 ? 'level2' : 'level3'
+		);
+		for (const skill of skills) {
+			const name = skillName.parse(skill.name);
+
+			if ($characterCreationStore.loresheet?.values?.includes(level)) {
+				if (
+					$characterCreationStore.skills.some((s) => s.name === name) &&
+					skillsPaidWithDotsStore.hasSkillBeenPaidWithDots(name)
+				) {
+					// removing the old skill as it might have a different value than the one from the loresheet
+					characterCreationStore.update((store) => {
+						store.skills = store.skills.filter((e) => e.name !== name);
+						return store;
+					});
+
+					// add the value from the loresheet to the skills list
+					characterCreationStore.update((store) => {
+						store.skills.push({
+							id: generateId(),
+							name: name,
+							value: skill.value
+						});
+						return store;
+					});
+
+					// get the value of the dots that were paid previously
+					const dotsValue = skillsPaidWithDotsStore.getSkillsPaidWithDotsByName(name);
+					if (!dotsValue) continue;
+
+					// remove the free dots from step 5
+					skillsPaidWithDotsStore.removeSkillsPaidWithDots(name, dotsValue);
+
+					// add the value for adding it from the loresheet
+					backgroundPaymentStore.addSkill(name, skill.value);
+				} else {
+					characterCreationStore.update((store) => {
+						store.skills.push({
+							id: generateId(),
+							name: name,
+							value: skill.value
+						});
+						return store;
+					});
+
+					backgroundPaymentStore.addSkill(name, skill.value);
+				}
+			} else {
+				characterCreationStore.update((store) => {
+					store.skills = store.skills.filter((e) => e.name !== name);
+					return store;
+				});
+				backgroundPaymentStore.removeSkill(name);
+			}
+		}
 	}
 
 	function deletLoresheetBonusForLevel(level: 'level1' | 'level2' | 'level3') {
@@ -760,7 +886,22 @@
 				{/key}
 			</div>
 		{/if}
-		{#if ($characterCreationStore.predatorType || $characterCreationStore.loresheet?.name) && innerWidth > ScreenSize.SM}
+		{#if $characterCreationStore.backgrounds.find((bg) => bg.name === 'Haven' && bg.value >= 2)}
+			{#if ($characterCreationStore.predatorType || $characterCreationStore.loresheet) && innerWidth > ScreenSize.SM}
+				<span class="divider-vertical mx-0 h-auto" />
+			{/if}
+			<div class="flex flex-col">
+				<h3 class="h3">Haven-Advantages</h3>
+				<ul class="list">
+					<li>
+						<span>
+							Free Dots: {backgroundPaymentStore.getHavenFreebiesUsed()} / {$maxHavenFreebiePoints}
+						</span>
+					</li>
+				</ul>
+			</div>
+		{/if}
+		{#if ($characterCreationStore.predatorType || $characterCreationStore.loresheet?.name || $characterCreationStore.backgrounds.find((bg) => bg.name === 'Haven' && bg.value >= 2)) && innerWidth > ScreenSize.SM}
 			<span class="divider-vertical mx-0 h-auto" />
 		{/if}
 		<div class="flex flex-col">
@@ -805,25 +946,23 @@
 	<hr />
 
 	<div class="grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-3">
-		{#key $characterCreationStore.backgrounds}
-			{#each $characterCreationStore.backgrounds as background, index}
-				<EditableBackground
-					{background}
-					editModeEnabled={true}
-					editModeEnabledAdvantages={true}
-					editModeEnabledDisadvantages={true}
-					on:change={handleChange}
-					on:deleteClick={handleDeleteClick}
-					on:advantageClick={handleBackgroundAdvantageClick}
-					on:disadvantageClick={handleBackgroundDisadvantageClick}
-					on:advantageDeleteClick={handleBackgroundAdvantageDeleteClick}
-					on:disadvantageDeleteClick={handleBackgroundDisadvantageDeleteClick}
-				/>
+		{#each $characterCreationStore.backgrounds as background, index}
+			<EditableBackground
+				{background}
+				editModeEnabled={true}
+				editModeEnabledAdvantages={true}
+				editModeEnabledDisadvantages={true}
+				on:change={handleChange}
+				on:deleteClick={handleDeleteClick}
+				on:advantageClick={handleBackgroundAdvantageClick}
+				on:disadvantageClick={handleBackgroundDisadvantageClick}
+				on:advantageDeleteClick={handleBackgroundAdvantageDeleteClick}
+				on:disadvantageDeleteClick={handleBackgroundDisadvantageDeleteClick}
+			/>
 
-				{#if ((index + 1) % 3 === 0 && index + 1 !== $characterCreationStore.backgrounds.length) || (innerWidth < ScreenSize.SM && index + 1 !== $characterCreationStore.backgrounds.length)}
-					<div class="col-span-full my-2 h-px bg-gray-300"></div>
-				{/if}
-			{/each}
-		{/key}
+			{#if ((index + 1) % 3 === 0 && index + 1 !== $characterCreationStore.backgrounds.length) || (innerWidth < ScreenSize.SM && index + 1 !== $characterCreationStore.backgrounds.length)}
+				<div class="col-span-full my-2 h-px bg-gray-300"></div>
+			{/if}
+		{/each}
 	</div>
 </div>

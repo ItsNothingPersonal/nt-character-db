@@ -2,7 +2,10 @@
 	import EditableSkill from '$lib/components/lotn/EditableSkill/EditableSkill.svelte';
 	import { getSkillHelptext, hasSkillSpecializations } from '$lib/components/lotn/util/skillUtil';
 	import { ScreenSize } from '$lib/sceenSize';
-	import { characterCreationStore } from '$lib/stores/characterCreationStore';
+	import {
+		backgroundPaymentStore,
+		characterCreationStore
+	} from '$lib/stores/characterCreationStore';
 	import { skillsPaidWithDotsStore } from '$lib/stores/skillsPaidWithDotsStore';
 	import { generateId } from '$lib/util';
 	import { skillDotCategory, type SkillDotCategory } from '$lib/zod/lotn/enums/skillDotsCategory';
@@ -174,7 +177,9 @@
 						>
 							<option disabled selected value="">Select a Skill</option>
 							{#each getAvailableSkills() as skill}
-								<option value={skill}>{skill}</option>
+								<option disabled={backgroundPaymentStore.includesSkill(skill)} value={skill}>
+									{skill}
+								</option>
 							{/each}
 						</select>
 					{/key}

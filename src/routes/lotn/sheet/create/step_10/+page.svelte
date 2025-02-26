@@ -1559,8 +1559,13 @@
 					displayStyle="dots"
 					displayValue="beside"
 					editModeEnabled={true}
-					minValue={skillsPaidWithDotsStore.getSkillsPaidWithDotsByName(skill.name) ?? 1}
-					showDeleteButton={!skillsPaidWithDotsStore.hasSkillBeenPaidWithDots(skill.name)}
+					minValue={skillsPaidWithDotsStore.getSkillsPaidWithDotsByName(skill.name)
+						? skillsPaidWithDotsStore.getSkillsPaidWithDotsByName(skill.name)
+						: backgroundPaymentStore.getSkillValue(skill.name)
+							? backgroundPaymentStore.getSkillValue(skill.name)
+							: 1}
+					showDeleteButton={!skillsPaidWithDotsStore.hasSkillBeenPaidWithDots(skill.name) &&
+						!backgroundPaymentStore.includesSkill(skill.name)}
 					{skill}
 					on:valueChange={updateSkill}
 					on:specializationChange={updateSkillSpecialization}
