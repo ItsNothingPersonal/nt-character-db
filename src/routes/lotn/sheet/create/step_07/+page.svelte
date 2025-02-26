@@ -17,13 +17,15 @@
 	import {
 		checkForDotBonusBackgrounds,
 		checkForFixedBackgrounds,
-		checkForMerits
+		checkForMerits,
+		getLoresheetChanges
 	} from '$lib/components/lotn/util/loresheetUtil';
 	import { ScreenSize } from '$lib/sceenSize';
 	import {
 		backgroundPaymentStore,
 		characterCreationStore
 	} from '$lib/stores/characterCreationStore';
+	import { skillsPaidWithDotsStore } from '$lib/stores/skillsPaidWithDotsStore';
 	import { generateId } from '$lib/util';
 	import {
 		backgroundAdvantageName,
@@ -33,6 +35,7 @@
 	import { backgroundName, type BackgroundName } from '$lib/zod/lotn/enums/backgroundName';
 	import { type LoresheetName } from '$lib/zod/lotn/enums/loresheetName';
 	import { meritName } from '$lib/zod/lotn/enums/meritName';
+	import { skillName } from '$lib/zod/lotn/enums/skillName';
 	import { spheresOfInfluenceName } from '$lib/zod/lotn/enums/spheresOfInfluenceName';
 	import { playerLoresheet } from '$lib/zod/lotn/playerCharacter/playerLoresheet';
 	import type { LoresheetChangeEntry } from '$lib/zod/lotn/types/loresheetSchema';
@@ -577,6 +580,65 @@
 				backgroundPaymentStore.addLoresheetLevel(generateId(), level);
 			} else {
 				backgroundPaymentStore.removeLoresheetLevel(level);
+			}
+		}
+
+		const skills = getLoresheetChanges(
+			loresheet.name,
+			'Skill',
+			level === 1 ? 'level1' : level === 2 ? 'level2' : 'level3'
+		);
+		for (const skill of skills) {
+			const name = skillName.parse(skill.name);
+
+			if ($characterCreationStore.loresheet?.values?.includes(level)) {
+				if (
+					$characterCreationStore.skills.some((s) => s.name === name) &&
+					skillsPaidWithDotsStore.hasSkillBeenPaidWithDots(name)
+				) {
+					// removing the old skill as it might have a different value than the one from the loresheet
+					characterCreationStore.update((store) => {
+						store.skills = store.skills.filter((e) => e.name !== name);
+						return store;
+					});
+
+					// add the value from the loresheet to the skills list
+					characterCreationStore.update((store) => {
+						store.skills.push({
+							id: generateId(),
+							name: name,
+							value: skill.value
+						});
+						return store;
+					});
+
+					// get the value of the dots that were paid previously
+					const dotsValue = skillsPaidWithDotsStore.getSkillsPaidWithDotsByName(name);
+					if (!dotsValue) continue;
+
+					// remove the free dots from step 5
+					skillsPaidWithDotsStore.removeSkillsPaidWithDots(name, dotsValue);
+
+					// add the value for adding it from the loresheet
+					backgroundPaymentStore.addSkill(name, skill.value);
+				} else {
+					characterCreationStore.update((store) => {
+						store.skills.push({
+							id: generateId(),
+							name: name,
+							value: skill.value
+						});
+						return store;
+					});
+
+					backgroundPaymentStore.addSkill(name, skill.value);
+				}
+			} else {
+				characterCreationStore.update((store) => {
+					store.skills = store.skills.filter((e) => e.name !== name);
+					return store;
+				});
+				backgroundPaymentStore.removeSkill(name);
 			}
 		}
 	}

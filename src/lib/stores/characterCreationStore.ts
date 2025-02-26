@@ -7,6 +7,7 @@ import {
 	type BackgroundAdvantageName
 } from '$lib/zod/lotn/enums/backgroundAdvantageName';
 import { backgroundName, type BackgroundName } from '$lib/zod/lotn/enums/backgroundName';
+import { skillName, type SkillName } from '$lib/zod/lotn/enums/skillName';
 import type { SpheresOfInfluenceName } from '$lib/zod/lotn/enums/spheresOfInfluenceName';
 import type { PlayerBackgroundAdvantage } from '$lib/zod/lotn/playerCharacter/playerBackgroundAdvantage';
 import { playerCharacterCreate } from '$lib/zod/lotn/playerCharacter/playerCharacter';
@@ -50,7 +51,13 @@ const paymentStoreSchema = z.object({
 			value: z.literal(1).or(z.literal(2)).or(z.literal(3))
 		})
 		.array(),
-	associatedAdvantages: paymentStoreAdvantageEntrySchema.array()
+	associatedAdvantages: paymentStoreAdvantageEntrySchema.array(),
+	skills: z
+		.object({
+			name: skillName,
+			value: z.number()
+		})
+		.array()
 });
 type PaymentStoreSchema = z.infer<typeof paymentStoreSchema>;
 
@@ -58,7 +65,8 @@ export class BackgroundPaymentStore {
 	private _initialPaymentStoreValues: PaymentStoreSchema = {
 		backgrounds: [],
 		associatedAdvantages: [],
-		loresheet: []
+		loresheet: [],
+		skills: []
 	};
 	private _paymentStoreInternal: Writable<PaymentStoreSchema> = writable(
 		cloneDeep(this._initialPaymentStoreValues)
@@ -729,6 +737,7 @@ export class BackgroundPaymentStore {
 
 				if (updatedArray) {
 					return {
+						...store,
 						backgrounds: updatedArray,
 						associatedAdvantages: updatedArrayAdvantages,
 						loresheet: store.loresheet
@@ -1225,6 +1234,28 @@ export class BackgroundPaymentStore {
 
 			return store;
 		});
+	}
+
+	addSkill(skill: SkillName, value: number) {
+		this.paymentStore.update((store) => {
+			store.skills.push({ name: skill, value: value });
+			return store;
+		});
+	}
+
+	removeSkill(skill: SkillName) {
+		this.paymentStore.update((store) => {
+			store.skills = store.skills.filter((entry) => entry.name !== skill);
+			return store;
+		});
+	}
+
+	getSkillValue(skill: SkillName) {
+		return get(this._paymentStoreInternal).skills.find((entry) => entry.name === skill)?.value;
+	}
+
+	includesSkill(skill: SkillName) {
+		return get(this._paymentStoreInternal).skills.some((entry) => entry.name === skill);
 	}
 }
 
