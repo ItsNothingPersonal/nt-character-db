@@ -8,11 +8,7 @@ import { playerBackgroundDisadvantage } from './playerBackgroundDisdvantage';
 export const playerBackground = z.object({
 	name: backgroundName,
 	value: z.number().min(1).max(3),
-	sphereOfInfluence: spheresOfInfluenceName
-		.or(z.literal(''))
-		.default('')
-		.transform((e) => (e === '' ? undefined : e))
-		.optional(),
+	sphereOfInfluence: spheresOfInfluenceName.array().max(3).optional(),
 	description: z
 		.string()
 		.max(300)

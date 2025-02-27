@@ -1077,7 +1077,7 @@ export class BackgroundPaymentStore {
 			id: backgroundId,
 			name: background,
 			value: value,
-			sphereOfInfluence: sphereOfInfluence,
+			sphereOfInfluence: sphereOfInfluence ? [sphereOfInfluence] : undefined,
 			advantages: advantages.length > 0 ? advantages : undefined
 		});
 

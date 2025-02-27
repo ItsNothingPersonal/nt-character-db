@@ -2,6 +2,7 @@ import { backgroundPaymentStore, characterCreationStore } from '$lib/stores/char
 import { generateId } from '$lib/util';
 import type { BackgroundAdvantageName } from '$lib/zod/lotn/enums/backgroundAdvantageName';
 import type { BackgroundName } from '$lib/zod/lotn/enums/backgroundName';
+import type { PlayerBackgroundAdvantage } from '$lib/zod/lotn/playerCharacter/playerBackgroundAdvantage';
 import { get } from 'svelte/store';
 import { alliesConfig } from '../config/backgrounds/alliesConfig';
 import { contactsConfig } from '../config/backgrounds/contactsConfig';
@@ -97,4 +98,27 @@ export function updateBackgroundAdvantageValue(
 		}
 		return store;
 	});
+}
+
+export function getMaxSelectionSphereOfInfluence(
+	backgroundAdvantages: PlayerBackgroundAdvantage[] | undefined
+) {
+	if (!backgroundAdvantages) {
+		return 1;
+	}
+
+	const diversityMerit = backgroundAdvantages.find((merit) => merit.name === 'Diversity');
+
+	if (!diversityMerit) {
+		return 1;
+	}
+
+	switch (diversityMerit.value) {
+		case 1:
+			return 2;
+		case 2:
+			return 3;
+		default:
+			return 1;
+	}
 }
