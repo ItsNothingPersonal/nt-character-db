@@ -58,7 +58,7 @@
 	import { disciplineFreebieStore } from '$lib/stores/disciplineFreebieStore';
 	import { meritPaymentStore } from '$lib/stores/meritPaymentStore';
 	import { skillsPaidWithDotsStore } from '$lib/stores/skillsPaidWithDotsStore';
-	import { generateId } from '$lib/util';
+	import { generateId, parseExpLog } from '$lib/util';
 	import type { ThinBloodAlchemy } from '$lib/zod/lotn/disciplines/thinBloodAlchemy';
 	import { attributeName, type AttributeName } from '$lib/zod/lotn/enums/attributeName';
 	import type { BackgroundAdvantageName } from '$lib/zod/lotn/enums/backgroundAdvantageName';
@@ -500,10 +500,12 @@
 			const advantages = store.backgrounds.find((b) => b.id === event.detail.id)?.advantages;
 			advantages?.forEach((advantage) => {
 				store.experience = store.experience.filter((exp) => exp.element_id !== advantage.id);
+				backgroundPaymentStore.deleteBackgroundAdvantage(event.detail.id, advantage.name);
 			});
 
 			store.backgrounds = store.backgrounds.filter((b) => b.id !== event.detail.id);
 			store.experience = store.experience.filter((exp) => exp.element_id !== event.detail.id);
+
 			return store;
 		});
 	}
@@ -516,6 +518,7 @@
 		if (!event.detail.name) return;
 		if (!event.detail.value) return;
 
+		const backgroundName: BackgroundName = event.detail.backgroundName;
 		const advantageName: BackgroundAdvantageName = event.detail.name;
 		const advantageValue: number = event.detail.value;
 
@@ -546,7 +549,8 @@
 			}
 
 			if (oldValue > advantageValue) {
-				cleanUpExperienceLogFlat(
+				const pointsToRegain = oldValue - advantageValue;
+				const parsedExpLog = cleanUpExperienceLogFlat(
 					event.detail.advantageId,
 					advantageName,
 					advantageValue,
@@ -554,19 +558,61 @@
 					3,
 					'Background Advantage'
 				);
+				const regainedDots = parsedExpLog.reduce((acc, curr) => (acc += curr.spentPoints / 3), 0);
+
+				if (regainedDots < pointsToRegain) {
+					backgroundPaymentStore.deleteBackgroundAdvantage(
+						event.detail.backgroundId,
+						advantageName
+					);
+				}
 			} else {
 				if (oldValue === advantageValue) return store;
 
-				store.experience = [
-					...store.experience,
-					{
-						element_id: event.detail.advantageId,
-						reason: `Increased Background Advantage ${advantageName} to ${advantageValue}`,
-						type: 'substract',
-						value: calculateFlatCost(oldValue, advantageValue, 3),
-						date: new Date()
+				if (backgroundName === 'Haven') {
+					const pointsToPay = advantageValue - oldValue;
+					const havenFreebiesLeft =
+						backgroundPaymentStore.getHavenFreebiesMax() -
+						backgroundPaymentStore.getHavenFreebiesUsed();
+
+					if (havenFreebiesLeft >= pointsToPay) {
+						backgroundPaymentStore.setHavenBackgroundAdvantage(
+							event.detail.backgroundId,
+							advantageName,
+							pointsToPay
+						);
+					} else {
+						if (havenFreebiesLeft > 0) {
+							backgroundPaymentStore.setHavenBackgroundAdvantage(
+								event.detail.backgroundId,
+								advantageName,
+								havenFreebiesLeft
+							);
+						}
+
+						store.experience = [
+							...store.experience,
+							{
+								element_id: event.detail.advantageId,
+								reason: `Increased Background Advantage ${advantageName} to ${advantageValue}`,
+								type: 'substract',
+								value: calculateFlatCost(oldValue + havenFreebiesLeft, advantageValue, 3),
+								date: new Date()
+							}
+						];
 					}
-				];
+				} else {
+					store.experience = [
+						...store.experience,
+						{
+							element_id: event.detail.advantageId,
+							reason: `Increased Background Advantage ${advantageName} to ${advantageValue}`,
+							type: 'substract',
+							value: calculateFlatCost(oldValue, advantageValue, 3),
+							date: new Date()
+						}
+					];
+				}
 			}
 
 			updateBackgroundAdvantageValue(
@@ -607,6 +653,8 @@
 				(advantage) => advantage.name === event.detail.advantageName
 			);
 
+			if (!removeAdvantage) return store;
+
 			store.backgrounds[backgroundIndex].advantages = store.backgrounds[
 				backgroundIndex
 			].advantages?.filter((advantage) => advantage.name !== event.detail.advantageName);
@@ -615,7 +663,8 @@
 				store.backgrounds[backgroundIndex].advantages = undefined;
 			}
 
-			store.experience = store.experience.filter((exp) => exp.element_id !== removeAdvantage?.id);
+			store.experience = store.experience.filter((exp) => exp.element_id !== removeAdvantage.id);
+			backgroundPaymentStore.deleteBackgroundAdvantage(event.detail.id, removeAdvantage.name);
 
 			return store;
 		});
@@ -1308,43 +1357,7 @@
 		kind: 'Background' | 'Background Advantage' | 'Merit' | 'Loresheet'
 	) {
 		let spentPoints = 0;
-		let parsedExpLog: { index: number; targetValue: number; spentPoints: number }[];
-
-		if (kind === 'Background' || kind === 'Merit') {
-			parsedExpLog = $characterCreationStore.experience
-				.filter((e) => e.element_id === id && e.type === 'substract')
-				.sort((a, b) => b.date.getTime() - a.date.getTime())
-				.map((e) => {
-					const hasAmount = e.reason.match(/(\d+)/);
-					return {
-						index: $characterCreationStore.experience.indexOf(e),
-						targetValue: hasAmount ? +hasAmount[0] : 1,
-						spentPoints: e.value
-					};
-				});
-		} else if (kind === 'Background Advantage') {
-			parsedExpLog = $characterCreationStore.experience
-				.filter((e) => e.reason.match(`${kind} ${name}`) && e.type === 'substract')
-				.sort((a, b) => b.date.getTime() - a.date.getTime())
-				.map((e) => {
-					const hasAmount = e.reason.match(/(\d+)/);
-					return {
-						index: $characterCreationStore.experience.indexOf(e),
-						targetValue: hasAmount ? +hasAmount[0] : 1,
-						spentPoints: e.value
-					};
-				});
-		} else if (kind === 'Loresheet') {
-			characterCreationStore.update((store) => {
-				store.experience = store.experience.filter(
-					(e) => !e.reason.match(`${kind} ${name} Level ${oldValue}`) && e.type === 'substract'
-				);
-				return store;
-			});
-			return;
-		} else {
-			return;
-		}
+		const parsedExpLog = parseExpLog(id, name, oldValue, kind);
 
 		for (const expEntry of parsedExpLog) {
 			spentPoints = expEntry.spentPoints;
@@ -1370,6 +1383,8 @@
 				break;
 			}
 		}
+
+		return parsedExpLog;
 	}
 
 	function isNotFreebieDiscipline(discipline: DisciplineName) {

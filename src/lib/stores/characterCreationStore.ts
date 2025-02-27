@@ -1222,6 +1222,34 @@ export class BackgroundPaymentStore {
 		);
 	}
 
+	setHavenBackgroundAdvantage(
+		backgroundId: string,
+		advantage: BackgroundAdvantageName,
+		value: number
+	) {
+		this._paymentStoreInternal.update((store) => {
+			const indexEdit = store.associatedAdvantages.findIndex(
+				(entry) => entry.id === backgroundId && entry.advantageName === advantage
+			);
+			if (indexEdit === -1) {
+				store.associatedAdvantages.push({
+					id: backgroundId,
+					name: 'Haven',
+					advantageName: advantage,
+					fixed: 0,
+					freebies: 0,
+					haven: value,
+					loresheet: 0,
+					predator: 0
+				});
+			} else {
+				store.associatedAdvantages[indexEdit].haven = value;
+			}
+
+			return store;
+		});
+	}
+
 	removeHavenBackgroundAdvantage(backgroundId: string, advantage: BackgroundAdvantageName) {
 		this._paymentStoreInternal.update((store) => {
 			const indexEdit = store.associatedAdvantages.findIndex(
