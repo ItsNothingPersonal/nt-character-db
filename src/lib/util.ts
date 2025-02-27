@@ -170,3 +170,47 @@ export function parseUnknownError(error: unknown) {
 
 	return errorDetails;
 }
+
+export function parseExpLog(
+	id: string,
+	name: string,
+	oldValue: number,
+	kind: 'Background' | 'Background Advantage' | 'Merit' | 'Loresheet'
+) {
+	let parsedExpLog: { index: number; targetValue: number; spentPoints: number }[] = [];
+
+	if (kind === 'Background' || kind === 'Merit') {
+		parsedExpLog = get(characterCreationStore)
+			.experience.filter((e) => e.element_id === id && e.type === 'substract')
+			.sort((a, b) => b.date.getTime() - a.date.getTime())
+			.map((e) => {
+				const hasAmount = e.reason.match(/(\d+)/);
+				return {
+					index: get(characterCreationStore).experience.indexOf(e),
+					targetValue: hasAmount ? +hasAmount[0] : 1,
+					spentPoints: e.value
+				};
+			});
+	} else if (kind === 'Background Advantage') {
+		parsedExpLog = get(characterCreationStore)
+			.experience.filter((e) => e.reason.match(`${kind} ${name}`) && e.type === 'substract')
+			.sort((a, b) => b.date.getTime() - a.date.getTime())
+			.map((e) => {
+				const hasAmount = e.reason.match(/(\d+)/);
+				return {
+					index: get(characterCreationStore).experience.indexOf(e),
+					targetValue: hasAmount ? +hasAmount[0] : 1,
+					spentPoints: e.value
+				};
+			});
+	} else if (kind === 'Loresheet') {
+		characterCreationStore.update((store) => {
+			store.experience = store.experience.filter(
+				(e) => !e.reason.match(`${kind} ${name} Level ${oldValue}`) && e.type === 'substract'
+			);
+			return store;
+		});
+	}
+
+	return parsedExpLog;
+}

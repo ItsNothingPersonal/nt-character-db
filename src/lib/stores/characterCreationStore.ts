@@ -1072,12 +1072,12 @@ export class BackgroundPaymentStore {
 			});
 		});
 
-		const backgroundId = Math.random().toString();
+		const backgroundId = generateId();
 		currentBackgrounds.push({
 			id: backgroundId,
 			name: background,
 			value: value,
-			sphereOfInfluence: sphereOfInfluence,
+			sphereOfInfluence: sphereOfInfluence ? [sphereOfInfluence] : undefined,
 			advantages: advantages.length > 0 ? advantages : undefined
 		});
 
@@ -1220,6 +1220,34 @@ export class BackgroundPaymentStore {
 		return get(this._paymentStoreInternal).associatedAdvantages.some(
 			(entry) => entry.id === backgroundId && entry.advantageName === advantage && entry.haven > 0
 		);
+	}
+
+	setHavenBackgroundAdvantage(
+		backgroundId: string,
+		advantage: BackgroundAdvantageName,
+		value: number
+	) {
+		this._paymentStoreInternal.update((store) => {
+			const indexEdit = store.associatedAdvantages.findIndex(
+				(entry) => entry.id === backgroundId && entry.advantageName === advantage
+			);
+			if (indexEdit === -1) {
+				store.associatedAdvantages.push({
+					id: backgroundId,
+					name: 'Haven',
+					advantageName: advantage,
+					fixed: 0,
+					freebies: 0,
+					haven: value,
+					loresheet: 0,
+					predator: 0
+				});
+			} else {
+				store.associatedAdvantages[indexEdit].haven = value;
+			}
+
+			return store;
+		});
 	}
 
 	removeHavenBackgroundAdvantage(backgroundId: string, advantage: BackgroundAdvantageName) {

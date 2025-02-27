@@ -1,5 +1,8 @@
 <script lang="ts">
-	import { backgroundPaymentStore } from '$lib/stores/characterCreationStore';
+	import {
+		backgroundPaymentStore,
+		characterCreationStore
+	} from '$lib/stores/characterCreationStore';
 	import { generateId } from '$lib/util';
 	import type { AlliesConfigSchema } from '$lib/zod/lotn/background/allies';
 	import type { ContactsConfigSchema } from '$lib/zod/lotn/background/contacts';
@@ -24,12 +27,12 @@
 	import type { PlayerBackground } from '$lib/zod/lotn/playerCharacter/playerBackground';
 	import { Ratings } from '@skeletonlabs/skeleton';
 	import { createEventDispatcher, onMount } from 'svelte';
-	import { get } from 'svelte/store';
+	import { get, writable, type Writable } from 'svelte/store';
 	import BackgroundAdvantage from '../characterSheet/components/BackgroundAdvantage/BackgroundAdvantage.svelte';
 	import type { BackgroundAdvantageDeleteEvent } from '../characterSheet/components/BackgroundAdvantage/BackgroundAdvantageDeleteEvent';
 	import BackgroundDisadvantage from '../characterSheet/components/BackgroundDisadvantage/BackgroundDisadvantage.svelte';
 	import HelpText from '../characterSheet/components/HelpText.svelte';
-	import { getBackgroundConfig } from '../util/backgroundUtil';
+	import { getBackgroundConfig, getMaxSelectionSphereOfInfluence } from '../util/backgroundUtil';
 	import { createNumberList } from '../util/generalUtils';
 	import type { BackgroundAdvantageChangeEvent } from './BackgroundAdvantageChangeEvent';
 	import type { BackgroundDisadvantageChangeEvent } from './BackgroundDisadvantageChangeEvent';
@@ -44,12 +47,23 @@
 	onMount(() => {
 		value = background.value;
 		description = background.description;
-		sphereOfInfluence = background.sphereOfInfluence;
+
+		sphereOfInfluences.set(
+			background.sphereOfInfluence && background.sphereOfInfluence.length > 0
+				? background.sphereOfInfluence
+				: []
+		);
+		singleSphereOfInfluence.set(
+			background.sphereOfInfluence && background.sphereOfInfluence.length > 0
+				? background.sphereOfInfluence[0]
+				: undefined
+		);
 	});
 
 	let value: number = 0;
 	let description: string | undefined = undefined;
-	let sphereOfInfluence: SpheresOfInfluenceName | undefined = undefined;
+	let sphereOfInfluences: Writable<SpheresOfInfluenceName[]> = writable([]);
+	let singleSphereOfInfluence: Writable<SpheresOfInfluenceName | undefined> = writable(undefined);
 	let backgroundConfig:
 		| AlliesConfigSchema
 		| ContactsConfigSchema
@@ -59,6 +73,7 @@
 		| HerdConfigSchema
 		| MaskConfigSchema
 		| ResourcesConfigSchema = getBackgroundConfig(background.name);
+
 	let selectedBackgroundAdvantage: BackgroundAdvantageName | undefined = backgroundConfig.advantages
 		? backgroundAdvantageName.parse(Object.keys(backgroundConfig.advantages)[0])
 		: undefined;
@@ -66,7 +81,6 @@
 		getMaxValueForBackgroundAdvantage(selectedBackgroundAdvantage),
 		getMinValueForBackgroundAdvantage(selectedBackgroundAdvantage)
 	)[0];
-
 	let selectedBackgroundDisadvantage: BackgroundDisadvantageName | undefined =
 		backgroundConfig.disadvantages
 			? backgroundDisadvantageName.parse(Object.keys(backgroundConfig.disadvantages)[0])
@@ -218,6 +232,52 @@
 				return '';
 		}
 	}
+
+	function handleSphereOfInfluenceChange(
+		// eslint-disable-next-line no-undef
+		event: Event & { currentTarget: EventTarget & HTMLSelectElement }
+	) {
+		const isMultiple = background.advantages?.some((s) => s.name === 'Diversity');
+		const selectedValues = spheresOfInfluenceName
+			.array()
+			.parse(Array.from(event.currentTarget.selectedOptions).map((opt) => opt.value));
+		const maxSelectableOptions = getMaxSelectionSphereOfInfluence(background.advantages);
+
+		if (isMultiple) {
+			const currentValues = background.sphereOfInfluence;
+			const newValue = selectedValues.find((v) => !currentValues?.includes(v));
+
+			if (selectedValues.length > maxSelectableOptions && currentValues && newValue) {
+				sphereOfInfluences.set([...currentValues.slice(1), newValue]);
+			} else {
+				sphereOfInfluences.update((store) => {
+					store = selectedValues;
+					return store;
+				});
+			}
+		} else {
+			singleSphereOfInfluence.update((store) => {
+				store = selectedValues[0];
+				return store;
+			});
+		}
+
+		if (isMultiple) {
+			dispatchChange('change', {
+				id: background.id,
+				label: background.name,
+				type: 'sphereOfInfluence',
+				value: $sphereOfInfluences
+			});
+		} else if ($singleSphereOfInfluence) {
+			dispatchChange('change', {
+				id: background.id,
+				label: background.name,
+				type: 'sphereOfInfluence',
+				value: [$singleSphereOfInfluence]
+			});
+		}
+	}
 </script>
 
 {#if editModeEnabled}
@@ -290,26 +350,41 @@
 		</label>
 		{#if background.name === 'Contacts' || background.name === 'Allies'}
 			<label class="label">
-				<span>Sphere of Influence</span>
-				<select
-					class="select rounded-lg"
-					disabled={!editModeEnabledAdvantages}
-					bind:value={sphereOfInfluence}
-					on:change={() =>
-						dispatchChange('change', {
-							id: background.id,
-							label: background.name,
-							type: 'sphereOfInfluence',
-							value: sphereOfInfluence
-						})}
-				>
-					<option disabled selected value={undefined}> Choose a Sphere of Influence </option>
-					{#each spheresOfInfluenceName.options as sphereOfInfluence}
-						<option value={sphereOfInfluence}>
-							{sphereOfInfluence}
+				{#if background && background.advantages?.some((s) => s.name === 'Diversity')}
+					<span>Spheres of Influence</span>
+					<select
+						class="select rounded-lg [&>option]:rounded-lg"
+						disabled={!editModeEnabledAdvantages}
+						multiple
+						size="5"
+						bind:value={$sphereOfInfluences}
+						on:change={handleSphereOfInfluenceChange}
+					>
+						<option disabled selected value={undefined}>
+							Choose {getMaxSelectionSphereOfInfluence(background.advantages)} Spheres of Influence
 						</option>
-					{/each}
-				</select>
+						{#each spheresOfInfluenceName.options as sphereOfInfluence}
+							<option value={sphereOfInfluence}>
+								{sphereOfInfluence}
+							</option>
+						{/each}
+					</select>
+				{:else}
+					<span>Sphere of Influence</span>
+					<select
+						class="select rounded-lg"
+						disabled={!editModeEnabledAdvantages}
+						value={$singleSphereOfInfluence}
+						on:change={handleSphereOfInfluenceChange}
+					>
+						<option disabled selected value={undefined}> Choose a Sphere of Influence </option>
+						{#each spheresOfInfluenceName.options as sphereOfInfluence}
+							<option value={sphereOfInfluence}>
+								{sphereOfInfluence}
+							</option>
+						{/each}
+					</select>
+				{/if}
 			</label>
 		{/if}
 		{#if backgroundConfig.advantages}
@@ -366,6 +441,28 @@
 						)}
 						type="button"
 						on:click={() => {
+							const backgroundIndex = $characterCreationStore.backgrounds.findIndex(
+								(e) => e.id === background.id
+							);
+							if (backgroundIndex === -1) return;
+							if (!selectedBackgroundAdvantage) return;
+
+							const total = backgroundPaymentStore.getTotalAdvantagePoints(
+								$characterCreationStore.backgrounds[backgroundIndex].id,
+								selectedBackgroundAdvantage
+							);
+
+							if (backgroundAdvantageValue < total) {
+								sphereOfInfluences.set(
+									background.sphereOfInfluence
+										? background.sphereOfInfluence.slice(0, backgroundAdvantageValue + 1)
+										: []
+								);
+								singleSphereOfInfluence.set(
+									background.sphereOfInfluence ? background.sphereOfInfluence[0] : undefined
+								);
+							}
+
 							dispatchChange('advantageClick', {
 								backgroundId: background.id,
 								backgroundName: background.name,
@@ -506,9 +603,14 @@
 			{/if}
 			{#if (background.name === 'Contacts' || background.name === 'Allies') && background.sphereOfInfluence}
 				<div class="col-span-2">
-					<p class="font-bold underline">Sphere of Influence</p>
+					{#if background.sphereOfInfluence.length === 1}
+						<p class="font-bold underline">Sphere of Influence</p>
+					{:else}
+						<p class="font-bold underline">Spheres of Influence</p>
+					{/if}
+
 					<p class="whitespace-pre-line text-sm">
-						{background.sphereOfInfluence}
+						{background.sphereOfInfluence.join(', ')}
 					</p>
 				</div>
 			{/if}

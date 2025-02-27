@@ -130,14 +130,12 @@
 				}
 				break;
 			case 'sphereOfInfluence':
-				if (typeof event.detail.value === 'string') {
-					characterCreationStore.update((store) => {
-						store.backgrounds[backgroundIndex].sphereOfInfluence = spheresOfInfluenceName.parse(
-							event.detail.value
-						);
-						return store;
-					});
-				}
+				characterCreationStore.update((store) => {
+					store.backgrounds[backgroundIndex].sphereOfInfluence = spheresOfInfluenceName
+						.array()
+						.parse(event.detail.value);
+					return store;
+				});
 				break;
 		}
 	}
@@ -215,6 +213,20 @@
 					const advantage = store.backgrounds[backgroundIndex].advantages[advantageIndex];
 					advantage.value = advantageValue;
 					store.backgrounds[backgroundIndex].advantages[advantageIndex] = advantage;
+				}
+
+				if (
+					advantageValue < total &&
+					advantageName === 'Diversity' &&
+					store.backgrounds[backgroundIndex].sphereOfInfluence &&
+					store.backgrounds[backgroundIndex].sphereOfInfluence.length > 0
+				) {
+					const sphereOfInfluence = store.backgrounds[backgroundIndex].sphereOfInfluence.slice(
+						0,
+						advantageValue + 1
+					);
+
+					store.backgrounds[backgroundIndex].sphereOfInfluence = sphereOfInfluence;
 				}
 
 				return store;
@@ -894,9 +906,11 @@
 				<h3 class="h3">Haven-Advantages</h3>
 				<ul class="list">
 					<li>
-						<span>
-							Free Dots: {backgroundPaymentStore.getHavenFreebiesUsed()} / {$maxHavenFreebiePoints}
-						</span>
+						{#key $paymentStore.associatedAdvantages}
+							<span>
+								Free Dots: {backgroundPaymentStore.getHavenFreebiesUsed()} / {$maxHavenFreebiePoints}
+							</span>
+						{/key}
 					</li>
 				</ul>
 			</div>

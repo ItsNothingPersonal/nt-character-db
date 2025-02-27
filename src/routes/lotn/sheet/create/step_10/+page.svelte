@@ -58,9 +58,10 @@
 	import { disciplineFreebieStore } from '$lib/stores/disciplineFreebieStore';
 	import { meritPaymentStore } from '$lib/stores/meritPaymentStore';
 	import { skillsPaidWithDotsStore } from '$lib/stores/skillsPaidWithDotsStore';
-	import { generateId, isNotNullOrUndefined } from '$lib/util';
+	import { generateId, parseExpLog } from '$lib/util';
 	import type { ThinBloodAlchemy } from '$lib/zod/lotn/disciplines/thinBloodAlchemy';
 	import { attributeName, type AttributeName } from '$lib/zod/lotn/enums/attributeName';
+	import type { BackgroundAdvantageName } from '$lib/zod/lotn/enums/backgroundAdvantageName';
 	import { backgroundName, type BackgroundName } from '$lib/zod/lotn/enums/backgroundName';
 	import {
 		bloodSorceryRitualName,
@@ -480,20 +481,16 @@
 				}
 				break;
 			case 'sphereOfInfluence':
-				if (typeof event.detail.value === 'string') {
-					characterCreationStore.update((store) => {
-						const toEditIndex = store.backgrounds.findIndex((b) => b.id === event.detail.id);
-						if (toEditIndex === -1) return store;
-						if (!(typeof event.detail.value === 'string')) return store;
+				characterCreationStore.update((store) => {
+					const toEditIndex = store.backgrounds.findIndex((b) => b.id === event.detail.id);
+					if (toEditIndex === -1) return store;
 
-						const resultParsed = spheresOfInfluenceName.safeParse(event.detail.value);
-						if (!resultParsed.success) return store;
+					store.backgrounds[toEditIndex].sphereOfInfluence = spheresOfInfluenceName
+						.array()
+						.parse(event.detail.value);
 
-						store.backgrounds[toEditIndex].sphereOfInfluence = resultParsed.data;
-
-						return store;
-					});
-				}
+					return store;
+				});
 				break;
 		}
 	}
@@ -503,75 +500,141 @@
 			const advantages = store.backgrounds.find((b) => b.id === event.detail.id)?.advantages;
 			advantages?.forEach((advantage) => {
 				store.experience = store.experience.filter((exp) => exp.element_id !== advantage.id);
+				backgroundPaymentStore.deleteBackgroundAdvantage(event.detail.id, advantage.name);
 			});
 
 			store.backgrounds = store.backgrounds.filter((b) => b.id !== event.detail.id);
 			store.experience = store.experience.filter((exp) => exp.element_id !== event.detail.id);
+
 			return store;
 		});
 	}
 
 	function updateBackgroundAdvantage(event: CustomEvent<BackgroundAdvantageChangeEvent>) {
-		characterCreationStore.update((store) => {
-			if (!event.detail.name) return store;
-			if (!event.detail.value) return store;
+		const backgroundIndex = $characterCreationStore.backgrounds.findIndex(
+			(e) => e.id === event.detail.backgroundId
+		);
+		if (backgroundIndex === -1) return;
+		if (!event.detail.name) return;
+		if (!event.detail.value) return;
 
-			const backgroundIndex = store.backgrounds.findIndex(
-				(b) => b.id === event.detail.backgroundId
-			);
-			if (backgroundIndex === -1) return store;
-			let advantageAtIndex = store.backgrounds[backgroundIndex]?.advantages;
-			if (!advantageAtIndex) {
-				advantageAtIndex = [];
+		const backgroundName: BackgroundName = event.detail.backgroundName;
+		const advantageName: BackgroundAdvantageName = event.detail.name;
+		const advantageValue: number = event.detail.value;
+
+		characterCreationStore.update((store) => {
+			if (!store.backgrounds[backgroundIndex].advantages) {
+				store.backgrounds[backgroundIndex].advantages = [];
 			}
 
-			const advantageIndex = advantageAtIndex.findIndex((a) => a.name === event.detail.name);
+			const advantageIndex = store.backgrounds[backgroundIndex].advantages.findIndex(
+				(e) => e.name === advantageName
+			);
 			let oldValue = 0;
 
-			if (advantageIndex === -1 && advantageAtIndex && Array.isArray(advantageAtIndex)) {
-				if (isNotNullOrUndefined(store.backgrounds[backgroundIndex].advantages)) {
-					store.backgrounds[backgroundIndex].advantages = [
-						...store.backgrounds[backgroundIndex].advantages,
-						{ id: event.detail.advantageId, name: event.detail.name, value: event.detail.value }
-					];
-				}
+			if (advantageIndex === -1) {
+				store.backgrounds[backgroundIndex].advantages = [
+					...store.backgrounds[backgroundIndex].advantages,
+					{
+						id: event.detail.advantageId,
+						name: advantageName,
+						value: advantageValue
+					}
+				];
 			} else {
-				if (isNotNullOrUndefined(store.backgrounds[backgroundIndex].advantages)) {
-					oldValue = store.backgrounds[backgroundIndex].advantages[advantageIndex].value;
-					store.backgrounds[backgroundIndex].advantages[advantageIndex].value = event.detail.value;
-				}
+				oldValue = store.backgrounds[backgroundIndex].advantages[advantageIndex].value;
+				const advantage = store.backgrounds[backgroundIndex].advantages[advantageIndex];
+				advantage.value = advantageValue;
+				store.backgrounds[backgroundIndex].advantages[advantageIndex] = advantage;
 			}
 
-			if (oldValue > event.detail.value) {
-				cleanUpExperienceLogFlat(
+			if (oldValue > advantageValue) {
+				const pointsToRegain = oldValue - advantageValue;
+				const parsedExpLog = cleanUpExperienceLogFlat(
 					event.detail.advantageId,
-					event.detail.name,
-					event.detail.value,
+					advantageName,
+					advantageValue,
 					oldValue,
 					3,
 					'Background Advantage'
 				);
-			} else {
-				if (oldValue === event.detail.value) return store;
+				const regainedDots = parsedExpLog.reduce((acc, curr) => (acc += curr.spentPoints / 3), 0);
 
-				store.experience = [
-					...store.experience,
-					{
-						element_id: event.detail.advantageId,
-						reason: `Increased Background Advantage ${event.detail.name} to ${event.detail.value}`,
-						type: 'substract',
-						value: calculateFlatCost(oldValue, event.detail.value, 3),
-						date: new Date()
+				if (regainedDots < pointsToRegain) {
+					backgroundPaymentStore.deleteBackgroundAdvantage(
+						event.detail.backgroundId,
+						advantageName
+					);
+				}
+			} else {
+				if (oldValue === advantageValue) return store;
+
+				if (backgroundName === 'Haven') {
+					const pointsToPay = advantageValue - oldValue;
+					const havenFreebiesLeft =
+						backgroundPaymentStore.getHavenFreebiesMax() -
+						backgroundPaymentStore.getHavenFreebiesUsed();
+
+					if (havenFreebiesLeft >= pointsToPay) {
+						backgroundPaymentStore.setHavenBackgroundAdvantage(
+							event.detail.backgroundId,
+							advantageName,
+							pointsToPay
+						);
+					} else {
+						if (havenFreebiesLeft > 0) {
+							backgroundPaymentStore.setHavenBackgroundAdvantage(
+								event.detail.backgroundId,
+								advantageName,
+								havenFreebiesLeft
+							);
+						}
+
+						store.experience = [
+							...store.experience,
+							{
+								element_id: event.detail.advantageId,
+								reason: `Increased Background Advantage ${advantageName} to ${advantageValue}`,
+								type: 'substract',
+								value: calculateFlatCost(oldValue + havenFreebiesLeft, advantageValue, 3),
+								date: new Date()
+							}
+						];
 					}
-				];
+				} else {
+					store.experience = [
+						...store.experience,
+						{
+							element_id: event.detail.advantageId,
+							reason: `Increased Background Advantage ${advantageName} to ${advantageValue}`,
+							type: 'substract',
+							value: calculateFlatCost(oldValue, advantageValue, 3),
+							date: new Date()
+						}
+					];
+				}
 			}
 
 			updateBackgroundAdvantageValue(
 				event.detail.backgroundId,
 				event.detail.advantageId,
-				event.detail.name,
-				event.detail.value
+				advantageName,
+				advantageValue
 			);
+
+			if (
+				advantageValue < oldValue &&
+				advantageName === 'Diversity' &&
+				store.backgrounds[backgroundIndex].sphereOfInfluence &&
+				store.backgrounds[backgroundIndex].sphereOfInfluence.length > 0
+			) {
+				const sphereOfInfluence = store.backgrounds[backgroundIndex].sphereOfInfluence.slice(
+					0,
+					advantageValue + 1
+				);
+
+				store.backgrounds[backgroundIndex].sphereOfInfluence = sphereOfInfluence;
+			}
 
 			return store;
 		});
@@ -590,6 +653,8 @@
 				(advantage) => advantage.name === event.detail.advantageName
 			);
 
+			if (!removeAdvantage) return store;
+
 			store.backgrounds[backgroundIndex].advantages = store.backgrounds[
 				backgroundIndex
 			].advantages?.filter((advantage) => advantage.name !== event.detail.advantageName);
@@ -598,7 +663,8 @@
 				store.backgrounds[backgroundIndex].advantages = undefined;
 			}
 
-			store.experience = store.experience.filter((exp) => exp.element_id !== removeAdvantage?.id);
+			store.experience = store.experience.filter((exp) => exp.element_id !== removeAdvantage.id);
+			backgroundPaymentStore.deleteBackgroundAdvantage(event.detail.id, removeAdvantage.name);
 
 			return store;
 		});
@@ -1291,43 +1357,7 @@
 		kind: 'Background' | 'Background Advantage' | 'Merit' | 'Loresheet'
 	) {
 		let spentPoints = 0;
-		let parsedExpLog: { index: number; targetValue: number; spentPoints: number }[];
-
-		if (kind === 'Background' || kind === 'Merit') {
-			parsedExpLog = $characterCreationStore.experience
-				.filter((e) => e.element_id === id && e.type === 'substract')
-				.sort((a, b) => b.date.getTime() - a.date.getTime())
-				.map((e) => {
-					const hasAmount = e.reason.match(/(\d+)/);
-					return {
-						index: $characterCreationStore.experience.indexOf(e),
-						targetValue: hasAmount ? +hasAmount[0] : 1,
-						spentPoints: e.value
-					};
-				});
-		} else if (kind === 'Background Advantage') {
-			parsedExpLog = $characterCreationStore.experience
-				.filter((e) => e.reason.match(`${kind} ${name}`) && e.type === 'substract')
-				.sort((a, b) => b.date.getTime() - a.date.getTime())
-				.map((e) => {
-					const hasAmount = e.reason.match(/(\d+)/);
-					return {
-						index: $characterCreationStore.experience.indexOf(e),
-						targetValue: hasAmount ? +hasAmount[0] : 1,
-						spentPoints: e.value
-					};
-				});
-		} else if (kind === 'Loresheet') {
-			characterCreationStore.update((store) => {
-				store.experience = store.experience.filter(
-					(e) => !e.reason.match(`${kind} ${name} Level ${oldValue}`) && e.type === 'substract'
-				);
-				return store;
-			});
-			return;
-		} else {
-			return;
-		}
+		const parsedExpLog = parseExpLog(id, name, oldValue, kind);
 
 		for (const expEntry of parsedExpLog) {
 			spentPoints = expEntry.spentPoints;
@@ -1353,6 +1383,8 @@
 				break;
 			}
 		}
+
+		return parsedExpLog;
 	}
 
 	function isNotFreebieDiscipline(discipline: DisciplineName) {
@@ -1575,18 +1607,20 @@
 		</div>
 	{:else if selectedKindIncreaseOption === 'Background' && $characterCreationStore.backgrounds.length > 0}
 		<div class="grid grid-cols-1 grid-rows-1 gap-2 sm:grid-cols-3">
-			{#each $characterCreationStore.backgrounds as background}
-				<EditableBackground
-					{background}
-					editModeEnabled={true}
-					editModeEnabledAdvantages={true}
-					mode="experience"
-					on:change={updateBackground}
-					on:deleteClick={deleteBackground}
-					on:advantageClick={updateBackgroundAdvantage}
-					on:advantageDeleteClick={deleteBackgroundAdvantage}
-				/>
-			{/each}
+			{#key $characterCreationStore.backgrounds}
+				{#each $characterCreationStore.backgrounds as background}
+					<EditableBackground
+						{background}
+						editModeEnabled={true}
+						editModeEnabledAdvantages={true}
+						mode="experience"
+						on:change={updateBackground}
+						on:deleteClick={deleteBackground}
+						on:advantageClick={updateBackgroundAdvantage}
+						on:advantageDeleteClick={deleteBackgroundAdvantage}
+					/>
+				{/each}
+			{/key}
 		</div>
 	{:else if selectedKindIncreaseOption === 'Merit' && $characterCreationStore.merits && $characterCreationStore.merits.length > 0}
 		<div class="grid grid-cols-1 grid-rows-1 gap-2 sm:grid-cols-4">
