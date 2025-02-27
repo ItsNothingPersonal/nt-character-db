@@ -906,9 +906,11 @@
 				<h3 class="h3">Haven-Advantages</h3>
 				<ul class="list">
 					<li>
-						<span>
-							Free Dots: {backgroundPaymentStore.getHavenFreebiesUsed()} / {$maxHavenFreebiePoints}
-						</span>
+						{#key $paymentStore.associatedAdvantages}
+							<span>
+								Free Dots: {backgroundPaymentStore.getHavenFreebiesUsed()} / {$maxHavenFreebiePoints}
+							</span>
+						{/key}
 					</li>
 				</ul>
 			</div>
