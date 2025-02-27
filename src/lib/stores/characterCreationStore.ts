@@ -1072,7 +1072,7 @@ export class BackgroundPaymentStore {
 			});
 		});
 
-		const backgroundId = Math.random().toString();
+		const backgroundId = generateId();
 		currentBackgrounds.push({
 			id: backgroundId,
 			name: background,
