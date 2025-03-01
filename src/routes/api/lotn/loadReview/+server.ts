@@ -3,34 +3,24 @@ import {
 	playerCharacterSelection,
 	type PlayerCharacterSelection
 } from '$lib/zod/lotn/types/playerCharacterSelection';
+import { projectName } from '$lib/zod/projectName.js';
 import { error, json } from '@sveltejs/kit';
 import { ClientResponseError } from 'pocketbase';
 import { z } from 'zod';
 
-export async function POST({ locals, request }) {
+export async function POST({ request, locals }) {
 	if (!locals.user) {
 		error(HttpStatusCode.UNAUTHORIZED, 'Nicht eingeloggt');
 	}
+	const requestJson = await request.json();
 
-	let requestJson = {};
-	const clone = request.clone();
-	const text = await clone.text();
-
-	if (text) {
-		try {
-			requestJson = JSON.parse(text);
-		} catch (e) {
-			error(HttpStatusCode.BAD_REQUEST, 'Invalid JSON in request body');
-		}
-	}
-
-	const requestJsonParsed = z
-		.object({ mode: z.enum(['self', 'all']).default('self') })
+	const playerCharacterBaseCreateBodyParsed = z
+		.object({ project: projectName })
 		.safeParse(requestJson);
 
 	let characters: (PlayerCharacterSelection & { username: string })[] = [];
 
-	if (requestJsonParsed.success) {
+	if (playerCharacterBaseCreateBodyParsed.success) {
 		try {
 			const characterBaseResponse = await locals.pb
 				.collection<
@@ -40,7 +30,7 @@ export async function POST({ locals, request }) {
 				>('lotn_player_character_base')
 				.getFullList({
 					fields: 'id, clan, status, name, expand.user.username',
-					filter: `status='accepted' ${requestJsonParsed.data.mode === 'self' ? `&& user='${locals.user.id}'` : ''}`,
+					filter: `status='review' && project='${playerCharacterBaseCreateBodyParsed.data.project}'`,
 					expand: 'user'
 				});
 			characters = characterBaseResponse.map((e) => {

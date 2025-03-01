@@ -1,16 +1,9 @@
-import { playerCharacterSelectionStore } from '$lib/stores/selectionStore';
 import type { PlayerCharacterBaseUpdateRequestBody } from '$lib/zod/lotn/playerCharacter/playerCharacterBase';
-import { fail, redirect } from '@sveltejs/kit';
-import type { Actions, PageServerLoad } from './$types';
-
-export const load = (async ({ locals }) => {
-	if (!locals.pb.authStore.isValid) {
-		throw redirect(303, '/login');
-	}
-}) satisfies PageServerLoad;
+import { fail } from '@sveltejs/kit';
+import type { Actions } from './$types';
 
 export const actions: Actions = {
-	reviewCharacter: async ({ fetch, request }) => {
+	acceptCharacter: async ({ fetch, request }) => {
 		const formData = await request.formData();
 		const characterId = formData.get('characterId');
 
@@ -21,7 +14,7 @@ export const actions: Actions = {
 		const requestBody: PlayerCharacterBaseUpdateRequestBody = {
 			id: characterId.toString(),
 			updateData: {
-				status: 'review'
+				status: 'accepted'
 			}
 		};
 
@@ -35,10 +28,43 @@ export const actions: Actions = {
 			});
 
 			if (!response.ok) {
-				return fail(400, { message: 'Failed to review character' });
+				return fail(400, { message: 'Failed to accept character' });
 			}
 
-			return { type: 'review', characterId: characterId.toString() };
+			return { success: true };
+		} catch (e) {
+			return fail(500, { message: 'Failed to process request' });
+		}
+	},
+	rejectCharacter: async ({ fetch, request }) => {
+		const formData = await request.formData();
+		const characterId = formData.get('characterId');
+
+		if (!characterId) {
+			return fail(400, { message: 'Character ID missing' });
+		}
+
+		const requestBody: PlayerCharacterBaseUpdateRequestBody = {
+			id: characterId.toString(),
+			updateData: {
+				status: 'rejected'
+			}
+		};
+
+		try {
+			const response = await fetch(`/api/lotn/character/base`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(requestBody)
+			});
+
+			if (!response.ok) {
+				return fail(400, { message: 'Failed to reject character' });
+			}
+
+			return { success: true };
 		} catch (e) {
 			return fail(500, { message: 'Failed to process request' });
 		}
@@ -71,14 +97,7 @@ export const actions: Actions = {
 				return fail(400, { message: 'Failed to archive character' });
 			}
 
-			playerCharacterSelectionStore.update((store) => {
-				const character = store.drafts?.find((draft) => draft.id === characterId);
-				if (character) {
-					character.status = 'archived';
-				}
-				return store;
-			});
-			return { type: 'review', characterId: characterId.toString() };
+			return { success: true };
 		} catch (e) {
 			return fail(500, { message: 'Failed to process request' });
 		}

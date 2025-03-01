@@ -4,11 +4,13 @@
 	import { characterStore as characterStoreLotN } from '$lib/components/lotn/characterSheet/characterStore';
 	import { menuDataLotN } from '$lib/menuData';
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
+	import type { RoleName } from '$lib/zod/roleName';
 	import { onMount } from 'svelte';
 	import { isMenuOpen } from './menuStore';
 
 	export let loggedIn = false;
 	export let characterCreation = false;
+	export let role: RoleName | undefined = undefined;
 
 	let sidebarRef: HTMLElement | null = null;
 
@@ -146,7 +148,12 @@
 			{/if}
 
 			<hr />
-
+			{#if role && ['Storyteller Protektorat', 'Storyteller Anarchen'].includes(role)}
+				<a class="flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700" href="/lotn/admin">
+					<iconify-icon height="24" icon="ix:cogwheel-filled" width="24" />
+					Admin
+				</a>
+			{/if}
 			{#if loggedIn}
 				<a class="flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700" href="/profile">
 					<iconify-icon height="24" icon="mdi:book-information-variant" width="24" />

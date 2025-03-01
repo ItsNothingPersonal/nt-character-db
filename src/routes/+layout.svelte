@@ -61,12 +61,14 @@
 			<Navigation
 				characterCreation={isCreateSheetRoute()}
 				loggedIn={isNotNullOrUndefined(data.user)}
+				role={data.user?.role}
 			/>
 		{:else}
 			{#key $page.url.pathname}
 				<SidebarMenu
 					characterCreation={isCreateSheetRoute()}
 					loggedIn={isNotNullOrUndefined(data.user)}
+					role={data.user?.role}
 				/>
 			{/key}
 		{/if}
