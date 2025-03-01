@@ -1,7 +1,8 @@
 import { COOKIE_NAME, IS_PRODUCTION } from '$env/static/private';
 import { PUBLIC_CHARACTER_DB_PB_URL } from '$env/static/public';
+import { playerCharacterSelectionStore } from '$lib/stores/selectionStore';
 import { serializeNonPOJOs } from '$lib/util';
-import type { Handle } from '@sveltejs/kit';
+import { redirect, type Handle } from '@sveltejs/kit';
 import PocketBase from 'pocketbase';
 
 export const handle = (async ({ event, resolve }) => {
@@ -43,6 +44,23 @@ export const handle = (async ({ event, resolve }) => {
 	);
 
 	if (!IS_PRODUCTION) console.log('User:', event.locals.user?.username);
+
+	// Protected routes
+	if (event.url.pathname.startsWith('/lotn/admin')) {
+		if (
+			!event.locals.pb.authStore.isValid ||
+			(event.locals.user &&
+				!['Storyteller Protektorat', 'Storyteller Anarchen'].includes(event.locals.user.role))
+		) {
+			redirect(303, '/');
+		}
+	}
+
+	playerCharacterSelectionStore.update((store) => {
+		store.characters = undefined;
+		store.drafts = undefined;
+		return store;
+	});
 
 	return response;
 }) satisfies Handle;

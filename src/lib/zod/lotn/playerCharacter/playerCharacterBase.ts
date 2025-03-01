@@ -1,3 +1,4 @@
+import { projectName } from '$lib/zod/projectName';
 import { z } from 'zod';
 import { characterStatus } from '../enums/characterStatus';
 import { clanName } from '../enums/clanName';
@@ -13,7 +14,8 @@ export const playerCharacterBase = z.object({
 	sect: sectName,
 	status: characterStatus.readonly(),
 	ghoul: z.boolean(),
-	name: z.string().min(1).max(30)
+	name: z.string().min(1).max(30),
+	project: projectName
 });
 export type PlayerCharacterBase = z.infer<typeof playerCharacterBase>;
 
@@ -25,7 +27,8 @@ export const playerCharacterBaseCreate = z.object({
 	sect: sectName.optional(),
 	status: characterStatus.default('draft').readonly(),
 	ghoul: z.boolean().default(false),
-	name: z.string().min(1).max(30)
+	name: z.string().min(1).max(30),
+	project: projectName.default('Protektorat')
 });
 export type PlayerCharacterBaseCreate = z.infer<typeof playerCharacterBaseCreate>;
 

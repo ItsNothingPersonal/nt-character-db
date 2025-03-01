@@ -3,10 +3,12 @@
 	import { characterStore as characterStoreLotN } from '$lib/components/lotn/characterSheet/characterStore';
 	import { menuDataLotN } from '$lib/menuData';
 	import { isNullOrUndefined } from '$lib/util';
+	import type { RoleName } from '$lib/zod/roleName';
 	import { AppRail, AppRailAnchor } from '@skeletonlabs/skeleton';
 
 	export let loggedIn: boolean = false;
 	export let characterCreation = false;
+	export let role: RoleName | undefined = undefined;
 </script>
 
 <AppRail>
@@ -51,6 +53,18 @@
 			</svelte:fragment>
 			Impressum
 		</AppRailAnchor>
+		{#if role && ['Storyteller Protektorat', 'Storyteller Anarchen'].includes(role)}
+			<AppRailAnchor
+				href="/lotn/admin"
+				selected={$page.url.pathname === '/lotn/admin'}
+				title="Admin"
+			>
+				<svelte:fragment slot="lead">
+					<iconify-icon height="48" icon="ix:cogwheel-filled" width="48"></iconify-icon>
+				</svelte:fragment>
+				Admin
+			</AppRailAnchor>
+		{/if}
 		{#if loggedIn}
 			<AppRailAnchor href="/profile" selected={$page.url.pathname === '/profile'} title="Account">
 				<svelte:fragment slot="lead">

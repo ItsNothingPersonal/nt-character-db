@@ -22,5 +22,11 @@ export const menuDataLotN: {
 		label: 'Battle',
 		href: '/lotn/sheet/[id]/battle',
 		icon: 'mdi:sword'
+	},
+	{
+		id: 3,
+		label: 'Experience',
+		href: '/lotn/sheet/[id]/exp-list',
+		icon: 'arcticons:stockswidget'
 	}
 ];

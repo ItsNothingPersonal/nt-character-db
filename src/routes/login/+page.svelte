@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import { enhance } from '$app/forms';
 	import { page } from '$app/stores';
 	import { sessionStore } from '$lib/util';
-	import Icon from '@iconify/svelte';
 	import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
 	import type { AuthProviderInfo } from 'pocketbase';
 
 	export let data;
+	export let form;
 
 	const redirectUrl = `${$page.url.origin}/redirect`;
 	const modalStore = getModalStore();
@@ -43,7 +44,7 @@
 <div class="flex justify-center">
 	<div class="card mt-12 max-w-sm rounded-lg">
 		<header class="card-header flex flex-col items-center">
-			<Icon height={16} icon="material-symbols:code" width={16} />
+			<iconify-icon height="40" icon="material-symbols:code" />
 			<h2 class="text-base-content mt-2 text-center text-3xl font-bold tracking-tight">
 				Logge dich ein
 			</h2>
@@ -57,7 +58,12 @@
 			</p>
 		</header>
 		<section class="flex flex-col items-center p-4">
-			<form class="flex w-full flex-col items-center space-y-2" action="?/login" method="POST">
+			<form
+				class="flex w-full flex-col items-center space-y-2"
+				action="?/login"
+				method="POST"
+				use:enhance
+			>
 				<div class="form-control w-full max-w-xs">
 					<label class="label pb-1 font-medium" for="email">
 						<span class="label-text">Email</span>
@@ -78,6 +84,16 @@
 						type="password"
 					/>
 				</div>
+				{#if form?.notVerified}
+					<aside class="alert variant-filled-warning max-w-xs rounded-lg">
+						<iconify-icon height="40" icon="mdi:alert" />
+
+						<div class="alert-message">
+							<h3 class="h3 font-bold">Account not verified</h3>
+							<p>Please check your emails and verify your account!</p>
+						</div>
+					</aside>
+				{/if}
 				<div class="w-full max-w-xs pt-3">
 					<button class="variant-filled-primary btn w-full max-w-xs rounded-lg" type="submit">
 						Login
@@ -95,13 +111,13 @@
 		</section>
 		{#if data.authProviders.length > 0}
 			<footer class="card-footer">
-				<div class="items-center text-center">
-					<span class="pb-4 text-sm font-black"> oder nutze einen der folgenden Logins... </span>
+				<div class="flex flex-col items-center">
+					<span class="text-sm font-black"> oder nutze einen der folgenden Logins... </span>
 
-					<div class="flex flex-col justify-center gap-2 text-center">
+					<div class="flex w-full flex-col justify-center gap-2 text-center">
 						{#each data.authProviders as p}
 							<button
-								class="variant-filled btn rounded-lg"
+								class="variant-filled btn w-full max-w-xs self-center rounded-lg"
 								type="button"
 								on:click={() => gotoAuthProvider(p)}
 							>

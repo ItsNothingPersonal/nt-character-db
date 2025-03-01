@@ -1,7 +1,8 @@
 import type { CreateUser } from '$lib/server/zod/createUser';
 import type { FormUserCreate } from '$lib/server/zod/formUserCreate';
-import { serializeNonPOJOs } from '$lib/util';
-import { redirect } from '@sveltejs/kit';
+import { registrationError } from '$lib/zod/registrationError';
+import { error, fail, redirect } from '@sveltejs/kit';
+import { ClientResponseError } from 'pocketbase';
 import type { Actions } from './$types';
 
 export const actions: Actions = {
@@ -13,7 +14,8 @@ export const actions: Actions = {
 			name: data.username,
 			email: data.email,
 			password: data.password,
-			passwordConfirm: data.passwordConfirm
+			passwordConfirm: data.passwordConfirm,
+			role: 'User'
 		};
 
 		try {
@@ -21,12 +23,33 @@ export const actions: Actions = {
 			await locals.pb.collection('users').requestVerification(data.email);
 
 			locals.pb.authStore.clear();
-		} catch (error) {
-			console.error(error);
-			return {
-				error: true,
-				message: serializeNonPOJOs(error)
-			};
+		} catch (err: unknown) {
+			if (err instanceof ClientResponseError) {
+				const errObject = JSON.parse(JSON.stringify(err.data.data));
+
+				const errArray: { field: string; message: string }[] = [];
+
+				if (errObject.email) {
+					errArray.push({ field: 'email', message: errObject.email.message });
+				}
+				if (errObject.password) {
+					errArray.push({ field: 'password', message: errObject.password.message });
+				}
+				if (errObject.username) {
+					errArray.push({ field: 'username', message: errObject.username.message });
+				}
+
+				if (errArray.length > 0) {
+					return fail(err.status, {
+						errors: registrationError.array().parse(
+							errArray.map((e) => {
+								return { field: e.field, message: e.message };
+							})
+						)
+					});
+				}
+				error(err.status, err.message);
+			}
 		}
 
 		redirect(303, '/login');
