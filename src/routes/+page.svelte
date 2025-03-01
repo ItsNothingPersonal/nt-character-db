@@ -26,7 +26,7 @@
 	};
 </script>
 
-<div class="mx-auto max-w-lg">
+<div class="mx-auto max-w-xl">
 	<h1
 		class="font-comorantBold h1 mb-4 bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center font-bold text-transparent dark:from-white dark:to-red-800"
 	>
