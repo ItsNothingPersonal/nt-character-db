@@ -10,7 +10,7 @@ describe('user defaults', () => {
 			id: '12345',
 			name: 'testi',
 			username: 'testi',
-			role: ''
+			role: 'User'
 		};
 		const user = pbUser.safeParse(emptyObject);
 		expect(user.success).toBe(true);

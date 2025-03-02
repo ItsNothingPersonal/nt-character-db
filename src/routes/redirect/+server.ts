@@ -37,7 +37,8 @@ export const GET: RequestHandler = async ({ locals, url, cookies }: RequestEvent
 			`${url.origin}/redirect`,
 			// pass optional user create data
 			{
-				emailVisibility: false
+				emailVisibility: false,
+				role: 'User'
 			}
 		);
 
