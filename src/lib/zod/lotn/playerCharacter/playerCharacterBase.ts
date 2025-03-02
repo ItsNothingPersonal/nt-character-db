@@ -40,7 +40,8 @@ export const playerCharacterBaseCreateRequestBody = z.object({
 	sect: sectName,
 	status: characterStatus.readonly(),
 	ghoul: z.boolean(),
-	name: z.string().min(1).max(30)
+	name: z.string().min(1).max(30),
+	project: projectName
 });
 export type PlayerCharacterBaseCreateRequestBody = z.infer<
 	typeof playerCharacterBaseCreateRequestBody
