@@ -12,12 +12,15 @@ import type { SpheresOfInfluenceName } from '$lib/zod/lotn/enums/spheresOfInflue
 import type { PlayerBackgroundAdvantage } from '$lib/zod/lotn/playerCharacter/playerBackgroundAdvantage';
 import { playerCharacterCreate } from '$lib/zod/lotn/playerCharacter/playerCharacter';
 import type { AssociatedAdvantage } from '$lib/zod/lotn/types/loresheetSchema';
+import { projectName } from '$lib/zod/projectName';
 import cloneDeep from 'lodash/cloneDeep';
 import { derived, get, writable, type Readable, type Writable } from 'svelte/store';
 import { z } from 'zod';
 import { localStorageCharacterCreationStore } from './localStorageCharacterCreationStore';
 
-export const initialCharacterStoreObject = Object.freeze(playerCharacterCreate.parse({}));
+export const initialCharacterStoreObject = Object.freeze(
+	playerCharacterCreate.parse({ project: projectName.parse('Protektorat') })
+);
 
 export const characterCreationStore = localStorageCharacterCreationStore('characterCreationStore');
 
