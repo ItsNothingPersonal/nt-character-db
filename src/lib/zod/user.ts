@@ -8,7 +8,7 @@ export const pbUser = z.object({
 	name: z.string(),
 	avatar: z.string(),
 	collectionId: z.string(),
-	role: roleName
+	role: z.string().transform((e) => (e === '' ? roleName.parse('User') : roleName.parse(e)))
 });
 
 export type PBUser = z.infer<typeof pbUser>;
