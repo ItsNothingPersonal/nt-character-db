@@ -126,7 +126,9 @@
 	</div>
 {/if}
 {#if $characterCreationStore.clan !== 'Thin-Blooded' || ($characterCreationStore.clan === 'Thin-Blooded' && $characterCreationStore.merits?.some((e) => e.name === 'Catenating Blood'))}
-	<Checkbox checked={$characterCreationStore.ghoul} onChange={updateGhoulStatus}>Ghoul</Checkbox>
+	<div class="flex max-w-fit">
+		<Checkbox checked={$characterCreationStore.ghoul} onChange={updateGhoulStatus}>Ghoul</Checkbox>
+	</div>
 {/if}
 {#if !$characterCreationStore.ghoul}
 	<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-4">

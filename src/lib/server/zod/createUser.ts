@@ -4,7 +4,8 @@ import { formUserCreate } from './formUserCreate';
 
 export const createUser = formUserCreate.extend({
 	name: z.string(),
-	role: roleName.default('User')
+	role: roleName.default('User'),
+	emailVisibility: z.boolean().default(false)
 });
 
 export type CreateUser = z.infer<typeof createUser>;

@@ -34,6 +34,7 @@
 		hasBloodSorcery,
 		hasOblivion
 	} from '$lib/components/lotn/util/disciplines';
+	import { getProjectStartExp } from '$lib/components/lotn/util/experienceUtils';
 	import { createNumberList, isMobileScreen } from '$lib/components/lotn/util/generalUtils';
 	import {
 		checkForFixedBackgrounds,
@@ -88,7 +89,7 @@
 	import type { PlayerMerit } from '$lib/zod/lotn/playerCharacter/playerMerit';
 	import type { PlayerSkill } from '$lib/zod/lotn/playerCharacter/playerSkill';
 	import { type RitualDisciplinePowerUnion } from '$lib/zod/lotn/util';
-	import { type Writable, writable } from 'svelte/store';
+	import { get, type Writable, writable } from 'svelte/store';
 
 	let selectedKindIncreaseOption: CharacterElementTypeName | undefined = undefined;
 	let selectedWhatIncreaseOption:
@@ -108,7 +109,7 @@
 	let selectedSkillSpecialization: string | undefined = undefined;
 
 	$: xpGained =
-		20 +
+		getProjectStartExp(get(characterCreationStore).project) +
 		$characterCreationStore.experience.reduce((acc, curr) => {
 			if (curr.type === 'add') {
 				acc += curr.value;

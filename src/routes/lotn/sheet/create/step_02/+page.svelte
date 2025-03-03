@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { clanConfig } from '$lib/components/lotn/config/clanConfig';
+	import { projectsDefinition } from '$lib/components/lotn/config/projectsDefinition';
 	import { ScreenSize } from '$lib/sceenSize';
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
 	import { clanName, type ClanName } from '$lib/zod/lotn/enums/clanName';
+	import type { ProjectName } from '$lib/zod/projectName';
 	import { onMount } from 'svelte';
+	import { get } from 'svelte/store';
 
 	onMount(() => {
 		if (!$characterCreationStore.clan) {
@@ -26,6 +29,13 @@
 			return store;
 		});
 	}
+
+	function isDefaultClan(clanName: ClanName, project: ProjectName | undefined) {
+		if (!project) return false;
+		return projectsDefinition[project]
+			? projectsDefinition[project].defaultClans.includes(clanName)
+			: false;
+	}
 </script>
 
 <svelte:window bind:innerWidth />
@@ -34,7 +44,7 @@
 	<div class="grid auto-rows-auto grid-cols-2 gap-2 sm:flex sm:flex-col">
 		{#each clanName.options as clanNameEntry}
 			<button
-				class={`variant-filled-primary btn rounded-lg ${$characterCreationStore.clan === clanNameEntry ? 'ring-2 ring-black dark:ring-white' : ''}`}
+				class={`${isDefaultClan(clanNameEntry, get(characterCreationStore).project) ? 'variant-filled-primary' : 'variant-filled-warning'} btn rounded-lg ${$characterCreationStore.clan === clanNameEntry ? 'ring-2 ring-black dark:ring-white' : ''}`}
 				type="button"
 				on:click={() => updateClan(clanNameEntry)}
 			>
@@ -49,6 +59,16 @@
 
 	<div class="flex flex-col">
 		{#if $characterCreationStore.clan}
+			{#if !isDefaultClan($characterCreationStore.clan, get(characterCreationStore).project)}
+				<aside class="alert variant-filled mb-4 rounded-lg">
+					<div class="alert-message">
+						<p>
+							This clan is not in the default list of clans for this project, so its selection is
+							subject to more scrutiny.
+						</p>
+					</div>
+				</aside>
+			{/if}
 			<p class="whitespace-pre-line">
 				{@html clanConfig[$characterCreationStore.clan].description}
 			</p>

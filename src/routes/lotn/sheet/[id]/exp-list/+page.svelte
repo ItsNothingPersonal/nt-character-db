@@ -1,8 +1,12 @@
 <script lang="ts">
+	import { characterStore } from '$lib/components/lotn/characterSheet/characterStore.js';
 	import Tracker from '$lib/components/lotn/trackers/tracker/tracker.svelte';
-	import { parseExperienceList } from '$lib/components/lotn/util/experienceUtils.js';
+	import {
+		getProjectStartExp,
+		parseExperienceList
+	} from '$lib/components/lotn/util/experienceUtils.js';
 	import { isDesktopSize } from '$lib/util.js';
-
+	import { get } from 'svelte/store';
 	export let data;
 
 	function formatDate(date: Date) {
@@ -15,14 +19,14 @@
 		});
 	}
 	let innerWidth = 0;
-	$: expData = parseExperienceList(data.expList);
+	$: expData = parseExperienceList(data.expList, get(characterStore).project);
 </script>
 
 <svelte:window bind:innerWidth />
 
 <h1 class="h1">Experience-Log</h1>
 <div class="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
-	<Tracker title="Start" value="20" />
+	<Tracker title="Start" value={getProjectStartExp(get(characterStore).project)} />
 	<Tracker title="Gained" value={expData.gained} />
 	<Tracker title="Spent" value={expData.spent} />
 	<Tracker title="Left" value={expData.left} />

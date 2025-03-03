@@ -28,7 +28,7 @@ export const playerCharacterBaseCreate = z.object({
 	status: characterStatus.default('draft').readonly(),
 	ghoul: z.boolean().default(false),
 	name: z.string().min(1).max(30),
-	project: projectName.default('Protektorat')
+	project: projectName
 });
 export type PlayerCharacterBaseCreate = z.infer<typeof playerCharacterBaseCreate>;
 
