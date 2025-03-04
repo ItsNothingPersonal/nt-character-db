@@ -5,6 +5,7 @@
 	import HelpText from '$lib/components/lotn/characterSheet/components/HelpText.svelte';
 	import Tracker from '$lib/components/lotn/trackers/tracker/tracker.svelte';
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
+	import { playerCharacterSelectionStore } from '$lib/stores/selectionStore';
 	import { getHealthTotal, getInitiative, getSkillValueByName, getWillpowerTotal } from '$lib/util';
 	import { playerCharacter } from '$lib/zod/lotn/playerCharacter/playerCharacter';
 	import { onMount } from 'svelte';
@@ -37,6 +38,7 @@
 					submitting = false;
 					characterStore.set(result.data);
 					characterCreationStore.clear();
+					playerCharacterSelectionStore.set({ characters: undefined, drafts: undefined });
 					goto(`${base}/lotn/sheet/${result.data.id}`, { replaceState: true });
 				} else {
 					responseMessage = JSON.stringify(result.error.errors, undefined, 2);
