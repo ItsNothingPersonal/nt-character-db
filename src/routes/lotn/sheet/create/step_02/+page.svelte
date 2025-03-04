@@ -5,6 +5,7 @@
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
 	import { clanName, type ClanName } from '$lib/zod/lotn/enums/clanName';
 	import type { ProjectName } from '$lib/zod/projectName';
+	import { cloneDeep } from 'lodash';
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 
@@ -20,12 +21,18 @@
 	let innerWidth = 0;
 
 	function updateClan(clanName: ClanName) {
+		const characterName = cloneDeep(get(characterCreationStore).name);
+		const characterSect = cloneDeep(get(characterCreationStore).sect);
+		const characterMorality = cloneDeep(get(characterCreationStore).morality);
+		const project = cloneDeep(get(characterCreationStore).project);
+		characterCreationStore.clear();
+
 		characterCreationStore.update((store) => {
+			store.project = project;
+			store.name = characterName;
+			store.sect = characterSect;
+			store.morality = characterMorality;
 			store.clan = clanName;
-			store.disciplines = [];
-			store.merits = undefined;
-			store.flaws = undefined;
-			store.ghoul = false;
 			return store;
 		});
 	}
@@ -39,6 +46,20 @@
 </script>
 
 <svelte:window bind:innerWidth />
+
+<aside class="alert variant-filled mb-4 rounded-lg">
+	<div class="alert-message">
+		<h3 class="h3 font-bold">Clan Selection</h3>
+		<p>
+			Here you can set your clan which has implications regarding what your in clan disciplines are,
+			what Loresheets you have access to and more.
+		</p>
+		<p>
+			<strong>IMPORTANT:</strong> Changing the clan resets the character selections for anything that's
+			not defined in step 1 "Who Are They?".
+		</p>
+	</div>
+</aside>
 
 <div class="mt-2 grid gap-4 sm:grid-cols-[auto_2fr]">
 	<div class="grid auto-rows-auto grid-cols-2 gap-2 sm:flex sm:flex-col">

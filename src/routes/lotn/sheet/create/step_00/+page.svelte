@@ -59,7 +59,7 @@
 			</div>
 
 			<Accordion>
-				<AccordionItem rounded="container rounded-lg px-0" spacing="space-y-2">
+				<AccordionItem rounded="container rounded-lg !pl-0" spacing="space-y-2">
 					<svelte:fragment slot="summary">Description</svelte:fragment>
 					<svelte:fragment slot="content">
 						<div class="flex flex-col gap-2 text-pretty">
@@ -71,7 +71,7 @@
 						</div>
 					</svelte:fragment>
 				</AccordionItem>
-				<AccordionItem rounded="container rounded-lg px-0" spacing="space-y-2">
+				<AccordionItem rounded="container rounded-lg !pl-0" spacing="space-y-2">
 					<svelte:fragment slot="summary">Default Clans</svelte:fragment>
 					<svelte:fragment slot="content">
 						{#if project.defaultClans.sort() !== clanName.options.sort()}
