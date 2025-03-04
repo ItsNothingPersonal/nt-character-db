@@ -822,7 +822,7 @@
 												? getPredatorConfigEntryByBackgroundName(
 														backgroundName.parse(pointsRecordEntry.name)
 													)?.value
-												: pointsRecordEntry.associatedAdvantage.value})
+												: pointsRecordEntry.associatedAdvantage.value}
 										{/if}
 									</span>
 								</li>

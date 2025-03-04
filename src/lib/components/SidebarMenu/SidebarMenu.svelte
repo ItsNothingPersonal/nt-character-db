@@ -151,7 +151,14 @@
 			{#if role && ['Storyteller Protektorat', 'Storyteller Anarchen'].includes(role)}
 				<a class="flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700" href="/lotn/admin">
 					<iconify-icon height="24" icon="ix:cogwheel-filled" width="24" />
-					Admin
+					Admin - Übersicht
+				</a>
+				<a
+					class="flex items-center gap-2 rounded-lg p-2 hover:bg-gray-700"
+					href="/lotn/admin/review"
+				>
+					<iconify-icon height="24" icon="ix:cogwheel-filled" width="24" />
+					Admin - Review
 				</a>
 			{/if}
 			{#if loggedIn}

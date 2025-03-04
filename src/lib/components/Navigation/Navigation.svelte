@@ -56,7 +56,7 @@
 		{#if role && ['Storyteller Protektorat', 'Storyteller Anarchen'].includes(role)}
 			<AppRailAnchor
 				href="/lotn/admin"
-				selected={$page.url.pathname === '/lotn/admin'}
+				selected={/\/lotn\/admin[/]*/.test($page.url.pathname)}
 				title="Admin"
 			>
 				<svelte:fragment slot="lead">
