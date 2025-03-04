@@ -7,10 +7,18 @@
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
 	import { getHealthTotal, getInitiative, getSkillValueByName, getWillpowerTotal } from '$lib/util';
 	import { playerCharacter } from '$lib/zod/lotn/playerCharacter/playerCharacter';
+	import { onMount } from 'svelte';
+	import { get } from 'svelte/store';
 
 	let responseMessage: string | undefined;
 
 	$: submitting = false;
+
+	onMount(() => {
+		if (!get(characterCreationStore).project) {
+			goto('/lotn/sheet/create/step_00');
+		}
+	});
 
 	async function saveToDatabase() {
 		submitting = true;

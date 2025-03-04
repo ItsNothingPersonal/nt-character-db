@@ -1,6 +1,9 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
 	import { sectName } from '$lib/zod/lotn/enums/sectName';
+	import { onMount } from 'svelte';
+	import { get } from 'svelte/store';
 
 	const convictionText = 'Your conviction';
 	const touchstoneText = 'The mortal who embodies your conviction';
@@ -12,6 +15,12 @@
 	$: convictionCVisible =
 		$characterCreationStore.morality[1]?.conviction.length > 0 ||
 		$characterCreationStore.morality[1]?.touchstone.length > 0;
+
+	onMount(() => {
+		if (!get(characterCreationStore).project) {
+			goto('/lotn/sheet/create/step_00');
+		}
+	});
 
 	function setConviction(index: number, conviction: string) {
 		characterCreationStore.update((store) => {

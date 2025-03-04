@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import type { BackgroundAdvantageDeleteEvent } from '$lib/components/lotn/characterSheet/components/BackgroundAdvantage/BackgroundAdvantageDeleteEvent';
 	import HelpText from '$lib/components/lotn/characterSheet/components/HelpText.svelte';
 	import { loresheetConfig } from '$lib/components/lotn/config/loresheetConfig';
@@ -39,12 +40,19 @@
 	import { spheresOfInfluenceName } from '$lib/zod/lotn/enums/spheresOfInfluenceName';
 	import { playerLoresheet } from '$lib/zod/lotn/playerCharacter/playerLoresheet';
 	import type { LoresheetChangeEntry } from '$lib/zod/lotn/types/loresheetSchema';
+	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 
 	let { maxFreebiePoints, usedFreebiePoints, paymentStore, maxHavenFreebiePoints } =
 		backgroundPaymentStore;
 	let selectedBackground: BackgroundName;
 	let innerWidth = 0;
+
+	onMount(() => {
+		if (!get(characterCreationStore).project) {
+			goto('/lotn/sheet/create/step_00');
+		}
+	});
 
 	$: loresheetConfigEntry = $characterCreationStore.loresheet?.name
 		? loresheetConfig[$characterCreationStore.loresheet.name]

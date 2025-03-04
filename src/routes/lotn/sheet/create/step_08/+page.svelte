@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import Flaw from '$lib/components/lotn/characterSheet/components/Flaw.svelte';
 	import HelpText from '$lib/components/lotn/characterSheet/components/HelpText.svelte';
 	import { flawConfig } from '$lib/components/lotn/config/flawsConfig';
@@ -50,6 +51,10 @@
 	let innerWidth = 0;
 
 	onMount(() => {
+		if (!get(characterCreationStore).project) {
+			goto('/lotn/sheet/create/step_00');
+		}
+
 		selectMeritMinDotValue();
 		selectFlawMinDotValue();
 		selectedMythicalFlawMinDotValue();

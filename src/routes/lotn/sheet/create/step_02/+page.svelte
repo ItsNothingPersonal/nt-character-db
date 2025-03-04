@@ -1,15 +1,20 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { clanConfig } from '$lib/components/lotn/config/clanConfig';
 	import { projectsDefinition } from '$lib/components/lotn/config/projectsDefinition';
 	import { ScreenSize } from '$lib/sceenSize';
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
 	import { clanName, type ClanName } from '$lib/zod/lotn/enums/clanName';
 	import type { ProjectName } from '$lib/zod/projectName';
-	import { cloneDeep } from 'lodash';
+	import cloneDeep from 'lodash/cloneDeep';
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 
 	onMount(() => {
+		if (!get(characterCreationStore).project) {
+			goto('/lotn/sheet/create/step_00');
+		}
+
 		if (!$characterCreationStore.clan) {
 			characterCreationStore.update((store) => {
 				store.clan = 'Banu Haqim';
