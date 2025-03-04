@@ -85,6 +85,7 @@
 	function selectFlawMinDotValue() {
 		const levels = getApplicableFlawLevels(selectedFlaw);
 		selectedFlawValue = levels ? levels[0] : 0;
+		flawButtonDisabled = disableFlawButton();
 	}
 
 	function selectedMythicalFlawMinDotValue() {
@@ -482,6 +483,9 @@
 							class="select rounded-lg"
 							disabled={(getApplicableFlawLevels(selectedFlaw) ?? []).length < 2}
 							bind:value={selectedFlawValue}
+							on:change={() => {
+								flawButtonDisabled = disableFlawButton();
+							}}
 						>
 							{#each getApplicableFlawLevels(selectedFlaw) ?? [] as point}
 								<option selected={point === selectedFlawValue} value={point}>
