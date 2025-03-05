@@ -143,8 +143,6 @@ export const actions: Actions = {
 							message: `Failed to add xp to character with id ${characterId}`
 						});
 					}
-
-					return { success: true };
 				} catch (e) {
 					return fail(500, { message: 'Failed to process request' });
 				}
