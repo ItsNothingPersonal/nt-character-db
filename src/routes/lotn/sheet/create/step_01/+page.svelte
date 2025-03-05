@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { projectsDefinition } from '$lib/components/lotn/config/projectsDefinition';
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
 	import { sectName } from '$lib/zod/lotn/enums/sectName';
 	import { onMount } from 'svelte';
@@ -111,44 +112,21 @@
 
 <h3 class="h3 mt-4">Chronicle Tenets</h3>
 <div class="space-y-2">
-	<div class="overflow-hidden rounded-lg border p-4">
-		<span
-			class="float-left mb-2 mr-2 flex h-12 w-12 items-center justify-center rounded-lg bg-primary-500"
-		>
-			<iconify-icon height="40" icon="mdi:home-city" />
-		</span>
-		<h4 class="text-lg font-bold">Sei menschlich</h4>
-		<p class="text-justify">
-			Verursache kein unnötiges Leid und verletze keine Unschuldigen. Lass dich nicht zu Gräueltaten
-			hinreißen. Sei eine Person und keine Bestie!
-		</p>
-	</div>
-
-	<div class="overflow-hidden rounded-lg border p-4">
-		<span
-			class="float-left mb-2 mr-2 flex h-12 w-12 items-center justify-center rounded-lg bg-primary-500"
-		>
-			<iconify-icon height="40" icon="mdi:home-city"></iconify-icon>
-		</span>
-		<h4 class="text-lg font-bold">Sei loyal</h4>
-		<p class="text-justify">
-			Nürnberg ist unsere Stadt. Komme, was wolle. Sie darf nicht äußeren Kräften überlassen werden.
-			Es lohnt sich dafür zu kämpfen!
-		</p>
-	</div>
-
-	<div class="overflow-hidden rounded-lg border p-4">
-		<span
-			class="float-left mb-2 mr-2 flex h-12 w-12 items-center justify-center rounded-lg bg-primary-500"
-		>
-			<iconify-icon height="40" icon="healthicons:exercise-running" />
-		</span>
-		<h4 class="text-lg font-bold">Krieg’ deinen Arsch hoch</h4>
-		<p class="text-justify">
-			Ergreife die Möglichkeiten, die sich dir bieten. Die Stadt ist im Umbruch. Sei ein aktiver
-			Teil davon!
-		</p>
-	</div>
+	{#if $characterCreationStore.project}
+		{#each projectsDefinition[$characterCreationStore.project]?.tenets ?? [] as tenet}
+			<div class="overflow-hidden rounded-lg border p-4">
+				<span
+					class="float-left mb-2 mr-2 flex h-12 w-12 items-center justify-center rounded-lg bg-primary-500"
+				>
+					<iconify-icon height="40" icon={tenet.icon} />
+				</span>
+				<h4 class="text-lg font-bold">{tenet.title}</h4>
+				<p class="text-justify">
+					{tenet.description}
+				</p>
+			</div>
+		{/each}
+	{/if}
 </div>
 
 <h3 class="h3 mt-4">Convictions & Touchstones</h3>
