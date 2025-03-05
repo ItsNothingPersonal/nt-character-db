@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { bloodPotencyConfig } from '$lib/components/lotn/config/bloodPotencyConfig';
 	import Tracker from '$lib/components/lotn/trackers/tracker/tracker.svelte';
 	import Checkbox from '$lib/components/typography/checkbox.svelte';
@@ -12,6 +13,12 @@
 	const selectedGeneration = writable(get(characterCreationStore).generation);
 	$: selectedBloodPotency = get(characterCreationStore).bloodPotency;
 	$: selectedBloodPotencyConfig = getBloodPotencies($selectedGeneration);
+
+	onMount(() => {
+		if (!get(characterCreationStore).project) {
+			goto('/lotn/sheet/create/step_00');
+		}
+	});
 
 	const validBloodPotencyPerGeneration: { [k: number]: { min: number; max: number } } = {
 		9: { min: 2, max: 5 },
@@ -126,7 +133,9 @@
 	</div>
 {/if}
 {#if $characterCreationStore.clan !== 'Thin-Blooded' || ($characterCreationStore.clan === 'Thin-Blooded' && $characterCreationStore.merits?.some((e) => e.name === 'Catenating Blood'))}
-	<Checkbox checked={$characterCreationStore.ghoul} onChange={updateGhoulStatus}>Ghoul</Checkbox>
+	<div class="flex max-w-fit">
+		<Checkbox checked={$characterCreationStore.ghoul} onChange={updateGhoulStatus}>Ghoul</Checkbox>
+	</div>
 {/if}
 {#if !$characterCreationStore.ghoul}
 	<div class="mb-4 mt-2 grid auto-rows-auto grid-cols-1 gap-2 sm:grid-cols-4">

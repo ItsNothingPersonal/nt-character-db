@@ -1,3 +1,4 @@
+import { projectName } from '$lib/zod/projectName';
 import { z } from 'zod';
 import { bloodSorceryRitualName } from '../enums/bloodSorceryRitualName';
 import { oblivionCeremonyName } from '../enums/oblivionCeremonyName';
@@ -72,7 +73,8 @@ export const playerCharacterCreate = playerCharacterBaseCreate.extend({
 	experience: playerExperience.array().default([]),
 	humanity: playerHumanity.default({ value: 7, stains: 0 }),
 	items: playerItem.merge(idSchema).array().optional(),
-	characterStatus: playerStatus.array().optional()
+	characterStatus: playerStatus.array().optional(),
+	project: projectName.optional()
 });
 export type PlayerCharacterCreate = z.infer<typeof playerCharacterCreate>;
 

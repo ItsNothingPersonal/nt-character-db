@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import Flaw from '$lib/components/lotn/characterSheet/components/Flaw.svelte';
 	import HelpText from '$lib/components/lotn/characterSheet/components/HelpText.svelte';
 	import { flawConfig } from '$lib/components/lotn/config/flawsConfig';
@@ -50,6 +51,10 @@
 	let innerWidth = 0;
 
 	onMount(() => {
+		if (!get(characterCreationStore).project) {
+			goto('/lotn/sheet/create/step_00');
+		}
+
 		selectMeritMinDotValue();
 		selectFlawMinDotValue();
 		selectedMythicalFlawMinDotValue();
@@ -80,6 +85,7 @@
 	function selectFlawMinDotValue() {
 		const levels = getApplicableFlawLevels(selectedFlaw);
 		selectedFlawValue = levels ? levels[0] : 0;
+		flawButtonDisabled = disableFlawButton();
 	}
 
 	function selectedMythicalFlawMinDotValue() {
@@ -477,6 +483,9 @@
 							class="select rounded-lg"
 							disabled={(getApplicableFlawLevels(selectedFlaw) ?? []).length < 2}
 							bind:value={selectedFlawValue}
+							on:change={() => {
+								flawButtonDisabled = disableFlawButton();
+							}}
 						>
 							{#each getApplicableFlawLevels(selectedFlaw) ?? [] as point}
 								<option selected={point === selectedFlawValue} value={point}>

@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { applyAction, enhance } from '$app/forms';
+	import { characterCreationStore } from '$lib/stores/characterCreationStore';
 	import { playerCharacterSelectionStore } from '$lib/stores/selectionStore';
 	import type { SubmitFunction } from '@sveltejs/kit';
+	import { get } from 'svelte/store';
 
 	let isSubmitting = false;
 
@@ -124,12 +126,22 @@
 	{/if}
 
 	<div class="grid grid-cols-1 grid-rows-1 gap-2">
-		<a
-			class="variant-filled-primary btn mt-2 rounded-lg"
-			href="/lotn/sheet/create/step_01"
-			type="button"
-		>
-			Charakter erstellen
-		</a>
+		{#if get(characterCreationStore).project}
+			<a
+				class="variant-filled-primary btn mt-2 rounded-lg"
+				href="/lotn/sheet/create/step_01"
+				type="button"
+			>
+				Charakter erstellen
+			</a>
+		{:else}
+			<a
+				class="variant-filled-primary btn mt-2 rounded-lg"
+				href="/lotn/sheet/create/step_00"
+				type="button"
+			>
+				Charakter erstellen
+			</a>
+		{/if}
 	</div>
 </div>

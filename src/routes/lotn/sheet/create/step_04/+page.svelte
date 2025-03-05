@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import {
 		attributeConfig,
 		type AttributeConfigMap
@@ -10,10 +11,18 @@
 	import type { AttributeDotCategory } from '$lib/zod/lotn/enums/attributDotCategory';
 	import { attributeName, type AttributeName } from '$lib/zod/lotn/enums/attributeName';
 	import { Ratings } from '@skeletonlabs/skeleton';
+	import { onMount } from 'svelte';
+	import { get } from 'svelte/store';
 
 	let selectedAttribute: AttributeName | undefined = undefined;
 
 	let spendingPoints: AttributeDotCategory = 4;
+
+	onMount(() => {
+		if (!get(characterCreationStore).project) {
+			goto('/lotn/sheet/create/step_00');
+		}
+	});
 
 	function setAttribute(attribute: AttributeName) {
 		if (

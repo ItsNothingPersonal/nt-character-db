@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { predatorTypeConfig } from '$lib/components/lotn/config/predatorTypeConfig';
 	import { ScreenSize } from '$lib/sceenSize';
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
@@ -7,11 +8,18 @@
 	import { flawName, type FlawName } from '$lib/zod/lotn/enums/flawName';
 	import { meritName, type MeritName } from '$lib/zod/lotn/enums/meritName';
 	import { predatorType, type PredatorType } from '$lib/zod/lotn/enums/predatorType';
+	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 
 	$: selectionForFlaws = getSelectionNeededFlaws();
 	let selectedRadio: 'Mythical' | 'Enemy' | undefined = undefined;
 	let innerWidth = 0;
+
+	onMount(() => {
+		if (!get(characterCreationStore).project) {
+			goto('/lotn/sheet/create/step_00');
+		}
+	});
 
 	$: {
 		if (

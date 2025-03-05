@@ -220,7 +220,9 @@ export const flawConfig: FlawsConfigSchema = {
 		name: 'Low Pain Threshold',
 		levelVariable:
 			'You are particularly sensitive to pain and wounds easily. For each dot of this Flaw, your wound penalties start one box earlier. Normally a character only suffers wound penalties when she takes damage in her last three damage boxes. A character with two dots in this Flaw would suffer the Injured Condition when she has damage in her last five damage boxes. You may only take a number of dots of this Flaw equal to your total health boxes -3.',
-		category: 'Physical'
+		category: 'Physical',
+		min: 1,
+		max: 5
 	},
 	'Slow Healing': {
 		name: 'Slow Healing',

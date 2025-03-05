@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import EditableSkill from '$lib/components/lotn/EditableSkill/EditableSkill.svelte';
 	import { getSkillHelptext, hasSkillSpecializations } from '$lib/components/lotn/util/skillUtil';
 	import { ScreenSize } from '$lib/sceenSize';
@@ -11,6 +12,7 @@
 	import { skillDotCategory, type SkillDotCategory } from '$lib/zod/lotn/enums/skillDotsCategory';
 	import { skillName, type SkillName } from '$lib/zod/lotn/enums/skillName';
 	import { Ratings } from '@skeletonlabs/skeleton';
+	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 
 	let selectedSkill: SkillName | undefined = undefined;
@@ -28,6 +30,12 @@
 	const amount1Dots = skillsPaidWithDotsStore.amount1Dots;
 	const max1Dots = skillsPaidWithDotsStore.max1Dots;
 	const skills1Dots = skillsPaidWithDotsStore.getSkillsWithPointValue(1);
+
+	onMount(() => {
+		if (!get(characterCreationStore).project) {
+			goto('/lotn/sheet/create/step_00');
+		}
+	});
 
 	function setSkill(skill: SkillName, skillSpecialization: string | undefined = undefined) {
 		selectedSkill = skill;

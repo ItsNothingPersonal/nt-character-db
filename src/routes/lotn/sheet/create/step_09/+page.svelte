@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import EditableBloodSorceryRitual from '$lib/components/lotn/EditableBloodSorceryRitual/EditableBloodSorceryRitual.svelte';
 	import EditableDiscipline from '$lib/components/lotn/EditableDiscipline/EditableDiscipline.svelte';
 	import EditableOblivionCeremony from '$lib/components/lotn/EditableOblivionCeremony/EditableOblivionCeremony.svelte';
@@ -28,6 +29,10 @@
 	import { get, writable, type Writable } from 'svelte/store';
 
 	onMount(() => {
+		if (!get(characterCreationStore).project) {
+			goto('/lotn/sheet/create/step_00');
+		}
+
 		if (!selectedClan) {
 			return;
 		}
@@ -288,39 +293,39 @@
 	</aside>
 {:else if $characterCreationStore.ghoul}
 	<div class="grid grid-cols-1 grid-rows-2 gap-2 sm:grid-cols-3 sm:grid-rows-1">
-		{#key $disciplineA?.powers || $disciplineB?.powers}
-			{#if ($disciplineB?.powers?.length ?? 0) < 2}
-				<EditableDiscipline
-					disableDisciplinePowerSelection={disableDisciplinePowerSelectionForGhouls()}
-					disableDots={true}
-					discipline={$disciplineA}
-					disciplines={getValidDisciplines(selectedClan, true)}
-					dotList={[1, 2]}
-					hideDotDisplay={true}
-					label="Discipline A"
-					showDisciplinePowerDeleteButton={true}
-					showOnlyFirstPower={($disciplineB?.powers?.length ?? 0) >= 1}
-					on:disciplineChange={adjustSelectionBox}
-					on:disciplinePowerChange={(event) => updateDisciplinePower($disciplineA, event)}
-				/>
-			{/if}
+		{#if ($disciplineB?.powers?.length ?? 0) < 2}
+			<EditableDiscipline
+				disableDisciplinePowerSelection={disableDisciplinePowerSelectionForGhouls()}
+				disableDots={true}
+				discipline={$disciplineA}
+				disciplines={getValidDisciplines(selectedClan, true)}
+				dotList={[1, 2]}
+				{editModeEnabled}
+				hideDotDisplay={true}
+				label="Discipline A"
+				showDisciplinePowerDeleteButton={true}
+				showOnlyFirstPower={($disciplineB?.powers?.length ?? 0) >= 1}
+				on:disciplineChange={adjustSelectionBox}
+				on:disciplinePowerChange={(event) => updateDisciplinePower($disciplineA, event)}
+			/>
+		{/if}
 
-			{#if $disciplineA && $disciplineA.powers.length < 2}
-				<EditableDiscipline
-					disableDisciplinePowerSelection={disableDisciplinePowerSelectionForGhouls()}
-					disableDots={true}
-					discipline={$disciplineB}
-					disciplines={getValidDisciplines(selectedClan, true)}
-					dotList={[1, 2]}
-					hideDotDisplay={true}
-					label="Discipline B"
-					showDisciplinePowerDeleteButton={true}
-					showOnlyFirstPower={$disciplineA.powers.length >= 1}
-					on:disciplineChange={adjustSelectionBox}
-					on:disciplinePowerChange={(event) => updateDisciplinePower($disciplineB, event)}
-				/>
-			{/if}
-		{/key}
+		{#if $disciplineA && $disciplineA.powers.length < 2}
+			<EditableDiscipline
+				disableDisciplinePowerSelection={disableDisciplinePowerSelectionForGhouls()}
+				disableDots={true}
+				discipline={$disciplineB}
+				disciplines={getValidDisciplines(selectedClan, true)}
+				dotList={[1, 2]}
+				{editModeEnabled}
+				hideDotDisplay={true}
+				label="Discipline B"
+				showDisciplinePowerDeleteButton={true}
+				showOnlyFirstPower={$disciplineA.powers.length >= 1}
+				on:disciplineChange={adjustSelectionBox}
+				on:disciplinePowerChange={(event) => updateDisciplinePower($disciplineB, event)}
+			/>
+		{/if}
 	</div>
 {:else if selectedClan === 'Thin-Blooded'}
 	<aside class="alert variant-filled-warning col-span-2 mb-4 rounded-lg">

@@ -15,7 +15,8 @@ export const actions: Actions = {
 			email: data.email,
 			password: data.password,
 			passwordConfirm: data.passwordConfirm,
-			role: 'User'
+			role: 'User',
+			emailVisibility: false
 		};
 
 		try {
