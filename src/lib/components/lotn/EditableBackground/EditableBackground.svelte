@@ -3,7 +3,7 @@
 		backgroundPaymentStore,
 		characterCreationStore
 	} from '$lib/stores/characterCreationStore';
-	import { generateId } from '$lib/util';
+	import { detectTouchscreen, generateId, isDesktopSize } from '$lib/util';
 	import type { AlliesConfigSchema } from '$lib/zod/lotn/background/allies';
 	import type { ContactsConfigSchema } from '$lib/zod/lotn/background/contacts';
 	import type { FameConfigSchema } from '$lib/zod/lotn/background/fame';
@@ -73,6 +73,7 @@
 		| HerdConfigSchema
 		| MaskConfigSchema
 		| ResourcesConfigSchema = getBackgroundConfig(background.name);
+	let innerWidth = 0;
 
 	let selectedBackgroundAdvantage: BackgroundAdvantageName | undefined = backgroundConfig.advantages
 		? backgroundAdvantageName.parse(Object.keys(backgroundConfig.advantages)[0])
@@ -280,6 +281,8 @@
 	}
 </script>
 
+<svelte:window bind:innerWidth />
+
 {#if editModeEnabled}
 	<div id={background.id} class="flex flex-col gap-2">
 		<div class="flex h-10">
@@ -352,6 +355,13 @@
 			<label class="label">
 				{#if background && background.advantages?.some((s) => s.name === 'Diversity')}
 					<span>Spheres of Influence</span>
+					{#if isDesktopSize(innerWidth) || !detectTouchscreen()}
+						<aside class="alert variant-filled mb-4 rounded-lg">
+							<div class="alert-message">
+								<p>Select multiple values with STRG + Click</p>
+							</div>
+						</aside>
+					{/if}
 					<select
 						class="select rounded-lg [&>option]:rounded-lg"
 						disabled={!editModeEnabledAdvantages}
