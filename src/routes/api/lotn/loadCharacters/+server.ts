@@ -39,7 +39,7 @@ export async function POST({ locals, request }) {
 					}
 				>('lotn_player_character_base')
 				.getFullList({
-					fields: 'id, clan, status, name, expand.user.username',
+					fields: 'id, clan, status, name, expand.user.username, project',
 					filter: `status='accepted' ${requestJsonParsed.data.mode === 'self' ? `&& user='${locals.user.id}'` : ''}`,
 					expand: 'user'
 				});
@@ -49,7 +49,8 @@ export async function POST({ locals, request }) {
 					name: e.name,
 					clan: e.clan,
 					status: e.status,
-					username: e.expand.user.username
+					username: e.expand.user.username,
+					project: e.project
 				};
 			});
 		} catch (e) {

@@ -12,7 +12,7 @@ export async function POST({ locals }) {
 		const characterBaseResponse = await locals.pb
 			.collection<PlayerCharacterSelection>('lotn_player_character_base')
 			.getFullList({
-				fields: 'id, clan, status, name',
+				fields: 'id, clan, status, name, project',
 				filter: `status!='accepted' && user='${locals.user?.id}'`
 			});
 		characters = characterBaseResponse.map((e) => {
@@ -20,7 +20,8 @@ export async function POST({ locals }) {
 				id: e.id,
 				name: e.name,
 				clan: e.clan,
-				status: e.status
+				status: e.status,
+				project: e.project
 			};
 		});
 	} catch (e) {
