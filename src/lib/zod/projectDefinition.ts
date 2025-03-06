@@ -10,7 +10,8 @@ const projectDefinition = z.record(
 		storytellers: z.string().array(),
 		defaultClans: clanName.array(),
 		startExp: z.number(),
-		description: z.string().array()
+		description: z.string().array(),
+		tenets: z.object({ title: z.string(), description: z.string(), icon: z.string() }).array()
 	})
 );
 

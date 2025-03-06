@@ -16,6 +16,26 @@ export const projectsDefinition: ProjectDefinition = {
 			'In diesen Zeiten ist der Weg nach oben für ambitionierte Ancillae und Neugeborene plötzlich so frei wie noch niemals zuvor. Ämter müssen notgedrungen durch die jüngeren Generationen besetzt werden und neue Allianzen werden aus Notwendigkeit heraus geschmiedet. Ebenso müssen Caitiff und Dünnblütige ihren Platz in der Welt finden.',
 			'Um sich gegen die aufstrebende, zunehmend an Macht gewinnende Anarchenbewegung und weitere Bedrohungen zu stemmen, haben sich mehrere Domänen Mittelfrankens zu einem Bündnis - dem titelgebenden Protektorat – zusammengeschlossen. Doch die Allianz ist keinesfalls frei von Spannungen. Unterschiedliche Ansichten, eigene Agenden und politische Winkelzüge stellen das Protektorat immer wieder vor neue Herausforderungen. Die beteiligten Städte konkurrieren untereinander um die Hegemonialstellung in diesem Zweckbündnis. Wird Nürnberg als Vasall oder gar als Schirmherr des Protektorats enden? Das gilt es gemeinsam herauszufinden.',
 			'Die Domäne wird in diesem Setting äußeren Druck durch die Anarchen ausgesetzt werden. Gleichzeitig läuft ein Schattenkrieg mit dem Sabbat. Im Inneren finden indes die Intrigen der Camarilla um die relevanten Machtpositionen statt. Auch wenn Klüngel vermeintlich Schutz versprechen, ist die Gefahr allgegenwärtig, niemand sicher und das Setting deutlich tödlicher.'
+		],
+		tenets: [
+			{
+				title: 'Sei menschlich',
+				description:
+					'Verursache kein unnötiges Leid und verletze keine Unschuldigen. Lass dich nicht zu Gräueltaten hinreißen. Sei eine Person und keine Bestie!',
+				icon: 'fluent-emoji-high-contrast:people-hugging'
+			},
+			{
+				title: 'Sei loyal',
+				description:
+					'Nürnberg ist unsere Stadt. Komme, was wolle. Sie darf nicht äußeren Kräften überlassen werden. Es lohnt sich dafür zu kämpfen!',
+				icon: 'mdi:home-city'
+			},
+			{
+				title: 'Krieg’ deinen Arsch hoch',
+				description:
+					'Ergreife die Möglichkeiten, die sich dir bieten. Die Stadt ist im Umbruch. Sei ein aktiver Teil davon!',
+				icon: 'healthicons:exercise-running'
+			}
 		]
 	},
 	Anarchen: {
@@ -32,6 +52,13 @@ export const projectsDefinition: ProjectDefinition = {
 			'Caitiff'
 		],
 		startExp: 20,
-		description: ['(PLACEHOLDER!)']
+		description: ['(PLACEHOLDER!)'],
+		tenets: [
+			{
+				title: 'PLACEHOLDER TITLE',
+				description: 'PLACEHOLDER DESCRIPTION',
+				icon: 'mdi:home-city'
+			}
+		]
 	}
 };

@@ -38,7 +38,10 @@
 					submitting = false;
 					characterStore.set(result.data);
 					characterCreationStore.clear();
-					playerCharacterSelectionStore.set({ characters: undefined, drafts: undefined });
+					playerCharacterSelectionStore.set({
+						characters: undefined,
+						drafts: undefined
+					});
 					goto(`${base}/lotn/sheet/${result.data.id}`, { replaceState: true });
 				} else {
 					responseMessage = JSON.stringify(result.error.errors, undefined, 2);

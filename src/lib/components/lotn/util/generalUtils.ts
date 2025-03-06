@@ -28,3 +28,32 @@ export function isMobileScreen(breakpoint: string = '(max-width: 768px)'): boole
 	if (typeof window === 'undefined') return false;
 	return window.matchMedia(breakpoint).matches;
 }
+
+export function splitStringIntoLines(text: string, numberOfLines: number): string[] {
+	const totalLength = text.length;
+	const charsPerLine = Math.ceil(totalLength / numberOfLines);
+	const lines: string[] = [];
+
+	let startIndex = 0;
+	for (let i = 0; i < numberOfLines; i++) {
+		if (startIndex >= totalLength) break;
+
+		let endIndex = Math.min(startIndex + charsPerLine, totalLength);
+
+		if (i < numberOfLines - 1 && endIndex < totalLength) {
+			const lastSpace = text.lastIndexOf(' ', endIndex);
+			if (lastSpace > startIndex) {
+				endIndex = lastSpace;
+			}
+		}
+
+		lines.push(text.substring(startIndex, endIndex).trim());
+		startIndex = endIndex;
+	}
+
+	if (startIndex < totalLength) {
+		lines[lines.length - 1] += text.substring(startIndex);
+	}
+
+	return lines;
+}

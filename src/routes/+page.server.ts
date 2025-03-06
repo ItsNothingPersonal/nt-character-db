@@ -1,4 +1,3 @@
-import { playerCharacterSelectionStore } from '$lib/stores/selectionStore';
 import type { PlayerCharacterBaseUpdateRequestBody } from '$lib/zod/lotn/playerCharacter/playerCharacterBase';
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
@@ -71,13 +70,6 @@ export const actions: Actions = {
 				return fail(400, { message: 'Failed to archive character' });
 			}
 
-			playerCharacterSelectionStore.update((store) => {
-				const character = store.drafts?.find((draft) => draft.id === characterId);
-				if (character) {
-					character.status = 'archived';
-				}
-				return store;
-			});
 			return { type: 'review', characterId: characterId.toString() };
 		} catch (e) {
 			return fail(500, { message: 'Failed to process request' });

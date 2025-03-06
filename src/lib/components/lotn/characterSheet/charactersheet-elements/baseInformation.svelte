@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { getHuntingTestPool } from '$lib/testPools/testPools';
+	import { bloodPotencyConfig } from '../../config/bloodPotencyConfig';
 	import { clanConfig } from '../../config/clanConfig';
 	import { predatorTypeConfig } from '../../config/predatorTypeConfig';
 	import { characterStore } from '../characterStore';
@@ -80,7 +81,7 @@
 			id="clanBaneSeverity"
 			class="variant-form-material chip m-0 mt-1 justify-start px-3 py-2 text-base"
 		>
-			1
+			{bloodPotencyConfig[$characterStore.bloodPotency].baneSeverity}
 		</p>
 	</label>
 </div>

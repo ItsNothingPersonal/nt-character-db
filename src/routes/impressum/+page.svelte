@@ -49,6 +49,13 @@
 	</a>
 </p>
 <br />
+<p class="text-justify">
+	Die Charaktere können von den Spielern als PDF heruntergeladen werden. Die Vorlagen dazu stammen
+	von <a class="underline decoration-dotted" href="https://mrgone.rocksolidshells.com/wod.html#met">
+		MrGone
+	</a> und können dort im Original heruntergeladen werden.
+</p>
+<br />
 <p>Bei jeglichen Fragen zu den Bildern bitte an den Vereinsvorstand wenden.</p>
 
 <h2 class="h2 mt-6">Haftungsausschluss</h2>

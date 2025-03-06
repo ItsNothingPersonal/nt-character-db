@@ -39,7 +39,8 @@ export async function POST({ request, locals }) {
 					name: e.name,
 					clan: e.clan,
 					status: e.status,
-					username: e.expand.user.username
+					username: e.expand.user.username,
+					project: e.project
 				};
 			});
 		} catch (e) {
