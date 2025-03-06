@@ -63,7 +63,11 @@
 		{#if $playerCharacterSelectionStore.characters}
 			<AccordionItem open rounded="container rounded-lg !px-0" spacing="space-y-1">
 				<svelte:fragment slot="summary">
-					<h2 class="h2">Accepted</h2>
+					<h2
+						class="font-comorantBold h2 bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center font-bold text-transparent dark:from-white dark:to-red-800"
+					>
+						Accepted
+					</h2>
 				</svelte:fragment>
 				<svelte:fragment slot="content">
 					<div class="table-container mb-6 rounded-lg">
@@ -135,7 +139,11 @@
 			{#if $playerCharacterSelectionStore.drafts.filter((d) => d.status === 'draft').length > 0}
 				<AccordionItem rounded="container rounded-lg !px-0" spacing="space-y-2">
 					<svelte:fragment slot="summary">
-						<h2 class="h2">Drafts</h2>
+						<h2
+							class="font-comorantBold h2 bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center font-bold text-transparent dark:from-white dark:to-red-800"
+						>
+							Drafts
+						</h2>
 					</svelte:fragment>
 					<svelte:fragment slot="content">
 						<div class="table-container rounded-lg">
@@ -213,7 +221,11 @@
 			{#if $playerCharacterSelectionStore.drafts.filter((d) => d.status === 'review').length > 0}
 				<AccordionItem rounded="container rounded-lg !px-0" spacing="space-y-2">
 					<svelte:fragment slot="summary">
-						<h2 class="h2">Reviews</h2>
+						<h2
+							class="font-comorantBold h2 bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center font-bold text-transparent dark:from-white dark:to-red-800"
+						>
+							Reviews
+						</h2>
 					</svelte:fragment>
 					<svelte:fragment slot="content">
 						<div class="table-container rounded-lg">
@@ -281,7 +293,11 @@
 			{#if $playerCharacterSelectionStore.drafts.filter((d) => d.status === 'rejected').length > 0}
 				<AccordionItem rounded="container rounded-lg !px-0" spacing="space-y-2">
 					<svelte:fragment slot="summary">
-						<h2 class="h2">Rejected</h2>
+						<h2
+							class="font-comorantBold h2 bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center font-bold text-transparent dark:from-white dark:to-red-800"
+						>
+							Rejected
+						</h2>
 					</svelte:fragment>
 					<svelte:fragment slot="content">
 						<div class="table-container rounded-lg">
@@ -349,7 +365,11 @@
 			{#if $playerCharacterSelectionStore.drafts.filter((d) => d.status === 'archived').length > 0}
 				<AccordionItem rounded="container rounded-lg !px-0" spacing="space-y-2">
 					<svelte:fragment slot="summary">
-						<h2 class="h2">Archived</h2>
+						<h2
+							class="font-comorantBold h2 bg-gradient-to-br from-black to-red-800 box-decoration-clone bg-clip-text stroke-slate-500 text-center font-bold text-transparent dark:from-white dark:to-red-800"
+						>
+							Archived
+						</h2>
 					</svelte:fragment>
 					<svelte:fragment slot="content">
 						<div class="table-container rounded-lg">
