@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { applyAction, enhance } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
-	import { downloadCharacterSheet } from '$lib/pdfUtils';
+	import { downloadCharacterSheet, pdfTemplates } from '$lib/pdfUtils';
 	import { characterCreationStore } from '$lib/stores/characterCreationStore';
 	import { pdfOptionsStore } from '$lib/stores/pdfOptionsStore';
 	import { playerCharacterSelectionStore } from '$lib/stores/selectionStore';
@@ -35,10 +35,8 @@
 	};
 
 	onMount(() => {
-		unsubscribe = pdfOptionsStore.subscribe(async () => {
-			const response = await fetch(`/api/lotn/pdf?color=${$pdfOptionsStore.color}`);
-			const { templates: newTemplates } = await response.json();
-			templates = newTemplates;
+		unsubscribe = pdfOptionsStore.subscribe(async (store) => {
+			templates = pdfTemplates[store.color ? 'color' : 'bw'];
 		});
 
 		return () => {

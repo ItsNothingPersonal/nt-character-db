@@ -21,6 +21,53 @@ import type { PlayerFlaw } from './zod/lotn/playerCharacter/playerFlaw';
 import type { PlayerMerit } from './zod/lotn/playerCharacter/playerMerit';
 import type { ProjectName } from './zod/projectName';
 
+export const pdfTemplates: { bw: string[]; color: string[] } = {
+	bw: [
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_BanuHaqim_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Brujah_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Caitiff_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Gangrel_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Hecata_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Lasombra_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Malkavian_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Ministry_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Nosferatu_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Ravnos_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Salubri_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_ThinBlood_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Toreador_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Tremere_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Tzimisce_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Ventrue_Interactive.pdf'
+	],
+	color: [
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_BanuHaqim_Color_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Brujah_Color_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Caitiff_Color_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Color_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Gangrel_Color_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Hecata_Color_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Lasombra_Color_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Malkavian_Color_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Ministry_Color_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Nosferatu_Color_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Ravnos_Color_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Salubri_Color_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Sect_Anarch_Color_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Sect_Ashirra_Color_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Sect_Camarilla_Color_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Sect_Sabbat_Color_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_ThinBlood_Color_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Toreador_Color_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Tremere_Color_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Tzimisce_Color_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_2-Page_Ventrue_Color_Interactive.pdf',
+		'Vampire_5thEdition_LawsOfTheNight_Original_2-Page_Color_Interactive.pdf'
+	]
+};
+
 export async function fillPdfForm(
 	pdfName: string,
 	formData: Record<string, string | number | boolean>,
